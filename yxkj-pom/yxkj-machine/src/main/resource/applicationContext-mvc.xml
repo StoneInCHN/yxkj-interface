@@ -15,8 +15,12 @@
 	<mvc:resources mapping="/resources/**" location="/resources/" />
 	<mvc:resources mapping="/upload/**" location="/upload/" />
 	
-	<mvc:default-servlet-handler /> 
-	<!-- <bean class="com.yxkj.beans.SwaggerConfig" />  -->
+	
+   <!-- Swagger资源重定向(仅作为后台使用不提供静态资源) -->
+   <bean class="com.yxkj.beans.SwaggerConfig"/> 
+   <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>
+   <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
+	 
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />

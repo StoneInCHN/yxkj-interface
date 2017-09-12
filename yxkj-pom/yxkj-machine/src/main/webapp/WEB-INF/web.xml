@@ -38,7 +38,9 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>springmvc</servlet-name>
-    <url-pattern>*.jhtml</url-pattern>
+    <!-- 使用swagger -->
+    <url-pattern>/</url-pattern>
+    <!-- <url-pattern>*.jhtml</url-pattern> -->
   </servlet-mapping>
  
   <listener>

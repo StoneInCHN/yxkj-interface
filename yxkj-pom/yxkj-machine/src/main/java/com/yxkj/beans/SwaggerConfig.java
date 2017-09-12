@@ -1,12 +1,10 @@
 package com.yxkj.beans;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -16,17 +14,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableWebMvc
 @EnableSwagger2
-@ComponentScan(basePackages = {"com.yxkj.controller"})
 public class SwaggerConfig {
   @Bean
-  public Docket createRestApi() {
+  public Docket petApi() {
     return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-        .apis(RequestHandlerSelectors.basePackage("com.yxkj.controller"))
-        .paths(PathSelectors.any()).build();
+        .apis(RequestHandlerSelectors.basePackage("com.yxkj.controller")).build();
+
   }
 
   private ApiInfo apiInfo() {
-    return new ApiInfoBuilder().title("Spring 中使用Swagger2构建RESTful APIs")
-        .termsOfServiceUrl("http://blog.csdn.net/he90227").contact("逍遥飞鹤").version("1.1").build();
+    return new ApiInfoBuilder().title("服务平台 API").description("API Document")
+        .termsOfServiceUrl("http://localhost:8080").version("1.0").build();
   }
 }
