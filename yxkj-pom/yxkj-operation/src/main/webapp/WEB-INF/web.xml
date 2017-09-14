@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0" metadata-complete="true">
-  <display-name>rebate-interface</display-name>
-  <description>rebate-interface</description>
+  <display-name>yxkj-operation</display-name>
+  <description>yxkj-operation</description>
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
@@ -38,7 +38,9 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>springmvc</servlet-name>
-    <url-pattern>*.jhtml</url-pattern>
+     <!-- 使用swagger -->
+    <url-pattern>/</url-pattern>
+    <!-- <url-pattern>*.jhtml</url-pattern> -->
   </servlet-mapping>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

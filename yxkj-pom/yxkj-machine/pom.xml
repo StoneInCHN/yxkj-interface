@@ -454,20 +454,17 @@
 		<dependency>  
            <groupId>io.springfox</groupId>  
            <artifactId>springfox-swagger2</artifactId>  
-           <version>2.6.1</version>  
        </dependency>  
        <dependency>  
            <groupId>io.springfox</groupId>  
            <artifactId>springfox-swagger-ui</artifactId>  
-           <version>2.6.1</version>  
        </dependency>  
 	   <!--springfox 相关依赖 end--> 
 	   
-	   <!--JWT-->
-	   <dependency>
+	    <!--JWT-->
+	    <dependency>
               <groupId>io.jsonwebtoken</groupId>
               <artifactId>jjwt</artifactId>
-              <version>0.6.0</version>
         </dependency> 
   </dependencies>
   

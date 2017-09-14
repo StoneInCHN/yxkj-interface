@@ -25,8 +25,8 @@ import com.yxkj.entity.base.OrderEntity;
  * 
  */
 @Entity
-@Table(name = "ov_area")
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "ov_area_sequence")
+@Table(name = "t_area")
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_area_sequence")
 public class Area extends OrderEntity {
 
   private static final long serialVersionUID = -2158109459123036967L;
@@ -49,6 +49,33 @@ public class Area extends OrderEntity {
   /** 下级地区 */
   private Set<Area> children = new HashSet<Area>();
 
+  /**
+   * 拼音名称
+   */
+  private String pyName;
+
+  /**
+   * 是否为热门城市
+   */
+  private Boolean isHotCity;
+
+
+  public Boolean getIsHotCity() {
+    return isHotCity;
+  }
+
+  public void setIsHotCity(Boolean isHotCity) {
+    this.isHotCity = isHotCity;
+  }
+
+  public String getPyName() {
+    return pyName;
+  }
+
+  @Column(length = 200)
+  public void setPyName(String pyName) {
+    this.pyName = pyName;
+  }
 
   /**
    * 获取名称

@@ -428,6 +428,22 @@
 				<groupId>com.google.zxing</groupId>
 				<artifactId>core</artifactId>
 		</dependency>
+		<!--springfox 相关依赖 start-->  
+		<dependency>  
+           <groupId>io.springfox</groupId>  
+           <artifactId>springfox-swagger2</artifactId>  
+       </dependency>  
+       <dependency>  
+           <groupId>io.springfox</groupId>  
+           <artifactId>springfox-swagger-ui</artifactId>  
+       </dependency>  
+	   <!--springfox 相关依赖 end--> 
+	   
+	    <!--JWT-->
+	    <dependency>
+              <groupId>io.jsonwebtoken</groupId>
+              <artifactId>jjwt</artifactId>
+        </dependency> 
 		<!-- chinese convert pingyin -->
 		 <!-- <dependency>
 	    	<groupId>hanzi2pingyin</groupId>

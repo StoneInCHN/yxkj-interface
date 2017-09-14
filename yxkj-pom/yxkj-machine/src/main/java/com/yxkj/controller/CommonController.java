@@ -63,7 +63,8 @@ public class CommonController extends MobileBaseController {
    * @return
    */
   @RequestMapping(value = "/login", method = RequestMethod.POST)
-  @ApiOperation(value = "login", httpMethod = "POST", response = BaseResponse.class, notes = "用户登录")
+  @ApiOperation(value = "用户登录login", httpMethod = "POST", response = BaseResponse.class,
+      notes = "用户登录")
   public @ResponseBody BaseResponse login(@ApiParam(name = "基础对象", value = "传入json格式",
       required = true) @RequestBody BaseRequest req) {
     BaseResponse response = new BaseResponse();
@@ -71,6 +72,26 @@ public class CommonController extends MobileBaseController {
     response.setCode(CommonAttributes.SUCCESS);
     response.setToken(req.getUserId().toString());
     response.setDesc(TokenUtil.getJWTString(req.getUserId().toString(), "", 1000000));
+    return response;
+  }
+
+
+  /**
+   * swagger测试
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/test", method = RequestMethod.POST)
+  @ApiOperation(value = "swagger测试", httpMethod = "POST", response = BaseResponse.class,
+      notes = "swagger测试")
+  public @ResponseBody BaseResponse test(@ApiParam(name = "请求参数(json)",
+      value = "userId:用户ID|userName:用户名|token:用户令牌", required = true) @RequestBody BaseRequest req) {
+    BaseResponse response = new BaseResponse();
+    String key = setting.getServerPublicKey();
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setToken(req.getUserId().toString());
+    response.setDesc("中文测试");
     return response;
   }
 }
