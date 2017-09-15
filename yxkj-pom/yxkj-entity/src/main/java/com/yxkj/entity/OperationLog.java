@@ -30,6 +30,11 @@ public class OperationLog extends BaseEntity {
   /** 操作员 */
   private String operator;
 
+  /**
+   * 操作员ID
+   */
+  private Long oprId;
+
   /** 内容 */
   private String content;
 
@@ -38,6 +43,15 @@ public class OperationLog extends BaseEntity {
 
   /** IP */
   private String ip;
+
+
+  public Long getOprId() {
+    return oprId;
+  }
+
+  public void setOprId(Long oprId) {
+    this.oprId = oprId;
+  }
 
   /**
    * 获取操作
