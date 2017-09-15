@@ -23,6 +23,8 @@ import com.yxkj.entity.base.OrderEntity;
 /**
  * Entity - 地区
  * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:22:42
  */
 @Entity
 @Table(name = "t_area")

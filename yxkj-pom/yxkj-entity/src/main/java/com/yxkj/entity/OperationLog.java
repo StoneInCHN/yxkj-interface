@@ -11,8 +11,10 @@ import com.yxkj.entity.base.BaseEntity;
 
 
 /**
- * Entity - 日志
+ * Entity - 运营平台操作日志
  * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:25:31
  */
 @Entity
 @Table(name = "t_operation_log")

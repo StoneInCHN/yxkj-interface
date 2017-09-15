@@ -9,8 +9,10 @@ import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.DictKey;
 
 /**
- * 用户设置配置
+ * Entity - 数据字典
  * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:23:31
  */
 @Entity
 @Table(name = "t_dict_config")

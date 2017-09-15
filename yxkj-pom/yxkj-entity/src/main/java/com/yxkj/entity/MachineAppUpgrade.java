@@ -8,6 +8,12 @@ import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
 
+/**
+ * Entity - 机器apk升级记录
+ * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:24:10
+ */
 @Entity
 @Table(name = "t_machineapp_upgrade", indexes = {@Index(name = "containerSnIndex",
     columnList = "containerSn")})

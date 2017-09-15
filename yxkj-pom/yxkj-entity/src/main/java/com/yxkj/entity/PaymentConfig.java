@@ -8,9 +8,12 @@ import javax.persistence.Table;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.SystemType;
 
+
 /**
- * 支付方式配置(不同系统支付方式单独配置)
+ * Entity - 支付方式配置(不同前段系统支付方式可单独配置)
  * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:25:55
  */
 @Entity
 @Table(name = "t_payment_config")

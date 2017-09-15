@@ -9,10 +9,10 @@ import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.SystemConfigKey;
 
 /**
- * 数据字典配置
+ * Entity - 系统配置
  * 
- * @author sujinxuan
- *
+ * @author Andrea
+ * @version 2017年9月15日 上午11:27:46
  */
 @Entity
 @Table(name = "t_sys_config")

@@ -8,10 +8,10 @@ import javax.persistence.Table;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
- * Entity - 序列号
+ * Entity - 序列号生成配置数据
  * 
- * @author
- * @version
+ * @author Andrea
+ * @version 2017年9月15日 上午11:27:06
  */
 @Entity
 @Table(name = "t_sn")

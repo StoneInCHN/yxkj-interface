@@ -20,8 +20,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
- * Entity - 角色
+ * Entity - 运营平台角色
  * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:26:46
  */
 @Entity
 @Table(name = "t_role")

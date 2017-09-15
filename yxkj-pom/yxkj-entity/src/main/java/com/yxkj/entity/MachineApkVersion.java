@@ -10,6 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yxkj.entity.base.BaseEntity;
 
+/**
+ * Entity - 机器中控apk版本
+ * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:23:49
+ */
 @Entity
 @Table(name = "t_machine_apk_version")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_machine_apk_version_sequence")

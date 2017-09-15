@@ -11,6 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.AppPlatform;
 
+/**
+ * Entity - 用户客户端apk版本
+ * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:23:01
+ */
 @Entity
 @Table(name = "t_client_apk_version")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_client_apk_version_sequence")

@@ -20,7 +20,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 
-
+/**
+ * Entity-运营管理员
+ * 
+ * @author Andrea
+ * @version 2017年9月15日 上午11:22:29
+ */
 @Entity
 @Table(name = "t_admin")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_admin_sequence")
