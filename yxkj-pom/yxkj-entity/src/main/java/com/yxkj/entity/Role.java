@@ -24,8 +24,8 @@ import com.yxkj.entity.base.BaseEntity;
  * 
  */
 @Entity
-@Table(name = "t_admin_role")
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_admin_role_sequence")
+@Table(name = "t_role")
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_role_sequence")
 public class Role extends BaseEntity {
 
   private static final long serialVersionUID = -6614052029623997372L;
@@ -114,7 +114,7 @@ public class Role extends BaseEntity {
    * @return 权限
    */
   @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "t_admin_role_authority")
+  @CollectionTable(name = "t_role_authority")
   public List<String> getAuthorities() {
     return authorities;
   }
