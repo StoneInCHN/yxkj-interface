@@ -12,6 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum.RemindType;
 
 /**
  * Entity - 配送员提醒通知
@@ -23,7 +24,7 @@ import com.yxkj.entity.base.BaseEntity;
 @Table(name = "t_deliver_remind_msg")
 // @Indexed(index = "messageInfo")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_deliver_remind_msg_sequence")
-public class DeliverRemindMsg extends BaseEntity {
+public class KeeperRemindMsg extends BaseEntity {
 
   private static final long serialVersionUID = 1170442128165498366L;
 
@@ -39,8 +40,22 @@ public class DeliverRemindMsg extends BaseEntity {
   private String remark;
 
   /** 消息、配送员对应关系实体 */
-  private Set<MsgDeliver> msgDelivers = new HashSet<MsgDeliver>();
+  private Set<MsgKeeper> msgKeepers = new HashSet<MsgKeeper>();
 
+  /**
+   * 通知类型
+   */
+  private RemindType type;
+
+
+
+  public RemindType getType() {
+    return type;
+  }
+
+  public void setType(RemindType type) {
+    this.type = type;
+  }
 
   @Column(length = 200)
   public String getRemark() {
@@ -60,7 +75,7 @@ public class DeliverRemindMsg extends BaseEntity {
     this.title = title;
   }
 
-  @Column(length = 200)
+  @Column(length = 500)
   public String getContent() {
     return content;
   }
@@ -70,12 +85,12 @@ public class DeliverRemindMsg extends BaseEntity {
   }
 
   @OneToMany(mappedBy = "message", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  public Set<MsgDeliver> getMsgDelivers() {
-    return msgDelivers;
+  public Set<MsgKeeper> getMsgKeepers() {
+    return msgKeepers;
   }
 
-  public void setMsgDelivers(Set<MsgDeliver> msgDelivers) {
-    this.msgDelivers = msgDelivers;
+  public void setMsgKeepers(Set<MsgKeeper> msgKeepers) {
+    this.msgKeepers = msgKeepers;
   }
 
 

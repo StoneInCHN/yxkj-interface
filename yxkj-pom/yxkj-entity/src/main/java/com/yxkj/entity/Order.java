@@ -72,7 +72,7 @@ public class Order extends BaseEntity {
   private OrderStatus status;
 
 
-  @Column(scale = 4, precision = 12)
+  @Column(scale = 2, precision = 10)
   public BigDecimal getProfit() {
     return profit;
   }
@@ -121,7 +121,7 @@ public class Order extends BaseEntity {
   }
 
 
-  @Column(scale = 4, precision = 12)
+  @Column(scale = 2, precision = 10)
   public BigDecimal getAmount() {
     return amount;
   }

@@ -17,8 +17,8 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月15日 上午11:24:10
  */
 @Entity
-@Table(name = "t_machineapp_upgrade", indexes = {@Index(name = "containerSnIndex",
-    columnList = "containerSn")})
+@Table(name = "t_machineapp_upgrade", indexes = {@Index(name = "sceneIdIndex",
+    columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_machineapp_upgrade_sequence")
 public class MachineAppUpgrade extends BaseEntity {
 

@@ -16,7 +16,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.entity.commonenum.CommonEnum.Gender;
@@ -184,7 +183,6 @@ public class EndUser extends BaseEntity {
   }
 
   @Column(length = 100)
-  @JsonProperty
   public String getNickName() {
     return nickName;
   }
@@ -237,7 +235,6 @@ public class EndUser extends BaseEntity {
   }
 
   @Column(length = 20, nullable = false)
-  @JsonProperty
   public String getCellPhoneNum() {
     return cellPhoneNum;
   }

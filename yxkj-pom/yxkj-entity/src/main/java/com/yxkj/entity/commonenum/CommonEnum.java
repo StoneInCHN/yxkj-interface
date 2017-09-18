@@ -195,7 +195,7 @@ public class CommonEnum {
     UNPAID,
     /** 已支付 1 */
     PAID,
-    /** 评价后，已完成 */
+    /** 出货后已完成 2 */
     FINISHED
   }
 
@@ -267,6 +267,18 @@ public class CommonEnum {
     CONTROLL_MACHINE,
     /** 在线购买 3 */
     ONLINE
+  }
+
+
+  /**
+   * 通知类型
+   *
+   */
+  public enum RemindType {
+    /** 上货通知 0 */
+    SUPPLY,
+    /** 缺货通知 1 */
+    LACK
   }
 
 }

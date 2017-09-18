@@ -44,7 +44,7 @@ public class VendingMachine extends BaseEntity {
     this.scene = scene;
   }
 
-  @OneToMany(mappedBy = "container")
+  @OneToMany(mappedBy = "machine")
   public Set<VendingContainer> getVendingContainers() {
     return vendingContainers;
   }

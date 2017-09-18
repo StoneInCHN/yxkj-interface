@@ -13,22 +13,21 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.entity.commonenum.CommonEnum.Gender;
 
 /**
- * Entity - 用户实体
+ * Entity - 管家实体
  * 
  * @author Andrea
  * @version 2017年9月15日 上午11:27:59
  */
 @Entity
-@Table(name = "t_end_user", indexes = {@Index(name = "cellPhoneNumIndex",
+@Table(name = "t_container_keeper", indexes = {@Index(name = "cellPhoneNumIndex",
     columnList = "cellPhoneNum")})
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_end_user_sequence")
-public class ContainerDeliver extends BaseEntity {
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_container_keeper_sequence")
+public class ContainerKeeper extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
 
@@ -88,7 +87,7 @@ public class ContainerDeliver extends BaseEntity {
   /**
    * 配送员消息
    */
-  private Set<MsgDeliver> msgDelivers = new HashSet<MsgDeliver>();
+  private Set<MsgKeeper> msgKeepers = new HashSet<MsgKeeper>();
 
   /**
    * 是否开启消息推送
@@ -135,7 +134,6 @@ public class ContainerDeliver extends BaseEntity {
   }
 
   @Column(length = 100)
-  @JsonProperty
   public String getNickName() {
     return nickName;
   }
@@ -188,7 +186,6 @@ public class ContainerDeliver extends BaseEntity {
   }
 
   @Column(length = 20, nullable = false)
-  @JsonProperty
   public String getCellPhoneNum() {
     return cellPhoneNum;
   }
@@ -206,13 +203,13 @@ public class ContainerDeliver extends BaseEntity {
     this.loginPwd = loginPwd;
   }
 
-  @OneToMany(mappedBy = "deliver", cascade = CascadeType.ALL)
-  public Set<MsgDeliver> getMsgDelivers() {
-    return msgDelivers;
+  @OneToMany(mappedBy = "keeper", cascade = CascadeType.ALL)
+  public Set<MsgKeeper> getMsgKeepers() {
+    return msgKeepers;
   }
 
-  public void setMsgDelivers(Set<MsgDeliver> msgDelivers) {
-    this.msgDelivers = msgDelivers;
+  public void setMsgKeepers(Set<MsgKeeper> msgKeepers) {
+    this.msgKeepers = msgKeepers;
   }
 
 }

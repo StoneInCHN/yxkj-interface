@@ -17,15 +17,15 @@ import com.yxkj.entity.base.BaseEntity;
 @Entity
 @Table(name = "t_msg_deliver")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_msg_deliver_sequence")
-public class MsgDeliver extends BaseEntity {
+public class MsgKeeper extends BaseEntity {
 
   private static final long serialVersionUID = 8059526848027012082L;
 
   /** 接受消息的配送员实体 */
-  private ContainerDeliver deliver;
+  private ContainerKeeper keeper;
 
   /** 消息实体 */
-  private DeliverRemindMsg message;
+  private KeeperRemindMsg message;
 
   /** 是否已经推送 */
   private Boolean isPush;
@@ -35,20 +35,20 @@ public class MsgDeliver extends BaseEntity {
 
 
   @ManyToOne(fetch = FetchType.LAZY)
-  public ContainerDeliver getDeliver() {
-    return deliver;
+  public ContainerKeeper getKeeper() {
+    return keeper;
   }
 
-  public void setDeliver(ContainerDeliver deliver) {
-    this.deliver = deliver;
+  public void setKeeper(ContainerKeeper keeper) {
+    this.keeper = keeper;
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
-  public DeliverRemindMsg getMessage() {
+  public KeeperRemindMsg getMessage() {
     return message;
   }
 
-  public void setMessage(DeliverRemindMsg message) {
+  public void setMessage(KeeperRemindMsg message) {
     this.message = message;
   }
 
