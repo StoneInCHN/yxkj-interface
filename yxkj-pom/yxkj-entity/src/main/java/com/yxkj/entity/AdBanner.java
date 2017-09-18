@@ -4,14 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum.SystemType;
 
 /**
- * 广告
+ * Entity - app广告
  * 
  * @author Andrea
  * @version 2017年9月15日 下午5:40:14
@@ -23,16 +21,6 @@ public class AdBanner extends BaseEntity {
 
 
   private static final long serialVersionUID = 1L;
-
-  /**
-   * banner名称
-   */
-  private String bannerName;
-
-  /**
-   * banner URL
-   */
-  private String bannerUrl;
 
   /**
    * banner link URL
@@ -49,10 +37,10 @@ public class AdBanner extends BaseEntity {
    */
   private String title;
 
-  /**
-   * 内容
-   */
-  private String content;
+  // /**
+  // * 内容
+  // */
+  // private String content;
 
   /**
    * 是否生效
@@ -60,10 +48,32 @@ public class AdBanner extends BaseEntity {
   private Boolean isActive;
 
   /**
-   * banner文件
+   * 系统类型
    */
-  private MultipartFile bannerPicture;
+  private SystemType systemType;
 
+  /**
+   * 备注
+   */
+  private String remark;
+
+
+  @Column(length = 100)
+  public String getRemark() {
+    return remark;
+  }
+
+  public void setRemark(String remark) {
+    this.remark = remark;
+  }
+
+  public SystemType getSystemType() {
+    return systemType;
+  }
+
+  public void setSystemType(SystemType systemType) {
+    this.systemType = systemType;
+  }
 
   @Column(length = 100)
   public String getTitle() {
@@ -74,14 +84,14 @@ public class AdBanner extends BaseEntity {
     this.title = title;
   }
 
-  @Column(length = 5000)
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
+  // @Column(length = 1000)
+  // public String getContent() {
+  // return content;
+  // }
+  //
+  // public void setContent(String content) {
+  // this.content = content;
+  // }
 
   @Column(length = 200)
   public String getLinkUrl() {
@@ -100,23 +110,6 @@ public class AdBanner extends BaseEntity {
     this.bannerOrder = bannerOrder;
   }
 
-  @Column(length = 100)
-  public String getBannerName() {
-    return bannerName;
-  }
-
-  public void setBannerName(String bannerName) {
-    this.bannerName = bannerName;
-  }
-
-  @Column(length = 200)
-  public String getBannerUrl() {
-    return bannerUrl;
-  }
-
-  public void setBannerUrl(String bannerUrl) {
-    this.bannerUrl = bannerUrl;
-  }
 
   public Boolean getIsActive() {
     return isActive;
@@ -126,12 +119,4 @@ public class AdBanner extends BaseEntity {
     this.isActive = isActive;
   }
 
-  @Transient
-  public MultipartFile getBannerPicture() {
-    return bannerPicture;
-  }
-
-  public void setBannerPicture(MultipartFile bannerPicture) {
-    this.bannerPicture = bannerPicture;
-  }
 }

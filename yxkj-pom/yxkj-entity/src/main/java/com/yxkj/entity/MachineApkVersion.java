@@ -1,7 +1,11 @@
 package com.yxkj.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -47,6 +51,21 @@ public class MachineApkVersion extends BaseEntity {
    */
   private String updateContent;
 
+  /**
+   * 升级记录
+   */
+  private Set<MachineAppUpgrade> machineAppUpgrades = new HashSet<MachineAppUpgrade>();
+
+
+
+  @OneToMany(mappedBy = "machineApkVersion")
+  public Set<MachineAppUpgrade> getMachineAppUpgrades() {
+    return machineAppUpgrades;
+  }
+
+  public void setMachineAppUpgrades(Set<MachineAppUpgrade> machineAppUpgrades) {
+    this.machineAppUpgrades = machineAppUpgrades;
+  }
 
   @Column(length = 20)
   public String getVersionName() {

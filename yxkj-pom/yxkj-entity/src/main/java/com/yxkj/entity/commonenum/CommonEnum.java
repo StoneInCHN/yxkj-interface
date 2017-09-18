@@ -13,15 +13,15 @@ public class CommonEnum {
    * 系统类型
    */
   public enum SystemType {
-    /** 运营后台 */
+    /** 运营后台 0 */
     OPERATION,
-    /** 售货机APP */
+    /** 售货机APP 1 */
     MACHINE_APP,
-    /** 用户APP */
+    /** 用户APP 2 */
     USER_APP,
-    /** 微信公众号 */
+    /** 微信公众号 3 */
     WECHAT_PUBLIC,
-    /** 配货员app */
+    /** 配货员app 4 */
     DELIVERY_APP
 
   }
@@ -43,13 +43,13 @@ public class CommonEnum {
    */
   public enum AccountStatus {
 
-    /** 帐号正常 */
+    /** 帐号正常 0 */
     ACTIVED,
 
-    /** 帐号禁用 */
+    /** 帐号禁用 1 */
     LOCKED,
 
-    /** 帐号删除 */
+    /** 帐号删除 2 */
     DELETE
   }
 
@@ -96,13 +96,13 @@ public class CommonEnum {
    *
    */
   public enum ApplyStatus {
-    /** 待审核 */
+    /** 待审核 0 */
     AUDIT_WAITING,
 
-    /** 审核通过 */
+    /** 审核通过 1 */
     AUDIT_PASSED,
 
-    /** 审核退回 */
+    /** 审核退回 2 */
     AUDIT_FAILED
 
   }
@@ -128,8 +128,6 @@ public class CommonEnum {
    *
    */
   public enum SystemConfigKey {
-    /** 支付方式 0 */
-    PAYMENTTYPE,
   }
 
   /**
@@ -144,13 +142,13 @@ public class CommonEnum {
     CUSTOMER_PHONE,
     /** 关于 2 */
     ABOUT_US,
-    /** 支付宝公司名称 3 */
+    /** 支付宝商户名 3 */
     ALIPAY_COMPANY,
-    /** 支付宝账户信息 4 */
+    /** 支付宝商户编号 4 */
     ALIPAY_ACCOUNT,
-    /** 微信公司名称 5 */
+    /** 微信商户名 5 */
     WECHAT_COMPANY,
-    /** 微信账户名称 6 */
+    /** 微信应用ID 6 */
     WECHAT_ACCOUNT
   }
 
@@ -160,9 +158,9 @@ public class CommonEnum {
    * 
    */
   public enum AppPlatform {
-    /** android */
+    /** android 0 */
     ANDROID,
-    /** IOS */
+    /** IOS 1 */
     IOS
   }
 
@@ -176,18 +174,26 @@ public class CommonEnum {
     AUTH_IDCARD
   }
 
+  /**
+   * 广告类型
+   * 
+   * @author Andrea
+   * @version 2017年9月18日 下午6:36:18
+   */
   public enum FileType {
 
-    /** 图片 */
-    image,
-    /** 文件 */
-    file
+    /** 图片 0 */
+    IMAGE,
+    /** 视频 1 */
+    VIDEO,
+    /** 文件 2 */
+    FILE
   }
 
   public enum OrderStatus {
-    /** 未支付 */
+    /** 未支付 0 */
     UNPAID,
-    /** 已支付，待评价 */
+    /** 已支付 1 */
     PAID,
     /** 评价后，已完成 */
     FINISHED
@@ -237,17 +243,30 @@ public class CommonEnum {
   }
 
   /**
-   * 收益类型
+   * 用户获取渠道
    *
    */
-  public enum RebateType {
-    /** 积分 */
-    SCORE,
-    /** 乐心 */
-    LE_MIND,
-    /** 乐豆 */
-    LE_BEAN,
-    /** 乐分 */
-    LE_SCORE
+  public enum UseChannel {
+    /** 微信 0 */
+    WECHAT,
+    /** 支付宝 1 */
+    ALIPAY
   }
+
+
+  /**
+   * 购买方式
+   *
+   */
+  public enum PurMethod {
+    /** 扫码购买 0 */
+    SCAN_CODE,
+    /** 输码购买 1 */
+    INPUT_CODE,
+    /** 中控购买 2 */
+    CONTROLL_MACHINE,
+    /** 在线购买 3 */
+    ONLINE
+  }
+
 }

@@ -2,7 +2,9 @@ package com.yxkj.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -25,12 +27,17 @@ public class MachineAppUpgrade extends BaseEntity {
   /**
    * 升级至版本号
    */
-  private String machineApkVersion;
+  private MachineApkVersion machineApkVersion;
 
   /**
-   * 货柜编号
+   * 优享空间名称
    */
-  private String containerSn;
+  private String sceneName;
+
+  /**
+   * Long
+   */
+  private Long sceneId;
 
   /**
    * 是否升级成功
@@ -43,23 +50,24 @@ public class MachineAppUpgrade extends BaseEntity {
   private String remark;
 
 
-  @Column(length = 20)
-  public String getMachineApkVersion() {
-    return machineApkVersion;
+  @Column(length = 50)
+  public String getSceneName() {
+    return sceneName;
   }
 
-  public void setMachineApkVersion(String machineApkVersion) {
-    this.machineApkVersion = machineApkVersion;
+  public void setSceneName(String sceneName) {
+    this.sceneName = sceneName;
   }
 
-  @Column(length = 100)
-  public String getContainerSn() {
-    return containerSn;
+  public Long getSceneId() {
+    return sceneId;
   }
 
-  public void setContainerSn(String containerSn) {
-    this.containerSn = containerSn;
+  public void setSceneId(Long sceneId) {
+    this.sceneId = sceneId;
   }
+
+
 
   public Boolean getUpgradeSucc() {
     return upgradeSucc;
@@ -77,6 +85,16 @@ public class MachineAppUpgrade extends BaseEntity {
   public void setRemark(String remark) {
     this.remark = remark;
   }
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  public MachineApkVersion getMachineApkVersion() {
+    return machineApkVersion;
+  }
+
+  public void setMachineApkVersion(MachineApkVersion machineApkVersion) {
+    this.machineApkVersion = machineApkVersion;
+  }
+
 
 
 }
