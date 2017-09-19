@@ -2,12 +2,16 @@ package com.yxkj.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -71,6 +75,20 @@ public class Order extends BaseEntity {
    */
   private OrderStatus status;
 
+  /**
+   * 订单项
+   */
+  private Set<OrderItem> orderItems = new HashSet<OrderItem>();
+
+
+  @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
+  public Set<OrderItem> getOrderItems() {
+    return orderItems;
+  }
+
+  public void setOrderItems(Set<OrderItem> orderItems) {
+    this.orderItems = orderItems;
+  }
 
   @Column(scale = 2, precision = 10)
   public BigDecimal getProfit() {

@@ -11,21 +11,21 @@ import org.springframework.web.multipart.MultipartFile;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
- * Entity - 商品类别
+ * Entity - 货柜类别
  * 
  * @author Andrea
- * @version 2017年9月15日 上午11:45:09
+ * @version 2017年9月19日 上午11:46:10
  */
 @Entity
-@Table(name = "t_goods_category")
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_goods_category_sequence")
-public class GoodsCategory extends BaseEntity {
+@Table(name = "t_cntr_category")
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_cntr_category_sequence")
+public class ContainerCategory extends BaseEntity {
 
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -3578676079608900213L;
 
   /**
-   * 商品类别名称
+   * 货柜类别名称
    */
   private String cateName;
 
@@ -49,6 +49,20 @@ public class GoodsCategory extends BaseEntity {
    */
   private MultipartFile catePic;
 
+  /**
+   * 容量(物理货道数量)
+   * 
+   */
+  private Integer capacity;
+
+
+  public Integer getCapacity() {
+    return capacity;
+  }
+
+  public void setCapacity(Integer capacity) {
+    this.capacity = capacity;
+  }
 
   @Column(length = 200)
   public String getCatePicUrl() {

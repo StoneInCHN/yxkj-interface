@@ -48,7 +48,6 @@ public class KeeperRemindMsg extends BaseEntity {
   private RemindType type;
 
 
-
   public RemindType getType() {
     return type;
   }

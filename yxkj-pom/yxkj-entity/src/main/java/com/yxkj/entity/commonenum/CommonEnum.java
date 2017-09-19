@@ -246,7 +246,7 @@ public class CommonEnum {
    * 用户获取渠道
    *
    */
-  public enum UseChannel {
+  public enum UserChannel {
     /** 微信 0 */
     WECHAT,
     /** 支付宝 1 */
@@ -267,6 +267,18 @@ public class CommonEnum {
     CONTROLL_MACHINE,
     /** 在线购买 3 */
     ONLINE
+  }
+
+
+  /**
+   * 货道商品状态
+   *
+   */
+  public enum ChannelGoodsStatus {
+    /** 充足 0 */
+    SUFFICIENT,
+    /** 缺货(达到预警值) 1 */
+    LACK
   }
 
 

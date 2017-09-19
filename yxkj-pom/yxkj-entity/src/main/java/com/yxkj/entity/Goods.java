@@ -1,15 +1,27 @@
 package com.yxkj.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.Valid;
 
-import com.yxkj.entity.base.OrderEntity;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 
 /**
  * Entity - 商品
@@ -20,7 +32,7 @@ import com.yxkj.entity.base.OrderEntity;
 @Entity
 @Table(name = "t_goods")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_goods_sequence")
-public class Goods extends OrderEntity {
+public class Goods extends BaseEntity {
 
   private static final long serialVersionUID = -2158109459123036967L;
 
@@ -48,6 +60,52 @@ public class Goods extends OrderEntity {
    * 销售价
    */
   private BigDecimal salePrice;
+
+  /**
+   * 商品状态
+   */
+  private CommonStatus status;
+
+  /**
+   * 订单项
+   */
+  private Set<OrderItem> orderItems = new HashSet<OrderItem>();
+
+
+  /**
+   * 商品图片
+   */
+  private List<GoodsPic> goodsPics = new ArrayList<GoodsPic>();
+
+
+  @Valid
+  @ElementCollection
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @CollectionTable(name = "t_goods_image")
+  public List<GoodsPic> getGoodsPics() {
+    return goodsPics;
+  }
+
+  public void setGoodsPics(List<GoodsPic> goodsPics) {
+    this.goodsPics = goodsPics;
+  }
+
+  public CommonStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(CommonStatus status) {
+    this.status = status;
+  }
+
+  @OneToMany(mappedBy = "goods")
+  public Set<OrderItem> getOrderItems() {
+    return orderItems;
+  }
+
+  public void setOrderItems(Set<OrderItem> orderItems) {
+    this.orderItems = orderItems;
+  }
 
 
 

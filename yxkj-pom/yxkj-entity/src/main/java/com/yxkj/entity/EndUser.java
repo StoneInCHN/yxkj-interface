@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.entity.commonenum.CommonEnum.Gender;
+import com.yxkj.entity.commonenum.CommonEnum.UserChannel;
 
 /**
  * Entity - 用户实体
@@ -107,6 +108,24 @@ public class EndUser extends BaseEntity {
    */
   private Set<MsgEndUser> msgEndUsers = new HashSet<MsgEndUser>();
 
+  /**
+   * 是否开启消息推送
+   */
+  private Boolean isPushMsg;
+
+  /**
+   * 用户获取渠道
+   */
+  private UserChannel userChannel;
+
+
+  public UserChannel getUserChannel() {
+    return userChannel;
+  }
+
+  public void setUserChannel(UserChannel userChannel) {
+    this.userChannel = userChannel;
+  }
 
   @Column(length = 200)
   public String getQrImage() {
@@ -117,10 +136,6 @@ public class EndUser extends BaseEntity {
     this.qrImage = qrImage;
   }
 
-  /**
-   * 是否开启消息推送
-   */
-  private Boolean isPushMsg;
 
 
   public Boolean getIsPushMsg() {
