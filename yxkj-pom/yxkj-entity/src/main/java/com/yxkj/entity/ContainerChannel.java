@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -68,6 +69,21 @@ public class ContainerChannel extends BaseEntity {
    * 货道二维码url
    */
   private String qrCodeUrl;
+
+  /**
+   * 所属货柜
+   */
+  private VendingContainer cntr;
+
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  public VendingContainer getCntr() {
+    return cntr;
+  }
+
+  public void setCntr(VendingContainer cntr) {
+    this.cntr = cntr;
+  }
 
   @Column(length = 200)
   public String getQrCodeUrl() {

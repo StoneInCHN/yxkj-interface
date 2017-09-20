@@ -1,9 +1,13 @@
 package com.yxkj.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -81,6 +85,21 @@ public class VendingContainer extends BaseEntity {
    * 极光push注册ID
    */
   private String jpushRegId;
+
+  /**
+   * 货道
+   */
+  private Set<ContainerChannel> cntrChannel = new HashSet<ContainerChannel>();
+
+
+  @OneToMany(mappedBy = "cntr")
+  public Set<ContainerChannel> getCntrChannel() {
+    return cntrChannel;
+  }
+
+  public void setCntrChannel(Set<ContainerChannel> cntrChannel) {
+    this.cntrChannel = cntrChannel;
+  }
 
   @Column(length = 100)
   public String getJpushRegId() {

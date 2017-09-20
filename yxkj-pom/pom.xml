@@ -441,8 +441,8 @@
 
 	<modules>
 		<module>yxkj-entity</module>
-		<!-- <module>yxkj-app</module>
-		<module>yxkj-operation</module> -->
+		<module>yxkj-app</module>
+		<module>yxkj-operation</module>
 		<module>yxkj-machine</module>
 	</modules>
 </project>

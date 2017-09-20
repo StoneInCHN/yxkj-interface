@@ -319,4 +319,15 @@ public class CommonEnum {
     LACK
   }
 
+  /**
+   * 警告条件
+   *
+   */
+  public enum WarningCon {
+    /** 空柜 0 */
+    EMPTY,
+    /** 达到预警值 1 */
+    EARLY_WARNING
+  }
+
 }

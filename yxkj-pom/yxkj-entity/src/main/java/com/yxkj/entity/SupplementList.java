@@ -1,40 +1,40 @@
 package com.yxkj.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.Valid;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import com.yxkj.entity.base.BaseEntity;
 
 /**
- * Entity - 货柜补货记录
+ * Entity - 待补货清单
  * 
  * @author Andrea
- * @version 2017年9月19日 下午5:42:39
+ * @version 2017年9月20日 下午5:35:58
  */
 @Entity
-@Table(name = "t_supp_rec")
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_supp_rec_sequence")
-public class SupplementRecord extends BaseEntity {
+@Table(name = "t_supp_list")
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_supp_list_sequence")
+public class SupplementList extends BaseEntity {
+
 
   private static final long serialVersionUID = -2197390136625086557L;
 
   /**
-   * 补货货道
+   * 待补货货道
    */
   private ContainerChannel channel;
+
+  /**
+   * 货柜ID
+   */
+  private Long cntrId;
+
+  /**
+   * 货柜编号
+   */
+  private String cntrSn;
 
   /**
    * 优享空间编号
@@ -57,50 +57,29 @@ public class SupplementRecord extends BaseEntity {
   private String goodsName;
 
   /**
-   * 实际补货数量
-   */
-  private Integer supplyCount;
-
-  /**
    * 待补货数量
    */
   private Integer waitSupplyCount;
 
+  /**
+   * 剩余数量
+   */
+  private Integer remainCount;
+
+  /**
+   * 补货人姓名
+   */
+  private String suppName;
+
+  /**
+   * 补货人手机号
+   */
+  private String suppMobile;
 
   /**
    * 补货人ID
    */
   private Long suppId;
-
-  /**
-   * 管家上传的补货图片
-   */
-  private List<SupplementPic> suppPics = new ArrayList<SupplementPic>();
-
-  /**
-   * 货柜ID
-   */
-  private Long cntrId;
-
-  /**
-   * 货柜编号
-   */
-  private String cntrSn;
-
-  /**
-   * 补货汇总记录(按一组机器)
-   */
-  private SupplementSumRec suppSum;
-
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  public SupplementSumRec getSuppSum() {
-    return suppSum;
-  }
-
-  public void setSuppSum(SupplementSumRec suppSum) {
-    this.suppSum = suppSum;
-  }
 
   public Long getCntrId() {
     return cntrId;
@@ -119,6 +98,15 @@ public class SupplementRecord extends BaseEntity {
     this.cntrSn = cntrSn;
   }
 
+  public Integer getRemainCount() {
+    return remainCount;
+  }
+
+  public void setRemainCount(Integer remainCount) {
+    this.remainCount = remainCount;
+  }
+
+
   public Long getSuppId() {
     return suppId;
   }
@@ -127,17 +115,6 @@ public class SupplementRecord extends BaseEntity {
     this.suppId = suppId;
   }
 
-  @Valid
-  @ElementCollection
-  @LazyCollection(LazyCollectionOption.FALSE)
-  @CollectionTable(name = "t_supp_goods_image")
-  public List<SupplementPic> getSuppPics() {
-    return suppPics;
-  }
-
-  public void setSuppPics(List<SupplementPic> suppPics) {
-    this.suppPics = suppPics;
-  }
 
   public ContainerChannel getChannel() {
     return channel;
@@ -183,14 +160,24 @@ public class SupplementRecord extends BaseEntity {
     this.goodsName = goodsName;
   }
 
-  public Integer getSupplyCount() {
-    return supplyCount;
+
+  @Column(length = 20)
+  public String getSuppName() {
+    return suppName;
   }
 
-  public void setSupplyCount(Integer supplyCount) {
-    this.supplyCount = supplyCount;
+  public void setSuppName(String suppName) {
+    this.suppName = suppName;
   }
 
+  @Column(length = 20)
+  public String getSuppMobile() {
+    return suppMobile;
+  }
+
+  public void setSuppMobile(String suppMobile) {
+    this.suppMobile = suppMobile;
+  }
 
   public Integer getWaitSupplyCount() {
     return waitSupplyCount;
@@ -199,7 +186,6 @@ public class SupplementRecord extends BaseEntity {
   public void setWaitSupplyCount(Integer waitSupplyCount) {
     this.waitSupplyCount = waitSupplyCount;
   }
-
 
 
 }
