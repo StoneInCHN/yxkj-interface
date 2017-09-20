@@ -329,5 +329,32 @@ public class CommonEnum {
     /** 达到预警值 1 */
     EARLY_WARNING
   }
+    /**
+     * 命令类型
+     */
+    public enum CmdType {
+        /**
+         * 出货
+         */
+        SELL_OUT,
+        /**
+         * APP升级
+         */
+        APP_UPDATE,
+        /**
+         * 广告更新
+         */
+        AD_UPDATE
+    }
 
+    public enum CmdResponse {
+        /**
+         * 成功
+         */
+        Success,
+        /**
+         * 失败
+         */
+        Failed
+    }
 }
