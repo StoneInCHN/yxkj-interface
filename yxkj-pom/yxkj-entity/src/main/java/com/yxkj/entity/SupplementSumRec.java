@@ -53,9 +53,14 @@ public class SupplementSumRec extends BaseEntity {
   private Integer lackCount;
 
   /**
-   * 补货时间
+   * 补货开始时间
    */
-  private Date supplyTime;
+  private Date suppStartTime;
+
+  /**
+   * 补货完成时间
+   */
+  private Date suppEndTime;
 
   /**
    * 补货人姓名
@@ -140,13 +145,6 @@ public class SupplementSumRec extends BaseEntity {
   }
 
 
-  public Date getSupplyTime() {
-    return supplyTime;
-  }
-
-  public void setSupplyTime(Date supplyTime) {
-    this.supplyTime = supplyTime;
-  }
 
   @Column(length = 20)
   public String getSuppName() {
@@ -164,6 +162,22 @@ public class SupplementSumRec extends BaseEntity {
 
   public void setSuppMobile(String suppMobile) {
     this.suppMobile = suppMobile;
+  }
+
+  public Date getSuppStartTime() {
+    return suppStartTime;
+  }
+
+  public void setSuppStartTime(Date suppStartTime) {
+    this.suppStartTime = suppStartTime;
+  }
+
+  public Date getSuppEndTime() {
+    return suppEndTime;
+  }
+
+  public void setSuppEndTime(Date suppEndTime) {
+    this.suppEndTime = suppEndTime;
   }
 
 }
