@@ -2,9 +2,7 @@ package com.yxkj.entity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -12,7 +10,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -66,10 +63,10 @@ public class Goods extends BaseEntity {
    */
   private CommonStatus status;
 
-  /**
-   * 订单项
-   */
-  private Set<OrderItem> orderItems = new HashSet<OrderItem>();
+  // /**
+  // * 订单项
+  // */
+  // private Set<OrderItem> orderItems = new HashSet<OrderItem>();
 
 
   /**
@@ -98,14 +95,14 @@ public class Goods extends BaseEntity {
     this.status = status;
   }
 
-  @OneToMany(mappedBy = "goods")
-  public Set<OrderItem> getOrderItems() {
-    return orderItems;
-  }
-
-  public void setOrderItems(Set<OrderItem> orderItems) {
-    this.orderItems = orderItems;
-  }
+  // @OneToMany(mappedBy = "goods")
+  // public Set<OrderItem> getOrderItems() {
+  // return orderItems;
+  // }
+  //
+  // public void setOrderItems(Set<OrderItem> orderItems) {
+  // this.orderItems = orderItems;
+  // }
 
 
 

@@ -61,6 +61,11 @@ public class SupplementRecord extends BaseEntity {
   private Integer supplyCount;
 
   /**
+   * 剩余数量
+   */
+  private Integer remainCount;
+
+  /**
    * 补货时间
    */
   private Date supplyTime;
@@ -90,6 +95,14 @@ public class SupplementRecord extends BaseEntity {
    */
   private Boolean suppFinish;
 
+
+  public Integer getRemainCount() {
+    return remainCount;
+  }
+
+  public void setRemainCount(Integer remainCount) {
+    this.remainCount = remainCount;
+  }
 
   public Boolean getSuppFinish() {
     return suppFinish;

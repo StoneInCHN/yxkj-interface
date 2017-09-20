@@ -99,6 +99,20 @@ public class Scene extends BaseEntity {
    */
   private Boolean hasStore;
 
+  /**
+   * 管家
+   */
+  private ContainerKeeper cntrKeeper;
+
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  public ContainerKeeper getCntrKeeper() {
+    return cntrKeeper;
+  }
+
+  public void setCntrKeeper(ContainerKeeper cntrKeeper) {
+    this.cntrKeeper = cntrKeeper;
+  }
 
   @Column(length = 30)
   public String getName() {

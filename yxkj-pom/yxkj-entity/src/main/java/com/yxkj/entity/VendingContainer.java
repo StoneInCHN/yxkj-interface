@@ -72,6 +72,34 @@ public class VendingContainer extends BaseEntity {
    */
   private String groupId;
 
+  /**
+   * 管家ID
+   */
+  private Long keeperId;
+
+  /**
+   * 极光push注册ID
+   */
+  private String jpushRegId;
+
+  @Column(length = 100)
+  public String getJpushRegId() {
+    return jpushRegId;
+  }
+
+  public void setJpushRegId(String jpushRegId) {
+    this.jpushRegId = jpushRegId;
+  }
+
+
+  public Long getKeeperId() {
+    return keeperId;
+  }
+
+  public void setKeeperId(Long keeperId) {
+    this.keeperId = keeperId;
+  }
+
   @Column(length = 50)
   public String getSn() {
     return sn;

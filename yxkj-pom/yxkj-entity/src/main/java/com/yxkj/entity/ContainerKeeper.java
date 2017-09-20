@@ -95,6 +95,20 @@ public class ContainerKeeper extends BaseEntity {
   private Boolean isPushMsg;
 
 
+  /**
+   * 管家管理的优享空间
+   */
+  private Set<Scene> scenes = new HashSet<Scene>();
+
+  @OneToMany(mappedBy = "cntrKeeper", cascade = CascadeType.PERSIST)
+  public Set<Scene> getScenes() {
+    return scenes;
+  }
+
+  public void setScenes(Set<Scene> scenes) {
+    this.scenes = scenes;
+  }
+
   public Boolean getIsPushMsg() {
     return isPushMsg;
   }

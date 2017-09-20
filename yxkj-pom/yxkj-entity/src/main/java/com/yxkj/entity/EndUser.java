@@ -97,11 +97,15 @@ public class EndUser extends BaseEntity {
    */
   private Set<Goods> favoriteGoods = new HashSet<Goods>();
 
-
   /**
    * 微信账号昵称
    */
   private String wechatNickName;
+
+  /**
+   * 支付宝账号
+   */
+  private String alipayName;
 
   /**
    * 用户消息
@@ -275,6 +279,15 @@ public class EndUser extends BaseEntity {
 
   public void setMsgEndUsers(Set<MsgEndUser> msgEndUsers) {
     this.msgEndUsers = msgEndUsers;
+  }
+
+  @Column(length = 50)
+  public String getAlipayName() {
+    return alipayName;
+  }
+
+  public void setAlipayName(String alipayName) {
+    this.alipayName = alipayName;
   }
 
 }

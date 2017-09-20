@@ -45,6 +45,16 @@ public class Order extends BaseEntity {
   private EndUser endUser;
 
   /**
+   * 订单所属游客
+   */
+  private Tourist tourist;
+
+  /**
+   * 订单项数量
+   */
+  private Integer itemCount;
+
+  /**
    * 支付方式
    */
   private String paymentType;
@@ -80,6 +90,50 @@ public class Order extends BaseEntity {
    */
   private Set<OrderItem> orderItems = new HashSet<OrderItem>();
 
+  /**
+   * 优享空间名称
+   */
+  private String sceneName;
+
+  /**
+   * 优享空间ID
+   */
+  private Long sceneId;
+
+
+  @Column(length = 50)
+  public String getSceneName() {
+    return sceneName;
+  }
+
+  public void setSceneName(String sceneName) {
+    this.sceneName = sceneName;
+  }
+
+  public Long getSceneId() {
+    return sceneId;
+  }
+
+  public void setSceneId(Long sceneId) {
+    this.sceneId = sceneId;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  public Tourist getTourist() {
+    return tourist;
+  }
+
+  public void setTourist(Tourist tourist) {
+    this.tourist = tourist;
+  }
+
+  public Integer getItemCount() {
+    return itemCount;
+  }
+
+  public void setItemCount(Integer itemCount) {
+    this.itemCount = itemCount;
+  }
 
   @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
   public Set<OrderItem> getOrderItems() {

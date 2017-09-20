@@ -50,11 +50,69 @@ public class ContainerCategory extends BaseEntity {
   private MultipartFile catePic;
 
   /**
-   * 容量(物理货道数量)
+   * 单个货道容量
    * 
    */
   private Integer capacity;
 
+  /**
+   * 每行货道数
+   * 
+   */
+  private Integer lineChannel;
+
+
+  /**
+   * 每列货道数
+   * 
+   */
+  private Integer columnChannel;
+
+
+  /**
+   * 货道总数
+   * 
+   */
+  private Integer totalChannel;
+
+
+  /**
+   * 备注
+   */
+  private String remark;
+
+  @Column(length = 200)
+  public String getRemark() {
+    return remark;
+  }
+
+  public void setRemark(String remark) {
+    this.remark = remark;
+  }
+
+  public Integer getLineChannel() {
+    return lineChannel;
+  }
+
+  public void setLineChannel(Integer lineChannel) {
+    this.lineChannel = lineChannel;
+  }
+
+  public Integer getColumnChannel() {
+    return columnChannel;
+  }
+
+  public void setColumnChannel(Integer columnChannel) {
+    this.columnChannel = columnChannel;
+  }
+
+  public Integer getTotalChannel() {
+    return totalChannel;
+  }
+
+  public void setTotalChannel(Integer totalChannel) {
+    this.totalChannel = totalChannel;
+  }
 
   public Integer getCapacity() {
     return capacity;

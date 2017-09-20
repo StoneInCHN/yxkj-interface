@@ -45,6 +45,11 @@ public class Tourist extends BaseEntity {
   private String wechatNickName;
 
   /**
+   * 支付宝账号
+   */
+  private String alipayName;
+
+  /**
    * 用户获取渠道
    */
   private UserChannel userChannel;
@@ -64,6 +69,15 @@ public class Tourist extends BaseEntity {
    */
   private Long sceneId;
 
+
+  @Column(length = 50)
+  public String getAlipayName() {
+    return alipayName;
+  }
+
+  public void setAlipayName(String alipayName) {
+    this.alipayName = alipayName;
+  }
 
   public Date getRegTime() {
     return regTime;

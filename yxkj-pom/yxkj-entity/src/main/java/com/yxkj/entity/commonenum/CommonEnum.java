@@ -108,18 +108,52 @@ public class CommonEnum {
   }
 
   /**
-   * 代理级别
-   * 
+   * 取货状态
    *
    */
-  public enum AgencyLevel {
-    /** 省 */
-    PROVINCE,
-    /** 市 */
-    CITY,
-    /** 区,县 */
-    COUNTY
+  public enum PickupStatus {
+    /** 缺货 */
+    LACK,
+    /** 待取货 */
+    WAIT_PICKUP,
+    /** 已取货 */
+    PICKUP
 
+  }
+
+  /**
+   * 出货状态
+   *
+   */
+  public enum ShipmentStatus {
+    /** 未出货 */
+    NOT_SHIPMENT,
+    /** 出货成功 */
+    SHIPMENT_SUCCESS,
+    /** 出货失败 */
+    SHIPMENT_FAIL
+  }
+
+  /**
+   * 退款状态
+   *
+   */
+  public enum RefundStatus {
+    /** 已退款 */
+    REFUNDED,
+    /** 未退款 */
+    NOT_REFUND
+  }
+
+  /**
+   * 出货异常
+   *
+   */
+  public enum ShipmentExcpType {
+    /** 管家测试出货 */
+    KEEPER_TEST,
+    /** 客户取货 */
+    USER_PICKUP
   }
 
   /**
@@ -141,15 +175,7 @@ public class CommonEnum {
     /** 客服电话 1 */
     CUSTOMER_PHONE,
     /** 关于 2 */
-    ABOUT_US,
-    /** 支付宝商户名 3 */
-    ALIPAY_COMPANY,
-    /** 支付宝商户编号 4 */
-    ALIPAY_ACCOUNT,
-    /** 微信商户名 5 */
-    WECHAT_COMPANY,
-    /** 微信应用ID 6 */
-    WECHAT_ACCOUNT
+    ABOUT_US
   }
 
 

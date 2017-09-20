@@ -35,9 +35,20 @@ public class MachineAppUpgrade extends BaseEntity {
   private String sceneName;
 
   /**
-   * Long
+   * 优享空间ID
    */
   private Long sceneId;
+
+  /**
+   * 中控柜ID
+   */
+  private Long cntrId;
+
+  /**
+   * 中控柜编号
+   */
+  private String cntrSn;
+
 
   /**
    * 是否升级成功
@@ -49,6 +60,23 @@ public class MachineAppUpgrade extends BaseEntity {
    */
   private String remark;
 
+
+  public Long getCntrId() {
+    return cntrId;
+  }
+
+  public void setCntrId(Long cntrId) {
+    this.cntrId = cntrId;
+  }
+
+  @Column(length = 50)
+  public String getCntrSn() {
+    return cntrSn;
+  }
+
+  public void setCntrSn(String cntrSn) {
+    this.cntrSn = cntrSn;
+  }
 
   @Column(length = 50)
   public String getSceneName() {
