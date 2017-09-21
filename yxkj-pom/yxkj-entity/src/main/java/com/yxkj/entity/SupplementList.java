@@ -2,6 +2,7 @@ package com.yxkj.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -14,7 +15,7 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月20日 下午5:35:58
  */
 @Entity
-@Table(name = "t_supp_list")
+@Table(name = "t_supp_list", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_supp_list_sequence")
 public class SupplementList extends BaseEntity {
 
@@ -35,6 +36,11 @@ public class SupplementList extends BaseEntity {
    * 货柜编号
    */
   private String cntrSn;
+
+  /**
+   * 优享空间ID
+   */
+  private Long sceneId;
 
   /**
    * 优享空间编号
@@ -80,6 +86,16 @@ public class SupplementList extends BaseEntity {
    * 补货人ID
    */
   private Long suppId;
+
+
+
+  public Long getSceneId() {
+    return sceneId;
+  }
+
+  public void setSceneId(Long sceneId) {
+    this.sceneId = sceneId;
+  }
 
   public Long getCntrId() {
     return cntrId;

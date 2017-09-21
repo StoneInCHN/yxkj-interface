@@ -2,6 +2,7 @@ package com.yxkj.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -15,7 +16,7 @@ import com.yxkj.entity.commonenum.CommonEnum.ShipmentExcpType;
  * @version 2017年9月20日 下午12:27:18
  */
 @Entity
-@Table(name = "t_shipment_excp")
+@Table(name = "t_shipment_excp", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_shipment_excp_sequence")
 public class ShipmentException extends BaseEntity {
 

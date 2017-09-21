@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -21,7 +22,8 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月20日 上午11:22:42
  */
 @Entity
-@Table(name = "t_goods_sale_info")
+@Table(name = "t_goods_sale_info",
+    indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_goods_sale_info_sequence")
 public class GoodsSaleInfo extends BaseEntity {
 

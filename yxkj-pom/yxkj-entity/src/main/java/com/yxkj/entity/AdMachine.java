@@ -2,6 +2,7 @@ package com.yxkj.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -14,7 +15,7 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月15日 下午5:40:14
  */
 @Entity
-@Table(name = "t_ad_machine")
+@Table(name = "t_ad_machine", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_ad_machine_sequence")
 public class AdMachine extends BaseEntity {
 

@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -25,7 +26,7 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月19日 下午5:42:39
  */
 @Entity
-@Table(name = "t_supp_rec")
+@Table(name = "t_supp_rec", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_supp_rec_sequence")
 public class SupplementRecord extends BaseEntity {
 
@@ -35,6 +36,11 @@ public class SupplementRecord extends BaseEntity {
    * 补货货道
    */
   private ContainerChannel channel;
+
+  /**
+   * 优享空间ID
+   */
+  private Long sceneId;
 
   /**
    * 优享空间编号
@@ -92,6 +98,14 @@ public class SupplementRecord extends BaseEntity {
    */
   private SupplementSumRec suppSum;
 
+
+  public Long getSceneId() {
+    return sceneId;
+  }
+
+  public void setSceneId(Long sceneId) {
+    this.sceneId = sceneId;
+  }
 
   @ManyToOne(fetch = FetchType.LAZY)
   public SupplementSumRec getSuppSum() {

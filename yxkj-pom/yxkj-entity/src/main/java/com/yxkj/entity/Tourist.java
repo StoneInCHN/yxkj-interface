@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -18,7 +19,7 @@ import com.yxkj.entity.commonenum.CommonEnum.UserChannel;
  * @version 2017年9月19日 上午9:40:06
  */
 @Entity
-@Table(name = "t_tourist")
+@Table(name = "t_tourist", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_tourist_sequence")
 public class Tourist extends BaseEntity {
 

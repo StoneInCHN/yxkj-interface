@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,7 +20,8 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月20日 下午6:09:22
  */
 @Entity
-@Table(name = "t_scene_sales_info")
+@Table(name = "t_scene_sales_info",
+    indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_scene_sales_info_sequence")
 public class SceneSalesInfo extends BaseEntity {
 
@@ -56,6 +58,33 @@ public class SceneSalesInfo extends BaseEntity {
    * 重复购买率
    */
   private BigDecimal rePurRate;
+
+  /**
+   * 优享空间名称
+   */
+  private String sceneName;
+
+  /**
+   * 优享空间ID
+   */
+  private Long sceneId;
+
+  @Column(length = 50)
+  public String getSceneName() {
+    return sceneName;
+  }
+
+  public void setSceneName(String sceneName) {
+    this.sceneName = sceneName;
+  }
+
+  public Long getSceneId() {
+    return sceneId;
+  }
+
+  public void setSceneId(Long sceneId) {
+    this.sceneId = sceneId;
+  }
 
   @Temporal(TemporalType.DATE)
   public Date getReportTime() {

@@ -25,7 +25,7 @@ import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
  * @version 2017年9月18日 上午10:42:49
  */
 @Entity
-@Table(name = "t_order", indexes = {@Index(name = "createDateIndex", columnList = "createDate"),
+@Table(name = "t_order", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId"),
     @Index(name = "snIndex", columnList = "sn"),
     @Index(name = "paymentTimeIndex", columnList = "paymentTime")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_order_sequence")
