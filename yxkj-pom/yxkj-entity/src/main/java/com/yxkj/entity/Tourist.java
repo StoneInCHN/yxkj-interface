@@ -66,7 +66,7 @@ public class Tourist extends BaseEntity {
   private String sceneName;
 
   /**
-   * 场景ID
+   * 优享空间ID
    */
   private Long sceneId;
 

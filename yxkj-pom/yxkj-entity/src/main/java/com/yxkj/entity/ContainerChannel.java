@@ -76,6 +76,7 @@ public class ContainerChannel extends BaseEntity {
   private VendingContainer cntr;
 
 
+
   @ManyToOne(fetch = FetchType.LAZY)
   public VendingContainer getCntr() {
     return cntr;
