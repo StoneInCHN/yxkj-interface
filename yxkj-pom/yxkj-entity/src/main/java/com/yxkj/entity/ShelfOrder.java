@@ -19,17 +19,16 @@ import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 
 /**
- * Entity - 用户订单
+ * Entity - 无人货架订单
  * 
  * @author Andrea
- * @version 2017年9月18日 上午10:42:49
+ * @version 2017年9月25日 下午4:47:06
  */
 @Entity
-@Table(name = "t_order", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId"),
-    @Index(name = "snIndex", columnList = "sn"),
+@Table(name = "t_shelf_order", indexes = {@Index(name = "snIndex", columnList = "sn"),
     @Index(name = "paymentTimeIndex", columnList = "paymentTime")})
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_order_sequence")
-public class Order extends BaseEntity {
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_shelf_order_sequence")
+public class ShelfOrder extends BaseEntity {
 
 
   private static final long serialVersionUID = 1L;
@@ -38,11 +37,6 @@ public class Order extends BaseEntity {
    * 订单编号
    */
   private String sn;
-
-  /**
-   * 订单所属用户
-   */
-  private EndUser endUser;
 
   /**
    * 订单所属游客
@@ -88,17 +82,7 @@ public class Order extends BaseEntity {
   /**
    * 订单项
    */
-  private Set<OrderItem> orderItems = new HashSet<OrderItem>();
-
-  /**
-   * 优享空间名称
-   */
-  private String sceneName;
-
-  /**
-   * 优享空间ID
-   */
-  private Long sceneId;
+  private Set<ShelfOrderItem> shelfOrderItems = new HashSet<ShelfOrderItem>();
 
   /**
    * 无人货架的使用公司
@@ -115,22 +99,6 @@ public class Order extends BaseEntity {
     this.comp = comp;
   }
 
-  @Column(length = 50)
-  public String getSceneName() {
-    return sceneName;
-  }
-
-  public void setSceneName(String sceneName) {
-    this.sceneName = sceneName;
-  }
-
-  public Long getSceneId() {
-    return sceneId;
-  }
-
-  public void setSceneId(Long sceneId) {
-    this.sceneId = sceneId;
-  }
 
   @ManyToOne(fetch = FetchType.LAZY)
   public Tourist getTourist() {
@@ -149,19 +117,20 @@ public class Order extends BaseEntity {
     this.itemCount = itemCount;
   }
 
-  @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
-  public Set<OrderItem> getOrderItems() {
-    return orderItems;
+  @OneToMany(mappedBy = "shelfOrder", cascade = CascadeType.ALL)
+  public Set<ShelfOrderItem> getShelfOrderItems() {
+    return shelfOrderItems;
   }
 
-  public void setOrderItems(Set<OrderItem> orderItems) {
-    this.orderItems = orderItems;
+  public void setShelfOrderItems(Set<ShelfOrderItem> shelfOrderItems) {
+    this.shelfOrderItems = shelfOrderItems;
   }
 
   @Column(scale = 2, precision = 10)
   public BigDecimal getProfit() {
     return profit;
   }
+
 
   public void setProfit(BigDecimal profit) {
     this.profit = profit;
@@ -227,16 +196,6 @@ public class Order extends BaseEntity {
     this.paymentType = paymentType;
   }
 
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  public EndUser getEndUser() {
-    return endUser;
-  }
-
-
-  public void setEndUser(EndUser endUser) {
-    this.endUser = endUser;
-  }
 
 
 }

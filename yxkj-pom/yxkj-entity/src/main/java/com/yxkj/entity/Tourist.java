@@ -70,6 +70,34 @@ public class Tourist extends BaseEntity {
    */
   private Long sceneId;
 
+  /**
+   * 公司ID
+   */
+  private Long companyId;
+
+  /**
+   * 公司公司
+   */
+  private String companyName;
+
+
+
+  public Long getCompanyId() {
+    return companyId;
+  }
+
+  public void setCompanyId(Long companyId) {
+    this.companyId = companyId;
+  }
+
+  @Column(length = 50)
+  public String getCompanyName() {
+    return companyName;
+  }
+
+  public void setCompanyName(String companyName) {
+    this.companyName = companyName;
+  }
 
   @Column(length = 50)
   public String getAlipayName() {
