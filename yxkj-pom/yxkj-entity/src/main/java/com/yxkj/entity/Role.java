@@ -1,13 +1,13 @@
 package com.yxkj.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -41,10 +41,12 @@ public class Role extends BaseEntity {
   /** 描述 */
   private String description;
 
-  /** 后台管理系统权限 */
-  private List<String> authorities = new ArrayList<String>();
-
-
+//  /** 后台管理系统权限 */
+//  private List<String> authorities = new ArrayList<String>();
+  
+  /** 菜单权限列表 */
+  private Set<MenuAuthority> authorities = new HashSet<MenuAuthority>();
+  
 
   /**
    * 获取名称
@@ -107,28 +109,43 @@ public class Role extends BaseEntity {
   public void setDescription(String description) {
     this.description = description;
   }
-
-
-
+  
   /**
-   * 获取权限
-   * 
+   * 获取菜单权限
    * @return 权限
    */
-  @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "t_role_authority")
-  public List<String> getAuthorities() {
-    return authorities;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "t_role_authority")  
+  public Set<MenuAuthority> getAuthorities() {
+	return authorities;
+  }
+  /**
+   * 设置菜单权限
+   * @param authorities 菜单权限
+   */
+  public void setAuthorities(Set<MenuAuthority> authorities) {
+	this.authorities = authorities;
   }
 
-  /**
-   * 设置权限
-   * 
-   * @param authorities 权限
-   */
-  public void setAuthorities(List<String> authorities) {
-    this.authorities = authorities;
-  }
+//  /**
+//   * 获取权限
+//   * 
+//   * @return 权限
+//   */
+//  @ElementCollection(fetch = FetchType.EAGER)
+//  @CollectionTable(name = "t_role_authority")
+//  public List<String> getAuthorities() {
+//    return authorities;
+//  }
+//
+//  /**
+//   * 设置权限
+//   * 
+//   * @param authorities 权限
+//   */
+//  public void setAuthorities(List<String> authorities) {
+//    this.authorities = authorities;
+//  }
 
 
 }
