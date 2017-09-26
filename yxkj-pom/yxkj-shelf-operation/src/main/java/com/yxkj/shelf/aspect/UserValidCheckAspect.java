@@ -29,9 +29,6 @@ public class UserValidCheckAspect {
 
 
 
-  // @Resource(name = "endUserServiceImpl")
-  // private EndUserService endUserService;
-
   // Controller层切点
   @Pointcut("@annotation(com.yxkj.shelf.aspect.UserValidCheck)")
   public void controllerAspect() {}
@@ -56,7 +53,7 @@ public class UserValidCheckAspect {
       Object response = returnTypeClass.newInstance();
       BeanMap beanMap = BeanMap.create(response);
       beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
-      beanMap.put("desc", "aop token为null验证失败");
+      beanMap.put("desc", "token为null验证失败");
       return response;// 抛出未认证的错误
     } else {
       Claims claims = TokenUtil.parseJWT(authorizationHeader);
@@ -73,7 +70,7 @@ public class UserValidCheckAspect {
           Object response = returnTypeClass.newInstance();
           BeanMap beanMap = BeanMap.create(response);
           beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
-          beanMap.put("desc", "token,id不匹配");
+          beanMap.put("desc", "用户token不匹配");
           return response;
         }
       }

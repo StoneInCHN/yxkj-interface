@@ -15,10 +15,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import com.yxkj.shelf.beans.DateEditor;
 import com.yxkj.shelf.beans.Message;
+import com.yxkj.shelf.beans.Setting;
+import com.yxkj.shelf.utils.SettingUtils;
 import com.yxkj.shelf.utils.SpringUtils;
 
 
 public class BaseController {
+
+  public static Setting setting = SettingUtils.get();
   /** 错误视图 */
   protected static final String ERROR_VIEW = "/common/error";
 

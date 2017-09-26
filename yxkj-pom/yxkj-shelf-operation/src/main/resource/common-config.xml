@@ -2,7 +2,8 @@
 	<yxkj>
 		<setting name="serverPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCBMPGboxzPh9SApXHBKMQHF31rgB6LQBZxg3VirK9Rbp0qvgIDw+2ygZxPQAkgiK24PTWuBbw2UTNy5NxglSCsCnY8+vJXd8cwZKrBpnwXEcO0Wuh5G8Z++X0AIisMCIoiDZZwWnvqJ7a3vUQIj62qTX259s0UqvjGA7uvoDM9tQIDAQAB" />
 		<setting name="serverPrivateKey" value="MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAIEw8ZujHM+H1IClccEoxAcXfWuAHotAFnGDdWKsr1FunSq+AgPD7bKBnE9ACSCIrbg9Na4FvDZRM3Lk3GCVIKwKdjz68ld3xzBkqsGmfBcRw7Ra6Hkbxn75fQAiKwwIiiINlnBae+ontre9RAiPrapNfbn2zRSq+MYDu6+gMz21AgMBAAECgYBLHYMNRCynOcnDtu5KKgK4QN8qlwarXmruO0oQQml5RoBZbrrLJ6tYA+Y3afskkHO5UNWaRjllt5bbcdf0zCB/M7nPYidAcu2bCOwQuri+0HBChA19FJ10T07RoiYFiXbaZIL8j/xrCqHhc3eP0JH+1hSAkdMfl24IbfJO+pvLIQJBAL1294TBF9edavieqeu6zO6Gr1zZpARRw+M57N6gz4zolLNwTKU6RbJ8h+j6t2t87mGNjaQ0HTnMXh3H7UNtaTkCQQCuj1ZdeLhirw/kAF1rbdvBTjY99Ji74ds3IjkntxbwHCX0lFozPpJs/Adc2wA9LUqk7HeNPlIdbsGrA7V76CRdAkAJSGnqNDfB1bGnCscSiK1/xlOTPgqeN49cc7saUVC5+69Fd2wZ8Ff33cge7yHLf2yClRfqgq8n5M57sQ777cFpAkACeBaRpeZ9xtojsHmhzmEAX/nWcIJEjhJKuloynJ1fchZ7WinYdbcegYYdIx/ivaRDpvCd99azgeCNabUEdqklAkBy0WoURX90YZ6aNTrNxNUogWyx2mS6RUckLNfCKbSACePlMSl2AbcYUyjdd345IOj2lEzXC2QkJZFbA6vJLylq" />
-		<setting name="tokenTimeOut" value="14400" />
+		<setting name="tokenTimeOut" value="1800000" /><!-- 毫秒  -->
+		<setting name="tokenKey" value="OT5N@8$s" />
 		<setting name="smsCodeTimeOut" value="3" />
 		<setting name="passwordMinlength" value="6" />
 		<setting name="passwordMaxlength" value="20" />
@@ -30,8 +31,8 @@
 		<setting name="siteName" value="享个购App" />
 		<setting name="defaultPageSize" value="5" />
 		
-		<!-- recommend url -->
-		<setting name="recommendUrl" value="http://120.27.26.85:10001/rebate-interface/share/reg.html" />
+		<!-- auth Redirect url -->
+		<setting name="authRedirectUrl" value="http://test.ybjcq.com/h5/item.jsp" />
 		<!-- download page -->
 		<setting name="downloadPage" value="http://120.27.26.85:10001/rebate-interface/share/down_app.html" />
 		<!-- download url -->
@@ -40,6 +41,12 @@
 		<!-- 极光推送Key -->
 		<setting name="appKey" value="185adad8b0cb08eb9a2e6354" />
 		<setting name="masterSecret" value="0d1228989af3072885a5cd47" />
+		
+		<!-- 微信公众平台 -->
+		<!-- 公众平台appid -->
+		<setting name="wxPublicAppId" value="wx3598eb401cb80f00" />
+		<!-- 公众平台appsecret -->
+		<setting name="wxPublicAppSecret" value="d61d05e5e7842d318a98fe5ff7596dfb" />
 		
 		<!-- 微信支付平台 -->
 		<!-- 秘钥 -->
@@ -58,6 +65,8 @@
 		<setting name="wechatTokenUrl" value="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=APPID&amp;secret=APPSECRET" />
 		
 		<!-- 支付宝平台 -->
+		<!-- 应用APPID -->
+		<setting name="alipayAppId" value="2017061707509713" />
 		<!-- 合作身份者ID，以2088开头由16位纯数字组成的字符串 -->
 		<setting name="alipayPartner" value="2088721012979165" />
 		<!-- 签约卖家支付宝账号 -->

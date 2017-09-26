@@ -11,7 +11,12 @@ import java.util.Date;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+import com.yxkj.beans.Setting;
+
 public class TokenUtil {
+
+  public static Setting setting = SettingUtils.get();
+
   public static String getJWTString(String id, String subject, long ttlMillis) {
     // The JWT signature algorithm we will be using to sign the token
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
