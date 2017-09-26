@@ -44,7 +44,12 @@ public class Goods extends BaseEntity {
   private String name;
 
   /**
-   * 商品编号
+   * 商品规格
+   */
+  private String spec;
+
+  /**
+   * 商品条码
    */
   private String sn;
 
@@ -74,6 +79,15 @@ public class Goods extends BaseEntity {
    */
   private List<GoodsPic> goodsPics = new ArrayList<GoodsPic>();
 
+
+  @Column(length = 20)
+  public String getSpec() {
+    return spec;
+  }
+
+  public void setSpec(String spec) {
+    this.spec = spec;
+  }
 
   @Valid
   @ElementCollection
