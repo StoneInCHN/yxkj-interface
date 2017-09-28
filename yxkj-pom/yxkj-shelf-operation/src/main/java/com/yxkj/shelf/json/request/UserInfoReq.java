@@ -1,5 +1,9 @@
 package com.yxkj.shelf.json.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  *
  * 用户req
@@ -32,6 +36,45 @@ public class UserInfoReq {
    */
   private String type;
 
+  /**
+   * 用户名
+   */
+  private String userName;
+
+  /**
+   * 下单商品信息
+   */
+  private List<String> gInfo = new ArrayList<String>();
+
+  /**
+   * 客户端ip
+   */
+  private String ip = "127.0.0.1";
+
+
+  public String getIp() {
+    return ip;
+  }
+
+  public void setIp(String ip) {
+    this.ip = ip;
+  }
+
+  public List<String> getgInfo() {
+    return gInfo;
+  }
+
+  public void setgInfo(List<String> gInfo) {
+    this.gInfo = gInfo;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
   public String getAuthCode() {
     return authCode;

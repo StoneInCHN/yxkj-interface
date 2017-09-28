@@ -28,7 +28,7 @@
 		<!-- 验证码消息内容后缀 -->
 		<setting name="smsPostfix" value="，如非本人操作请忽略。" />
 		
-		<setting name="siteName" value="享个购App" />
+		<setting name="siteName" value="全程首位" />
 		<setting name="defaultPageSize" value="5" />
 		
 		<!-- auth Redirect url -->
@@ -50,15 +50,13 @@
 		
 		<!-- 微信支付平台 -->
 		<!-- 秘钥 -->
-		<setting name="wechatKey" value="4301467162C78D73625BC196A2EA254E" />
+		<setting name="wechatKey" value="RlT05X9mxmZhzHWCm9V9GzDR25Adn5sa" />
 		<!-- 微信分配的公众账号ID(企业号corpid即为此appId) -->
-		<setting name="wechatAppid" value="wx8a45d94b37c548c7" />
+		<setting name="wechatAppid" value="wx3598eb401cb80f00" />
 		<!-- 商户ID -->
-		<setting name="wechatMchId" value="1481245182" />
-		<!-- 交易类型 -->
-		<setting name="wechatTradeType" value="APP" />
+		<setting name="wechatMchId" value="1483176522" />
 		<!-- 通知地址 -->
-		<setting name="wechatNotifyUrl" value="http://118.190.83.191:10001/rebate-interface/payNotify/notify_wechat.jhtml" />
+		<setting name="wechatNotifyUrl" value="http://test.ybjcq.com/h5/pay/notify_wechat" />
 		<!-- 微信下订单接口 -->
 		<setting name="wechatAddOrderUrl" value="https://api.mch.weixin.qq.com/pay/unifiedorder" />
 		<!-- 微信Token接口 -->

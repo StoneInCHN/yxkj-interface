@@ -126,11 +126,6 @@ public class Setting implements Serializable {
   private String wechatMchId;
 
   /**
-   * 交易类型
-   */
-  private String wechatTradeType;
-
-  /**
    * 通知地址
    */
   private String wechatNotifyUrl;
@@ -671,14 +666,6 @@ public class Setting implements Serializable {
 
   public void setWechatMchId(String wechatMchId) {
     this.wechatMchId = wechatMchId;
-  }
-
-  public String getWechatTradeType() {
-    return wechatTradeType;
-  }
-
-  public void setWechatTradeType(String wechatTradeType) {
-    this.wechatTradeType = wechatTradeType;
   }
 
   public String getWechatNotifyUrl() {

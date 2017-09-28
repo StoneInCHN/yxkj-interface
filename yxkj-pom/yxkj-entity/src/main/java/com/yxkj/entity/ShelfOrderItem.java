@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.yxkj.entity.base.BaseEntity;
 
@@ -45,14 +46,15 @@ public class ShelfOrderItem extends BaseEntity {
   private String gName;
 
   /**
+   * 商品规格
+   */
+  private String spec;
+
+  /**
    * 商品编号
    */
   private String gSn;
 
-  /**
-   * 商品ID
-   */
-  private Long gId;
 
   /**
    * 商品数量
@@ -61,15 +63,25 @@ public class ShelfOrderItem extends BaseEntity {
 
 
 
-  @Column(scale = 2, precision = 10)
+  public String getSpec() {
+    return spec;
+  }
+
+
+  public void setSpec(String spec) {
+    this.spec = spec;
+  }
+
+
+  @Transient
   public BigDecimal getTotalPrice() {
-    return totalPrice;
+    return price.multiply(new BigDecimal(count));
   }
 
 
-  public void setTotalPrice(BigDecimal totalPrice) {
-    this.totalPrice = totalPrice;
-  }
+  // public void setTotalPrice(BigDecimal totalPrice) {
+  // this.totalPrice = totalPrice;
+  // }
 
 
   public Integer getCount() {
@@ -102,15 +114,6 @@ public class ShelfOrderItem extends BaseEntity {
     this.gSn = gSn;
   }
 
-
-  public Long getgId() {
-    return gId;
-  }
-
-
-  public void setgId(Long gId) {
-    this.gId = gId;
-  }
 
 
   @Column(scale = 2, precision = 10)

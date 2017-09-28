@@ -428,7 +428,7 @@
 		<dependency>
 				<groupId>com.google.zxing</groupId>
 				<artifactId>core</artifactId>
-		</dependency>-->
+		</dependency> -->
 		<!--springfox 相关依赖 start-->  
 		<dependency>  
            <groupId>io.springfox</groupId>  

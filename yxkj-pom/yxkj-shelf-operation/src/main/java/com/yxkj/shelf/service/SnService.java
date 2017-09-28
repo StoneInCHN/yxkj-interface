@@ -1,8 +1,15 @@
-package com.yxkj.shelf.service; 
+package com.yxkj.shelf.service;
 
 import com.yxkj.entity.Sn;
+import com.yxkj.entity.Sn.Type;
 import com.yxkj.shelf.framework.service.BaseService;
 
-public interface SnService extends BaseService<Sn,Long>{
-
+public interface SnService extends BaseService<Sn, Long> {
+  /**
+   * 生成序列号
+   * 
+   * @param type 类型
+   * @return 序列号
+   */
+  String generate(Type type);
 }
