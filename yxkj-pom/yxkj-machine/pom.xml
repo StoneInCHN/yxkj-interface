@@ -470,12 +470,10 @@
 	    <dependency>
               <groupId>alipay-sdk</groupId>
               <artifactId>alipay-sdk-java</artifactId>
-              <version>20170829142630</version>
         </dependency> 
         <dependency>
               <groupId>commons-logging</groupId>
 			  <artifactId>commons-logging</artifactId>
-              <version>1.1.1</version>
         </dependency>
   </dependencies>
   

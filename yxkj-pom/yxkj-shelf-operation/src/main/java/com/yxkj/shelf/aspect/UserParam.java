@@ -8,10 +8,20 @@ public class UserParam {
 
   private Long userId;
 
+  private String userName;
+
   private Type returnType;
 
   private String token;
 
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
   public String getToken() {
     return token;

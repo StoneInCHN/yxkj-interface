@@ -9,6 +9,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum.DeviceType;
 import com.yxkj.entity.commonenum.CommonEnum.Gender;
 import com.yxkj.entity.commonenum.CommonEnum.UserChannel;
 
@@ -41,14 +42,9 @@ public class Tourist extends BaseEntity {
   private Gender gender;
 
   /**
-   * 微信账号昵称
+   * 账号昵称
    */
-  private String wechatNickName;
-
-  /**
-   * 支付宝账号
-   */
-  private String alipayName;
+  private String nickName;
 
   /**
    * 用户获取渠道
@@ -76,11 +72,23 @@ public class Tourist extends BaseEntity {
   private Long companyId;
 
   /**
-   * 公司公司
+   * 公司名称
    */
   private String companyName;
 
+  /**
+   * 购买场景的设备
+   */
+  private DeviceType deviceType;
 
+
+  public DeviceType getDeviceType() {
+    return deviceType;
+  }
+
+  public void setDeviceType(DeviceType deviceType) {
+    this.deviceType = deviceType;
+  }
 
   public Long getCompanyId() {
     return companyId;
@@ -97,15 +105,6 @@ public class Tourist extends BaseEntity {
 
   public void setCompanyName(String companyName) {
     this.companyName = companyName;
-  }
-
-  @Column(length = 50)
-  public String getAlipayName() {
-    return alipayName;
-  }
-
-  public void setAlipayName(String alipayName) {
-    this.alipayName = alipayName;
   }
 
   public Date getRegTime() {
@@ -142,16 +141,6 @@ public class Tourist extends BaseEntity {
     this.userChannel = userChannel;
   }
 
-
-  @Column(length = 50)
-  public String getWechatNickName() {
-    return wechatNickName;
-  }
-
-  public void setWechatNickName(String wechatNickName) {
-    this.wechatNickName = wechatNickName;
-  }
-
   public Gender getGender() {
     return gender;
   }
@@ -169,13 +158,21 @@ public class Tourist extends BaseEntity {
     this.userName = userName;
   }
 
-  @Column(length = 20, nullable = false)
+  @Column(length = 20)
   public String getCellPhoneNum() {
     return cellPhoneNum;
   }
 
   public void setCellPhoneNum(String cellPhoneNum) {
     this.cellPhoneNum = cellPhoneNum;
+  }
+
+  public String getNickName() {
+    return nickName;
+  }
+
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
   }
 
 }

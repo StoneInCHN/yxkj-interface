@@ -18,9 +18,9 @@ public class UserInfoReq {
   private String authCode;
 
   /**
-   * 商品ID
+   * 商品条码
    */
-  private Long gId;
+  private String gId;
 
   /**
    * 公司ID
@@ -49,11 +49,11 @@ public class UserInfoReq {
     this.type = type;
   }
 
-  public Long getgId() {
+  public String getgId() {
     return gId;
   }
 
-  public void setgId(Long gId) {
+  public void setgId(String gId) {
     this.gId = gId;
   }
 

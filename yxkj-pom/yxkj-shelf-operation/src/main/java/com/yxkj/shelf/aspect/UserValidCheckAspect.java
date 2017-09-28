@@ -20,6 +20,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.yxkj.shelf.beans.CommonAttributes;
+import com.yxkj.shelf.beans.Message;
 import com.yxkj.shelf.utils.TokenUtil;
 
 
@@ -47,30 +48,30 @@ public class UserValidCheckAspect {
     HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     String authorizationHeader = request.getHeader("X-Auth-Token");
-    // 如果token为空抛出
-    if (authorizationHeader == null) {
+
+    if (authorizationHeader == null) {// header中token为null
       Class returnTypeClass = (Class) userParam.getReturnType();
       Object response = returnTypeClass.newInstance();
       BeanMap beanMap = BeanMap.create(response);
-      beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
-      beanMap.put("desc", "token为null验证失败");
-      return response;// 抛出未认证的错误
-    } else {
+      beanMap.put("code", CommonAttributes.FAIL_TOKEN_TIMEOUT);
+      beanMap.put("desc", Message.success("yxkj.token.invalid", "(ey00001)").getContent());
+      return response;
+    } else {// token超时
       Claims claims = TokenUtil.parseJWT(authorizationHeader);
       if (claims == null) {
         Class returnTypeClass = (Class) userParam.getReturnType();
         Object response = returnTypeClass.newInstance();
         BeanMap beanMap = BeanMap.create(response);
-        beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
-        beanMap.put("desc", "token非法或失效");
+        beanMap.put("code", CommonAttributes.FAIL_TOKEN_TIMEOUT);
+        beanMap.put("desc", Message.success("yxkj.token.invalid", "(ey00002)").getContent());
         return response;
-      } else {
-        if (!userParam.getUserId().toString().equals(claims.getId())) {
+      } else {// 用户ID与token不匹配
+        if (!userParam.getUserName().equals(claims.getId())) {
           Class returnTypeClass = (Class) userParam.getReturnType();
           Object response = returnTypeClass.newInstance();
           BeanMap beanMap = BeanMap.create(response);
-          beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
-          beanMap.put("desc", "用户token不匹配");
+          beanMap.put("code", CommonAttributes.FAIL_TOKEN_TIMEOUT);
+          beanMap.put("desc", Message.success("yxkj.user.token.nomatch").getContent());
           return response;
         }
       }
@@ -193,9 +194,11 @@ public class UserValidCheckAspect {
           if (arguments.length > 0 && arguments[0] != null) {
 
             BeanMap beanMap = BeanMap.create(arguments[0]);
-            Long userId = (Long) beanMap.get("userId");
+            String userName = (String) beanMap.get("userName");
+            params.setUserName(userName);
+            // Long userId = (Long) beanMap.get("userId");
             // String token = (String) beanMap.get("token");
-            params.setUserId(userId);
+            // params.setUserId(userId);
             // params.setUserType(userType);
             // params.setToken(token);
           }

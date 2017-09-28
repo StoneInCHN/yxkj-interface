@@ -3,6 +3,7 @@ package com.yxkj.shelf.common.log;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.spi.LocationAwareLogger;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
@@ -22,6 +23,10 @@ public class LogUtil {
     return getLogger(c.getName()).isInfoEnabled();
   }
 
+  public static boolean isEnabled(Class<?> c, Level level) {
+    return getLogger(c.getName()).isEnabledFor(level);
+  }
+
   public static Logger getLogger(String c) {
     return (Logger) LoggerFactory.getLogger(c);
   }
@@ -29,11 +34,11 @@ public class LogUtil {
   public static void debug(Class<?> clazz, String method, String format, Object... args) {
     writeLog(Level.DEBUG, clazz, method, format, args);
   }
-  
+
   public static void error(Class<?> clazz, String method, String format, Object... args) {
     writeLog(Level.ERROR, clazz, method, format, args);
   }
-  
+
   public static void warn(Class<?> clazz, String method, String format, Object... args) {
     writeLog(Level.WARN, clazz, method, format, args);
   }
@@ -61,7 +66,7 @@ public class LogUtil {
 
   private static void writeLog(Level level, Class<?> clazz, String method, String format,
       Object... args) {
-    if (null != clazz && null != format) {
+    if (null != clazz && null != format && isEnabled(clazz, level)) {
       populateMDC();
       StringBuffer buffer = new StringBuffer();
       buffer.append(clazz.getSimpleName());

@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -27,7 +28,7 @@ import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
  * @version 2017年9月15日 上午11:22:42
  */
 @Entity
-@Table(name = "t_goods")
+@Table(name = "t_goods", indexes = {@Index(name = "snIndex", columnList = "sn")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_goods_sequence")
 public class Goods extends BaseEntity {
 
@@ -42,6 +43,11 @@ public class Goods extends BaseEntity {
    * 商品名称
    */
   private String name;
+
+  /**
+   * 商品名称
+   */
+  private String fullName;
 
   /**
    * 商品规格
@@ -136,6 +142,15 @@ public class Goods extends BaseEntity {
 
   public void setSalePrice(BigDecimal salePrice) {
     this.salePrice = salePrice;
+  }
+
+  @Column(length = 100)
+  public String getFullName() {
+    return fullName;
+  }
+
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 
   @Column(length = 100)

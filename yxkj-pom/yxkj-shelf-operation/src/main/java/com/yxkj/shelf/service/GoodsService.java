@@ -1,8 +1,15 @@
-package com.yxkj.shelf.service; 
+package com.yxkj.shelf.service;
 
 import com.yxkj.entity.Goods;
 import com.yxkj.shelf.framework.service.BaseService;
 
-public interface GoodsService extends BaseService<Goods,Long>{
+public interface GoodsService extends BaseService<Goods, Long> {
 
+  /**
+   * 根据条码查询商品
+   * 
+   * @param sn
+   * @return
+   */
+  Goods getBySn(String sn);
 }

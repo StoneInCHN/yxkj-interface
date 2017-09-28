@@ -15,8 +15,8 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月25日 上午11:09:46
  */
 @Entity
-@Table(name = "t_company_shelf")
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_company_shelf_sequence")
+@Table(name = "t_comp_shelf")
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_comp_shelf_sequence")
 public class CompanyShelf extends BaseEntity {
 
 

@@ -16,6 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum.DeviceType;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 
 /**
@@ -105,6 +106,19 @@ public class Order extends BaseEntity {
    */
   private Company comp;
 
+  /**
+   * 购买场景的设备
+   */
+  private DeviceType deviceType;
+
+
+  public DeviceType getDeviceType() {
+    return deviceType;
+  }
+
+  public void setDeviceType(DeviceType deviceType) {
+    this.deviceType = deviceType;
+  }
 
   @ManyToOne(fetch = FetchType.LAZY)
   public Company getComp() {
