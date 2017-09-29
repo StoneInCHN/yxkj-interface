@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alipay.api.internal.util.AlipaySignature;
 import com.yxkj.entity.Company;
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.GoodsPic;
@@ -49,6 +51,7 @@ import com.yxkj.shelf.service.ShelfOrderService;
 import com.yxkj.shelf.service.TouristService;
 import com.yxkj.shelf.utils.PayUtil;
 import com.yxkj.shelf.utils.TokenUtil;
+import com.yxkj.shelf.utils.alipay.AuthUtil;
 import com.yxkj.shelf.utils.wxpay.WeixinUtil;
 
 /**
@@ -56,7 +59,7 @@ import com.yxkj.shelf.utils.wxpay.WeixinUtil;
  * 
  */
 @Controller("shelfH5Controller")
-@RequestMapping("/h5")
+@RequestMapping("/h5/shelf")
 @Api(value = "货架H5页面", description = "货架H5页面")
 public class ShelfH5Controller extends BaseController {
 
@@ -82,7 +85,7 @@ public class ShelfH5Controller extends BaseController {
    * @param request
    * @return
    */
-  @RequestMapping(value = "/shelf/{compId}/{goodsId}", method = RequestMethod.GET)
+  @RequestMapping(value = "/{compId}/{goodsId}", method = RequestMethod.GET)
   @ApiOperation(value = "扫码二维码授权", httpMethod = "GET", notes = "扫码二维码授权")
   public String scanQr(@PathVariable("compId") String compId,
       @PathVariable("goodsId") String goodsId, HttpServletRequest req, HttpServletResponse res) {
@@ -201,9 +204,10 @@ public class ShelfH5Controller extends BaseController {
     gMap.put("gPrice", goods.getSalePrice());
     String gImg = "";
     for (GoodsPic goodsPic : goods.getGoodsPics()) {
-      if (goodsPic.getOrder() != null && goodsPic.getOrder() == 0) {// 只获取手机显示的小图
-        gImg = goodsPic.getSource();
-      }
+      gImg = goodsPic.getSource();
+      // if (goodsPic.getOrder() != null && goodsPic.getOrder() == 0) {// 只获取手机显示的小图
+      // gImg = goodsPic.getSource();
+      // }
     }
     gMap.put("gImg", gImg);
 
@@ -219,6 +223,7 @@ public class ShelfH5Controller extends BaseController {
    * 
    * @param request
    * @return
+   * @throws UnsupportedEncodingException
    */
   @RequestMapping(value = "/pay", method = RequestMethod.POST)
   @ApiOperation(value = "商品支付", httpMethod = "POST", response = ResponseOne.class, notes = "商品支付")
@@ -267,18 +272,21 @@ public class ShelfH5Controller extends BaseController {
     } else if ("alipay".equals(type)) {
       BigDecimal alipayPrice = shelfOrder.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP);
       String form =
-          PayUtil.alipay(shelfOrder.getSn(), setting.getSiteName(), alipayPrice.toString());
+          PayUtil.alipay(shelfOrder.getSn(), AuthUtil.URLEncode(setting.getSiteName(), "UTF-8"),
+              alipayPrice.toString());
       Map<String, Object> result = new HashMap<String, Object>();
       result.put("a_page", form);
       response.setMsg(result);
+
       try {
         httpResponse.setContentType("text/html;charset=UTF-8");
         httpResponse.getWriter().write(form);// 直接将完整的表单html输出到页面
         httpResponse.getWriter().flush();
-        httpResponse.getWriter().close();
+        // httpResponse.getWriter().close();
       } catch (Exception e) {
         e.printStackTrace();
       }
+
 
     }
     // response.setMsg(gMap);
@@ -366,4 +374,78 @@ public class ShelfH5Controller extends BaseController {
 
     return xmlReturn;
   }
+
+
+  /**
+   * 支付宝支付异步通知
+   * 
+   * @param request
+   * @return
+   * @throws Exception
+   */
+  @RequestMapping(value = "/pay/notify_alipay", method = RequestMethod.POST)
+  public @ResponseBody String notify_alipay(HttpServletRequest request) throws Exception {
+
+
+    // 获取支付宝POST过来反馈信息
+    Map<String, String> params = new HashMap<String, String>();
+    Map requestParams = request.getParameterMap();
+    for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+      String name = (String) iter.next();
+      String[] values = (String[]) requestParams.get(name);
+      String valueStr = "";
+      for (int i = 0; i < values.length; i++) {
+        valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+      }
+      // 乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+      // valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+      params.put(name, valueStr);
+    }
+    LogUtil.debug(this.getClass(), "notify_alipay",
+        "Alipay pay notify callback method. response: %s", params);
+
+    // 获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+    // 商户订单号
+    String out_trade_no =
+        new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
+    // 支付宝交易号
+    String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"), "UTF-8");
+    // 交易状态
+    String trade_status =
+        new String(request.getParameter("trade_status").getBytes("ISO-8859-1"), "UTF-8");
+    // 交易金额
+    String total_fee =
+        new String(request.getParameter("total_fee").getBytes("ISO-8859-1"), "UTF-8");
+    // 购买者id
+    // String buyer_id = new String(request.getParameter("buyer_id").getBytes("ISO-8859-1"),
+    // "UTF-8");
+    // 购买中邮箱
+    // String buyer_eamil =
+    // new String(request.getParameter("buyer_email").getBytes("ISO-8859-1"), "UTF-8");
+    boolean signVerified =
+        AlipaySignature.rsaCheckV1(params, setting.getAlipayPublicKey(), "UTF-8", "RSA"); // 调用SDK验证签名
+    if (signVerified) {
+      if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
+
+        LogUtil
+            .debug(
+                this.getClass(),
+                "notify_alipay",
+                "user pay order call back successfully with alipay. orderSn: %s, amount: %s, trade_status: %s",
+                out_trade_no, total_fee, trade_status);
+        taskExecutor.execute(new Runnable() {
+          public void run() {
+            shelfOrderService.callbackAfterPay(out_trade_no);
+          }
+        });
+
+      }
+      return "success"; // 请不要修改或删除
+    } else {
+      return "fail";
+    }
+
+  }
+
+
 }

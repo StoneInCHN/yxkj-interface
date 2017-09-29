@@ -25,14 +25,14 @@
 		<!-- 验证码消息内容 -->
 		<setting name="smsContentTemp" value="【享个购】您的验证码是" />
 		
-		<!-- 验证码消息内容后缀 -->
+		<!-- 验证码消息内容后缀  -->
 		<setting name="smsPostfix" value="，如非本人操作请忽略。" />
 		
 		<setting name="siteName" value="全程首位" />
 		<setting name="defaultPageSize" value="5" />
 		
 		<!-- auth Redirect url -->
-		<setting name="authRedirectUrl" value="http://test.ybjcq.com/h5/item.jsp" />
+		<setting name="authRedirectUrl" value="http://test.ybjcq.com/shelfH5/item.jsp" />
 		<!-- download page -->
 		<setting name="downloadPage" value="http://120.27.26.85:10001/rebate-interface/share/down_app.html" />
 		<!-- download url -->
@@ -56,7 +56,7 @@
 		<!-- 商户ID -->
 		<setting name="wechatMchId" value="1483176522" />
 		<!-- 通知地址 -->
-		<setting name="wechatNotifyUrl" value="http://test.ybjcq.com/h5/pay/notify_wechat" />
+		<setting name="wechatNotifyUrl" value="http://test.ybjcq.com/h5/shelf/pay/notify_wechat" />
 		<!-- 微信下订单接口 -->
 		<setting name="wechatAddOrderUrl" value="https://api.mch.weixin.qq.com/pay/unifiedorder" />
 		<!-- 微信Token接口 -->
@@ -76,9 +76,9 @@
 		<!-- 支付宝的公钥-->
 		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB" />
 		<!-- 支付宝异步通知接口 -->
-		<setting name="alipayNotifyUrl" value="http://test.ybjcq.com/h5/pay/notify_alipay" />
+		<setting name="alipayNotifyUrl" value="http://test.ybjcq.com/h5/shelf/pay/notify_alipay" />
 		<!-- 支付宝同步通知接口 -->
-		<setting name="alipayReturnUrl" value="http://test.ybjcq.com/h5/index.html" />
+		<setting name="alipayReturnUrl" value="http://test.ybjcq.com/h5/shelf/index.html" />
 		
 		
 		<!-- 百度API:GPS坐标转百度坐标 -->

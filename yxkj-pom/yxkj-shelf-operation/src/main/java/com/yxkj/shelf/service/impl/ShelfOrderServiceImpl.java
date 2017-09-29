@@ -99,6 +99,14 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
     }
     shelfOrder.setStatus(OrderStatus.PAID);
     shelfOrder.setPaymentTime(new Date());
+    shelfOrderDao.merge(shelfOrder);
+    LogUtil
+        .debug(
+            this.getClass(),
+            "callbackAfterPay",
+            "update shelf order info finished for pay callback. orderId: %s,sn: %s,orderStatus: %s,payTime: %s",
+            shelfOrder.getId(), shelfOrder.getSn(), shelfOrder.getStatus().toString(),
+            shelfOrder.getPaymentTime());
     return shelfOrder;
   }
 

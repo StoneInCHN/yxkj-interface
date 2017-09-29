@@ -1,5 +1,7 @@
 package com.yxkj.shelf.utils.alipay;
 
+import java.net.URLEncoder;
+
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -64,5 +66,15 @@ public class AuthUtil {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public static String URLEncode(String str, String enc) {
+
+    try {
+      return URLEncoder.encode(str, enc);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }
