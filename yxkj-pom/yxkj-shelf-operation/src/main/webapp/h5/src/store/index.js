@@ -1,0 +1,69 @@
+import Api from '../fetch/api'
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {
+    init: true,
+    goodItems: [],
+    totalPrice: 100,
+    isWXBrowser: true,
+    isZFBBrowser: false
+  },
+  mutations: {
+    setTotalPrice (state, {totalPrice}) {
+      state.totalPrice = totalPrice
+    },
+    setIsWXBrowser (state, {isWXBrowser}) {
+      state.isWXBrowser = isWXBrowser
+    },
+    setIsZFBBrowser (state, {isZFBBrowser}) {
+      state.isZFBBrowser = isZFBBrowser
+    },
+    setGoodItems (state, {goodItems}) {
+      state.goodItems = goodItems
+    }
+  },
+  getters: {
+    getTotalPrice (state) {
+      return state.totalPrice
+    },
+    getGoodItems (state) {
+      return state.goodItems
+    },
+    getIsZFBBrowser (state) {
+      return state.isZFBBrowser
+    },
+    getIsWXBrowser (state) {
+      return state.isWXBrowser
+    }
+  },
+  actions: {
+    setTotalPrice (context, payload) {
+      context.commit('setTotalPrice', payload)
+    },
+    setIsWXBrowser (context, payload) {
+      context.commit('setIsWXBrowser', payload)
+    },
+    setIsZFBBrowser (context, payload) {
+      context.commit('setIsZFBBrowser', payload)
+    },
+    setGoodItems (context, payload) {
+      context.commit('setGoodItems', payload)
+    },
+    getGoodsBySn (context, payload) {
+      console.log('*******')
+      console.log(payload)
+      Api.getGoodsBySn().then(response => {
+        const data = {
+          goodItems: response.msg
+        }
+        context.commit('setGoodItems', data)
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  }
+})

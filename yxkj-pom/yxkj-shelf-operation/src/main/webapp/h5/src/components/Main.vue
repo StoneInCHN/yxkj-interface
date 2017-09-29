@@ -2,15 +2,15 @@
   <div>
     <div class="only-one-goods" v-if="isOnly">
         <div class="goods-header">
-         <h5>{{onlyItem.name}}</h5>
+         <h5>{{onlyItem.gName}}</h5>
          <icon type="cancel" class="goods-header-icon" @click.native="canaelOnlyItem"></icon>
         </div>
         <div class="goods-content">
-          <img :src=onlyItem.img :alt=onlyItem.name />
+          <img :src="onlyItem.gImg" :alt="onlyItem.gName" />
           <group>
-            <p><strong> ￥ {{onlyItem.price}}</strong></p>
+            <p><strong> ￥ {{onlyItem.gPrice}}</strong></p>
             <p>
-              <span>数量:</span><inline-x-number v-model="onlyItem.count" :min="0" button-style="round"></inline-x-number>
+              <span>数量:</span><inline-x-number v-model="onlyItem.gCount" :min="0" button-style="round"></inline-x-number>
             </p>   
           </group>
         </div>
@@ -20,15 +20,15 @@
         <flexbox-item :span="1/2" v-for="dataItem in datas">
           <div class="goods-item">
             <div class="goods-header">
-             <h5>{{dataItem.name}}</h5>
+             <h5>{{dataItem.gName}}</h5>
              <icon type="cancel" class="goods-header-icon" @click.native="removeItem"></icon>
             </div>
             <div class="goods-content">
-              <img :src=dataItem.img :alt=dataItem.name />
+              <img :src=dataItem.gImg :alt=dataItem.gName />
               <group>
-                <p><strong> ￥ {{dataItem.price}}</strong></p>
+                <p><strong> ￥ {{dataItem.gPrice}}</strong></p>
                 <p>
-                  <span>数量:</span><inline-x-number v-model="dataItem.count" :min="0" button-style="round"></inline-x-number>
+                  <span>数量:</span><inline-x-number v-model="dataItem.gCount" :min="0" button-style="round"></inline-x-number>
                 </p>
               </group>
             </div>
@@ -40,7 +40,7 @@
     <div class="goods-btns">
       <flexbox>
         <flexbox-item>
-          <x-button type="default">继续扫</x-button>
+          <x-button type="default" @click.native="scan">继续扫</x-button>
         </flexbox-item>
         <flexbox-item>
           <x-button type="default" link="pay">结算</x-button>
@@ -51,7 +51,8 @@
 </template>
 
 <script>
-import { Group, Cell, Icon, InlineXNumber, Flexbox, FlexboxItem, XButton, Alert } from 'vux'
+import { Group, Cell, Icon, InlineXNumber, Flexbox, FlexboxItem, XButton } from 'vux'
+import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -61,33 +62,15 @@ export default {
     InlineXNumber,
     Flexbox,
     FlexboxItem,
-    XButton,
-    Alert
+    XButton
   },
   data () {
     return {
-      datas: [{
-        id: 1,
-        name: '统一冰红茶300ml',
-        price: 3.5,
-        count: 2,
-        img: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png'
-      },
-      {
-        id: 2,
-        name: '油切麦仔茶300ml',
-        price: 2.5,
-        count: 1,
-        img: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png'
-      },
-      {
-        id: 3,
-        name: '水溶C100-300ml',
-        price: 5,
-        count: 1,
-        img: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png'
-      }]
+      datas: []
     }
+  },
+  created () {
+    this.getGoodsBySn()
   },
   computed: {
     onlyOneItem () {
@@ -112,7 +95,7 @@ export default {
       if (this.datas) {
         for (let item in this.datas) {
           let data = this.datas[item]
-          total += data.price * data.count
+          total += data.gPrice * data.gCount
         }
       }
       return total
@@ -120,26 +103,42 @@ export default {
   },
   methods: {
     canaelOnlyItem () {
-      console.log(new Date())
-      this.$vux.alert.show({
-        title: 'Vux is Cool',
-        content: 'Do you agree?',
-        onShow () {
-          console.log('Plugin: I\'m showing')
+      this.$vux.confirm.show({
+        title: '移除商品',
+        content: '确定要从购物栏中移除该商品吗？',
+        onCancel () {
+          console.log('plugin cancel')
         },
-        onHide () {
-          console.log('Plugin: I\'m hiding')
+        onConfirm () {
+          console.log('plugin confirm')
         }
       })
     },
     removeItem () {
-      console.log('remove')
-    }
+      this.$vux.confirm.show({
+        title: '移除商品',
+        content: '确定要从购物栏中移除该商品吗？',
+        onCancel () {
+          console.log('plugin cancel')
+        },
+        onConfirm () {
+          console.log('plugin confirm')
+        }
+      })
+    },
+    scan () {
+      const data = this.$store.getters.getGoodItems
+      this.datas.push(data)
+    },
+    ...mapActions({
+      getGoodItems: 'setGoodItems',
+      getGoodsBySn: 'getGoodsBySn'
+    })
   }
 }
 </script>
 
-<style>
+<style scoped>
 .only-one-goods{
   margin:20px;
   border: 1px solid #999999;
@@ -149,6 +148,7 @@ export default {
   margin:10px;
   border: 1px solid #999999;
   border-radius: 10px;
+  box-shadow: 0 0 5px #b1b2b3;
 }
 .goods-header{
   text-align: center;
