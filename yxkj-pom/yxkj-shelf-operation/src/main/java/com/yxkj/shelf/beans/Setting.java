@@ -283,14 +283,21 @@ public class Setting implements Serializable {
   private String alipayPublicKey;
 
   /**
-   * 支付宝回调接口
+   * 支付宝异步通知接口
    */
   private String alipayNotifyUrl;
+
+  /**
+   * 支付宝同步通知接口
+   */
+  private String alipayReturnUrl;
+
 
   /**
    * 签约卖家支付宝账号
    */
   private String alipaySellerId;
+
 
   /**
    * 入住商家折扣最小值
@@ -321,6 +328,13 @@ public class Setting implements Serializable {
    */
   private String tokenKey;
 
+  public String getAlipayReturnUrl() {
+    return alipayReturnUrl;
+  }
+
+  public void setAlipayReturnUrl(String alipayReturnUrl) {
+    this.alipayReturnUrl = alipayReturnUrl;
+  }
 
   public String getWxPublicAppId() {
     return wxPublicAppId;

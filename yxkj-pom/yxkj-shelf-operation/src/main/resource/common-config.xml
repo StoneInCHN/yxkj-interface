@@ -75,8 +75,10 @@
 		<setting name="alipayPrivateKey" value="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAOMxuS9UaqHXumI9ohwFdSNOvPvXbNmNInKOr9Kwrb6jAORJUXdvmkgzA3Xb9pyE5RFPCQgg/ItFSIVzSo+Z4TPLI6xrT58cu9NAXa2wFJLZH3csn75O+iwVcg34uAc5VphG0zg2+vMCvKJArZWObj1FrE57piFW3UtBFyW+09FvAgMBAAECgYBy1wR7VxlbW3dcBzl1HpEaWseOKVNdGEkMTPG09xer4CsoOaNTUvdSfW7HWXtrnIVJXYD8OehN4aSJyEAtHCRHnRxu5fFJgG1S4kiazkgWN2ldl8gVNNyqDzvwMODZ1f46eb5cSKG7rbqj9Sb5ErQOSoUEyTWfuKigGWHTLErtWQJBAPIJFHnhE0n/ITtQ6j1k9zVKQE1ilTrm7uTLVUZniyM7M8hcPwMPUoJ9pKSR37uI3mIFrRPF4nMRfxCVWAAPkHMCQQDwTW9UlhQPNXC+6ILx0zy3EhgdNf8xqIak1trY5i7NLc3q11bfOSR5LitqDjsthuvNSL4e4iWx5Q/Q0lLNWSgVAkEAo6U+AfYLS7HDr05TQjV867wLZAcurQetKGbOfm7N5YFGzsaIGDKI8A+xfU/f/PVant4FmuPl6zU+O2EugcQEPwJAH5pfeOVf7/wcPs8/YWRhiMYVa8oNLM+4HXewQnRLVWqfuTHm1+ag+FrtFL6YY81pt47IijE9ud6hLNpsT1tZXQJAB890lLxoTob81mnyl+KNMi/mNFQFU6NXfvjfmeq7Ic2d1+TzaCYeTbAD6ZULWRpJxYoZCZMAlOxWtqFDaNw8rw==" />
 		<!-- 支付宝的公钥-->
 		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB" />
-		<!-- 支付宝回调接口 -->
-		<setting name="alipayNotifyUrl" value="http://118.190.83.191:10001/rebate-interface/payNotify/notify_alipay.jhtml" />
+		<!-- 支付宝异步通知接口 -->
+		<setting name="alipayNotifyUrl" value="http://test.ybjcq.com/h5/pay/notify_alipay" />
+		<!-- 支付宝同步通知接口 -->
+		<setting name="alipayReturnUrl" value="http://test.ybjcq.com/h5/index.html" />
 		
 		
 		<!-- 百度API:GPS坐标转百度坐标 -->

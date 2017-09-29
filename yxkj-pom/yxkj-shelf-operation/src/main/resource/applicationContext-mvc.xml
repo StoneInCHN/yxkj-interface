@@ -12,8 +12,12 @@
 	</context:component-scan>
 	
 	<mvc:annotation-driven validator="validator" />
-	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/resource/**" location="/resource/" />
 	<mvc:resources mapping="/upload/**" location="/upload/" />
+	<mvc:resources mapping="/**/*.html" location="/"/>
+	<mvc:resources mapping="/**/*.txt" location="/"/>
+	<mvc:resources mapping="/**/*.css" location="/"/>
+	<mvc:resources mapping="/**/*.js" location="/"/>
 
     <!-- Swagger资源重定向(仅作为后台使用不提供静态资源) -->
     <bean class="com.yxkj.shelf.beans.SwaggerConfig"/> 

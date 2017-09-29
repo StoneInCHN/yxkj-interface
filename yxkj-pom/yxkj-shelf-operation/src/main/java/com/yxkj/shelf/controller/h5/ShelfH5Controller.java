@@ -226,7 +226,7 @@ public class ShelfH5Controller extends BaseController {
   // @UserValidCheck
   public @ResponseBody ResponseOne<Map<String, Object>> pay(@ApiParam(name = "请求参数(json)",
       value = "ip:客户端ip|gInfo:下单商品信息 |userName:用户标识|compId:公司ID|type:支付方式|header token",
-      required = true) @RequestBody UserInfoReq req) {
+      required = true) @RequestBody UserInfoReq req, HttpServletResponse httpResponse) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
     String userName = req.getUserName();
     String type = req.getType();
@@ -265,6 +265,20 @@ public class ShelfH5Controller extends BaseController {
           PayUtil.wechat(shelfOrder.getSn(), setting.getSiteName(), ip, userName,
               weChatPrice.intValue() + "");
     } else if ("alipay".equals(type)) {
+      BigDecimal alipayPrice = shelfOrder.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP);
+      String form =
+          PayUtil.alipay(shelfOrder.getSn(), setting.getSiteName(), alipayPrice.toString());
+      Map<String, Object> result = new HashMap<String, Object>();
+      result.put("a_page", form);
+      response.setMsg(result);
+      try {
+        httpResponse.setContentType("text/html;charset=UTF-8");
+        httpResponse.getWriter().write(form);// 直接将完整的表单html输出到页面
+        httpResponse.getWriter().flush();
+        httpResponse.getWriter().close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
 
     }
     // response.setMsg(gMap);

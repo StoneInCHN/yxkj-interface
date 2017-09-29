@@ -10,6 +10,10 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.beans.Message;
 import com.yxkj.shelf.beans.Setting;
@@ -22,6 +26,7 @@ public class PayUtil {
 
   public static Setting setting = SettingUtils.get();
 
+  // 微信公众号支付参数
   // 秘钥
   public static final String wechat_Key = setting.getWechatKey();
   // 微信分配的公众账号ID（企业号corpid即为此appId）
@@ -33,6 +38,18 @@ public class PayUtil {
   // 微信下订单接口
   public static final String wechat_AddOrderUrl = setting.getWechatAddOrderUrl();
 
+
+  // 支付宝手机网站支付参数
+  // 支付宝公钥
+  public static final String alipay_publicKey = setting.getAlipayPublicKey();
+  // appid
+  public static final String alipay_appId = setting.getAlipayAppId();
+  // 应用私钥
+  public static final String alipay_privateKey = setting.getAlipayPrivateKey();
+  // 异步通知地址
+  public static final String alipay_notify_url = setting.getAlipayNotifyUrl();
+  // 同步通知地址
+  public static final String alipay_return_url = setting.getAlipayReturnUrl();
 
   /**
    * create the order info for alipay. 创建订单信息
@@ -90,46 +107,32 @@ public class PayUtil {
   // return stringBuffer.toString();
   // }
   //
-  // /**
-  // * 支付宝支付接口
-  // *
-  // * @return
-  // * @throws Exception
-  // */
-  // public static String alipay(String order_sn, String product_name, String product_detail,
-  // String total_fee) throws Exception {
-  //
-  // // Map<String, String> paramMap = new HashMap<String, String>();
-  // // // 签约合作者身份ID
-  // // paramMap.put("partner", AlipayConfig.partner);
-  // // // 签约卖家支付宝账号
-  // // paramMap.put("seller_id", AlipayConfig.sellerId);
-  // // // 商户网站唯一订单号
-  // // paramMap.put("out_trade_no", order_sn);
-  // // // 商品名称
-  // // paramMap.put("subject", product_name);
-  // // // 商品详情
-  // // paramMap.put("body", product_detail);
-  // // // 商品金额
-  // // paramMap.put("total_fee", total_fee);
-  // // // 服务器异步通知地址
-  // // paramMap.put("notify_url", AlipayConfig.ali_notify_url);
-  // // // 服务接口名称， 固定值mobile.securitypay.pay
-  // // paramMap.put("service", "mobile.securitypay.pay");
-  // // // 支付类型， 固定值 1
-  // // paramMap.put("payment_type", "1");
-  // // // 参数编码， 固定值utf-8
-  // // paramMap.put("_input_charset", "utf-8");
-  // // // 固定值2d
-  // // paramMap.put("it_b_pay", "2d");
-  // String data = getOrderInfo(product_name, order_sn, product_detail, total_fee);
-  // String rsa_sign =
-  // URLEncoder.encode(RSA.sign(data, AlipayConfig.private_key, AlipayConfig.input_charset),
-  // AlipayConfig.input_charset);
-  // // 把签名得到的sign和签名类型sign_type拼接在待签名字符串后面。
-  // data = data + "&sign=\"" + rsa_sign + "\"&sign_type=\"" + AlipayConfig.sign_type + "\"";
-  // return data;
-  // }
+  /**
+   * 支付宝支付接口
+   *
+   * @return
+   * @throws Exception
+   */
+  public static String alipay(String order_sn, String subject, String total_fee) {
+    AlipayClient alipayClient =
+        new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", alipay_appId,
+            alipay_privateKey, "json", "UTF-8", alipay_publicKey, "RSA"); // 获得初始化的AlipayClient
+    AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();// 创建API对应的request
+    alipayRequest.setReturnUrl(alipay_return_url);
+    alipayRequest.setNotifyUrl(alipay_notify_url);// 在公共参数中设置回跳和通知地址
+    alipayRequest.setBizContent("{" + " \"out_trade_no\":" + order_sn + "," + " \"total_amount\":"
+        + total_fee + "," + " \"subject\":" + subject + "," + " \"product_code\":\"QUICK_WAP_PAY\""
+        + " }");// 填充业务参数
+    String form = "";
+    try {
+      form = alipayClient.pageExecute(alipayRequest).getBody(); // 调用SDK生成表单
+      return form;
+    } catch (AlipayApiException e) {
+      e.printStackTrace();
+    }
+    return null;
+
+  }
 
 
   /**
