@@ -4,18 +4,25 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import com.alibaba.fastjson.JSONObject;
+import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.beans.DateEditor;
 import com.yxkj.shelf.beans.Message;
 import com.yxkj.shelf.beans.Setting;
+import com.yxkj.shelf.common.log.LogUtil;
+import com.yxkj.shelf.json.base.BaseResponse;
 import com.yxkj.shelf.utils.SettingUtils;
 import com.yxkj.shelf.utils.SpringUtils;
 
@@ -126,5 +133,30 @@ public class BaseController {
      * requestAttributes.setAttribute(Log.LOG_CONTENT_ATTRIBUTE_NAME, content,
      * RequestAttributes.SCOPE_REQUEST); }
      */
+  }
+  
+  /**
+  * Controller运行时异常统一处理
+  * @param runtimeException
+  * 
+  */
+  /**
+   * 
+   * Controller运行时异常统一处理
+   * @param runtimeException
+   * @author luzhang
+   */
+  @ExceptionHandler(RuntimeException.class)
+  public @ResponseBody BaseResponse runtimeException(HttpServletRequest request,
+  RuntimeException runtimeException) {
+   
+    BaseResponse response = new BaseResponse();
+    response.setCode(CommonAttributes.FAIL_COMMON);
+    response.setDesc(runtimeException.getMessage());
+    
+    String responseResult = JSONObject.toJSONString(response);
+    LogUtil.debug(BaseController.class, "runtimeException", "response = %s", responseResult);
+    
+    return response;
   }
 }

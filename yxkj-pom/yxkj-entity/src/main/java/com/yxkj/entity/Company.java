@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
@@ -85,7 +86,7 @@ public class Company extends BaseEntity {
    */
   private Set<CompanyShelf> goodsShelves = new HashSet<CompanyShelf>();
 
-
+  @JsonProperty
   @OneToMany(mappedBy = "comp")
   public Set<CompanyShelf> getGoodsShelves() {
     return goodsShelves;
@@ -108,11 +109,11 @@ public class Company extends BaseEntity {
   public String getDisplayName() {
     return displayName;
   }
-
+  @JsonProperty
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
   }
-
+  @JsonProperty
   @Column(length = 20)
   public String getContactPerson() {
     return contactPerson;
@@ -121,7 +122,7 @@ public class Company extends BaseEntity {
   public void setContactPerson(String contactPerson) {
     this.contactPerson = contactPerson;
   }
-
+  @JsonProperty
   @Column(length = 20)
   public String getContactPhone() {
     return contactPhone;
@@ -158,7 +159,7 @@ public class Company extends BaseEntity {
     this.longitude = longitude;
   }
 
-
+  @JsonProperty
   @Column(length = 100)
   public String getAddress() {
     return address;
@@ -177,7 +178,7 @@ public class Company extends BaseEntity {
     this.area = area;
   }
 
-
+  @JsonProperty
   @Column(length = 30)
   public String getSn() {
     return sn;

@@ -6,6 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
@@ -36,7 +37,8 @@ public class CompanyShelf extends BaseEntity {
    * 货架类型
    */
   private ShelfCategory shelfCate;
-
+  
+  @JsonProperty
   public Integer getCount() {
     return count;
   }
@@ -53,7 +55,8 @@ public class CompanyShelf extends BaseEntity {
   public void setComp(Company comp) {
     this.comp = comp;
   }
-
+  
+  @JsonProperty
   @ManyToOne(fetch = FetchType.LAZY)
   public ShelfCategory getShelfCate() {
     return shelfCate;

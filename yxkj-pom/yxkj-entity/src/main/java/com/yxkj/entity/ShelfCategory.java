@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
@@ -34,7 +35,8 @@ public class ShelfCategory extends BaseEntity {
    * 货架
    */
   private Set<CompanyShelf> goodsShelves = new HashSet<CompanyShelf>();
-
+  
+  @JsonProperty
   @Column(length = 10)
   public String getHeight() {
     return height;
