@@ -48,4 +48,13 @@ public interface TouristService extends BaseService<Tourist, Long> {
    * @return
    */
   Tourist getByUserId(String userId);
+
+  /**
+   * 获取微信jsapi参数
+   * 
+   * @param curUrl
+   * @return
+   */
+  Map<String, Object> getJsapiConfig(String curUrl, String appId, String appSecret);
+
 }

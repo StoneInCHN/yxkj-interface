@@ -273,6 +273,16 @@ public class Setting implements Serializable {
   private String alipayPartner;
 
   /**
+   * 开发者私钥(合作伙伴密钥)
+   */
+  private String alipayPartnerPrivateKey;
+
+  /**
+   * 支付宝的公钥(合作伙伴密钥)
+   */
+  private String alipayPartnerPublicKey;
+
+  /**
    * 支付宝商户的私钥
    */
   private String alipayPrivateKey;
@@ -943,6 +953,22 @@ public class Setting implements Serializable {
 
   public void setAuthRedirectUrl(String authRedirectUrl) {
     this.authRedirectUrl = authRedirectUrl;
+  }
+
+  public String getAlipayPartnerPrivateKey() {
+    return alipayPartnerPrivateKey;
+  }
+
+  public void setAlipayPartnerPrivateKey(String alipayPartnerPrivateKey) {
+    this.alipayPartnerPrivateKey = alipayPartnerPrivateKey;
+  }
+
+  public String getAlipayPartnerPublicKey() {
+    return alipayPartnerPublicKey;
+  }
+
+  public void setAlipayPartnerPublicKey(String alipayPartnerPublicKey) {
+    this.alipayPartnerPublicKey = alipayPartnerPublicKey;
   }
 
 

@@ -51,6 +51,19 @@ public class UserInfoReq {
    */
   private String ip = "127.0.0.1";
 
+  /**
+   * 当前页面url地址
+   */
+  private String curUrl;
+
+
+  public String getCurUrl() {
+    return curUrl;
+  }
+
+  public void setCurUrl(String curUrl) {
+    this.curUrl = curUrl;
+  }
 
   public String getIp() {
     return ip;

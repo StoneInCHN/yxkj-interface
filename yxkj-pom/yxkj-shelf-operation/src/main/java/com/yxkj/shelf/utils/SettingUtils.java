@@ -7,6 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
@@ -33,6 +36,9 @@ import com.yxkj.shelf.beans.Setting;
  */
 @SuppressWarnings("unchecked")
 public final class SettingUtils {
+
+  /** CacheManager */
+  private static final CacheManager cacheManager = CacheManager.create();
 
   /** BeanUtilsBean */
   private static final BeanUtilsBean beanUtils;
@@ -112,24 +118,33 @@ public final class SettingUtils {
    * @return 系统设置
    */
   public static Setting get() {
-    Setting setting = new Setting();
-    try {
-      File commonXmlFile = new ClassPathResource(CommonAttributes.COMMON_CONFIG_XML_PATH).getFile();
-      Document document = new SAXReader().read(commonXmlFile);
-      List<Element> elements = document.selectNodes("/yxkj/setting");
-      for (Element element : elements) {
-        String name = element.attributeValue("name");
-        String value = element.attributeValue("value");
-        try {
-          beanUtils.setProperty(setting, name, value);
-        } catch (IllegalAccessException e) {
-          e.printStackTrace();
-        } catch (InvocationTargetException e) {
-          e.printStackTrace();
+    Ehcache cache = cacheManager.getEhcache(Setting.CACHE_NAME);
+    net.sf.ehcache.Element cacheElement = cache.get(Setting.CACHE_KEY);
+    Setting setting;
+    if (cacheElement != null) {
+      setting = (Setting) cacheElement.getObjectValue();
+    } else {
+      setting = new Setting();
+      try {
+        File commonXmlFile =
+            new ClassPathResource(CommonAttributes.COMMON_CONFIG_XML_PATH).getFile();
+        Document document = new SAXReader().read(commonXmlFile);
+        List<Element> elements = document.selectNodes("/yxkj/setting");
+        for (Element element : elements) {
+          String name = element.attributeValue("name");
+          String value = element.attributeValue("value");
+          try {
+            beanUtils.setProperty(setting, name, value);
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          } catch (InvocationTargetException e) {
+            e.printStackTrace();
+          }
         }
+      } catch (Exception e) {
+        e.printStackTrace();
       }
-    } catch (Exception e) {
-      e.printStackTrace();
+      cache.put(new net.sf.ehcache.Element(Setting.CACHE_KEY, setting));
     }
     return setting;
   }
@@ -165,7 +180,7 @@ public final class SettingUtils {
         OutputFormat outputFormat = OutputFormat.createPrettyPrint();
         outputFormat.setEncoding("UTF-8");
         outputFormat.setIndent(true);
-        outputFormat.setIndent("	");
+        outputFormat.setIndent("    ");
         outputFormat.setNewlines(true);
         fileOutputStream = new FileOutputStream(CommonXmlFile);
         xmlWriter = new XMLWriter(fileOutputStream, outputFormat);
@@ -182,6 +197,8 @@ public final class SettingUtils {
         IOUtils.closeQuietly(fileOutputStream);
       }
 
+      Ehcache cache = cacheManager.getEhcache(Setting.CACHE_NAME);
+      cache.put(new net.sf.ehcache.Element(Setting.CACHE_KEY, setting));
     } catch (Exception e) {
       e.printStackTrace();
     }

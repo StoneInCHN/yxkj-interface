@@ -71,15 +71,19 @@
 		<setting name="alipayPartner" value="2088721238041253" />
 		<!-- 签约卖家支付宝账号 -->
 		<setting name="alipaySellerId" value="market@ybjstore.com" />
-		<!-- 开发者私钥(用于授权) -->
+		<!-- 开发者私钥(开放平台密钥用于授权) -->
 		<setting name="alipayPrivateKey" value="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAOMxuS9UaqHXumI9ohwFdSNOvPvXbNmNInKOr9Kwrb6jAORJUXdvmkgzA3Xb9pyE5RFPCQgg/ItFSIVzSo+Z4TPLI6xrT58cu9NAXa2wFJLZH3csn75O+iwVcg34uAc5VphG0zg2+vMCvKJArZWObj1FrE57piFW3UtBFyW+09FvAgMBAAECgYBy1wR7VxlbW3dcBzl1HpEaWseOKVNdGEkMTPG09xer4CsoOaNTUvdSfW7HWXtrnIVJXYD8OehN4aSJyEAtHCRHnRxu5fFJgG1S4kiazkgWN2ldl8gVNNyqDzvwMODZ1f46eb5cSKG7rbqj9Sb5ErQOSoUEyTWfuKigGWHTLErtWQJBAPIJFHnhE0n/ITtQ6j1k9zVKQE1ilTrm7uTLVUZniyM7M8hcPwMPUoJ9pKSR37uI3mIFrRPF4nMRfxCVWAAPkHMCQQDwTW9UlhQPNXC+6ILx0zy3EhgdNf8xqIak1trY5i7NLc3q11bfOSR5LitqDjsthuvNSL4e4iWx5Q/Q0lLNWSgVAkEAo6U+AfYLS7HDr05TQjV867wLZAcurQetKGbOfm7N5YFGzsaIGDKI8A+xfU/f/PVant4FmuPl6zU+O2EugcQEPwJAH5pfeOVf7/wcPs8/YWRhiMYVa8oNLM+4HXewQnRLVWqfuTHm1+ag+FrtFL6YY81pt47IijE9ud6hLNpsT1tZXQJAB890lLxoTob81mnyl+KNMi/mNFQFU6NXfvjfmeq7Ic2d1+TzaCYeTbAD6ZULWRpJxYoZCZMAlOxWtqFDaNw8rw==" />
-		<!-- 支付宝的公钥-->
+		<!-- 支付宝的公钥(开放平台密钥用于授权)-->
 		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB" />
 		<!-- 支付宝异步通知接口 -->
 		<setting name="alipayNotifyUrl" value="http://test.ybjcq.com/h5/shelf/pay/notify_alipay" />
 		<!-- 支付宝同步通知接口 -->
 		<setting name="alipayReturnUrl" value="http://test.ybjcq.com/h5/shelf/index.html" />
 		
+		<!-- 开发者私钥(合作伙伴密钥) -->
+		<setting name="alipayPartnerPrivateKey" value="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAM1RF3xdq7wNpvdEB8skbduL+A0DzDwmyhzvNEpr5I/It0Dxix0zzbm+ibPejsUY7BojAFaHUqi4X0eHVY1khZn6O4lZMe+zMiDQwa6do/kcvsILHx4DBDl1AwMK+MHzEkruy1cqn8HFbhS3QqWj4UdIoL5J30pahWSRl/lC2aDrAgMBAAECgYBkLCdgRzdt1d9bjraat1heIIlSmELCKk68FT0W/lMSj+RQ7EhqZAcAk+UNfA1+Pm2bRu54SSfcJ7Bc7ruf86Z2nMC3C2twz10wrBvczhuBB9HpIK3H3UEwa6pLxeDcXFZD+em2+8UxfOnE4FR5rHogGqCFb51OiGLdeB4ejAZtsQJBAO+WIJHUsiBFkKZkpsK89TzvVCGO6b4A2btqH0hvV4c6AnGZMF+lpR1RTdxpveqBxT8wmMx+CPI7gBBW4TN0M3MCQQDbYfE0Sx7bAR93kD1H9AALb9O7Lw1Le1edplALCU5C/e8fLlE/BKuNLWQ1gd6AVIK+T3TWsyJgqdtSZZ8HRy6pAkAoX8A1UwaBcbeikquXfYhGMH6Y+SBiqHoInyWOa1TwsNHgmtQQCjX87sqULi2W6y92KpZVP5f6WhSGrF1e8mIJAkEAqx9Kti+icdH+aZTpOCbrogAod+nLxQUA4sfHx9QKZ9cLnpbSaQWLiyPM9q/GjvNcyHXR/WbdeekEWtFJqrOrgQJBANy1kYIW46Ak53pXT292uKeaLBfRGQyV7W6sb8lWC/tI5xK68GtIw/23AwtHKqhhertL5sBvTcswYybwcleRkS0=" />
+		<!-- 支付宝的公钥(合作伙伴密钥)-->
+		<setting name="alipayPartnerPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB" />
 		
 		<!-- 百度API:GPS坐标转百度坐标 -->
 		<setting name="convertMapUrl" value="http://api.map.baidu.com/ag/coord/convert"/>

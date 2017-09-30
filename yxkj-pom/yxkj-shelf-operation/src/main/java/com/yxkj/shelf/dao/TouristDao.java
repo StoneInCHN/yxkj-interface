@@ -12,4 +12,21 @@ public interface TouristDao extends BaseDao<Tourist, Long> {
    * @return
    */
   Tourist getByUserId(String userId);
+
+  /**
+   * 获取微信公众号accessToken
+   * 
+   * @param accessToken
+   * @return
+   */
+  String getJsApiTicket(String accessToken);
+
+  /**
+   * 获取微信公众号jsapi ticket
+   * 
+   * @param appId
+   * @param appSecret
+   * @return
+   */
+  String getAccessToken(String appId, String appSecret);
 }

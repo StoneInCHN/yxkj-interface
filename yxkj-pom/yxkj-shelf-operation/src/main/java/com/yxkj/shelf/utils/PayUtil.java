@@ -117,6 +117,10 @@ public class PayUtil {
     AlipayClient alipayClient =
         new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", alipay_appId,
             alipay_privateKey, "json", "UTF-8", alipay_publicKey, "RSA"); // 获得初始化的AlipayClient
+    // AlipayClient alipayClient =
+    // new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", alipay_appId,
+    // setting.getAlipayPartnerPrivateKey(), "json", "UTF-8",
+    // setting.getAlipayPartnerPublicKey(), "RSA"); // 获得初始化的AlipayClient
     AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();// 创建API对应的request
     alipayRequest.setReturnUrl(alipay_return_url);
     alipayRequest.setNotifyUrl(alipay_notify_url);// 在公共参数中设置回跳和通知地址

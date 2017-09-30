@@ -219,6 +219,31 @@ public class ShelfH5Controller extends BaseController {
 
 
   /**
+   * 获取微信jsapi参数信息
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/jsapiConfig", method = RequestMethod.POST)
+  @ApiOperation(value = "获取微信jsapi参数信息", httpMethod = "POST", response = ResponseOne.class,
+      notes = "获取微信jsapi参数信息")
+  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
+  // @UserValidCheck
+  public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(@ApiParam(name = "请求参数(json)",
+      value = "curUrl:当前网页url地址 |header token", required = true) @RequestBody UserInfoReq req) {
+    ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
+
+    Map<String, Object> res =
+        touristService.getJsapiConfig(req.getCurUrl(), setting.getWxPublicAppId(),
+            setting.getWxPublicAppSecret());
+
+    response.setMsg(res);
+    response.setCode(CommonAttributes.SUCCESS);
+
+    return response;
+  }
+
+  /**
    * 商品支付
    * 
    * @param request
@@ -278,14 +303,14 @@ public class ShelfH5Controller extends BaseController {
       result.put("a_page", form);
       response.setMsg(result);
 
-      try {
-        httpResponse.setContentType("text/html;charset=UTF-8");
-        httpResponse.getWriter().write(form);// 直接将完整的表单html输出到页面
-        httpResponse.getWriter().flush();
-        // httpResponse.getWriter().close();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      // try {
+      // httpResponse.setContentType("text/html;charset=UTF-8");
+      // httpResponse.getWriter().write(form);// 直接将完整的表单html输出到页面
+      // httpResponse.getWriter().flush();
+      // httpResponse.getWriter().close();
+      // } catch (Exception e) {
+      // e.printStackTrace();
+      // }
 
 
     }

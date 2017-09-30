@@ -19,6 +19,7 @@ import com.yxkj.shelf.framework.service.impl.BaseServiceImpl;
 import com.yxkj.shelf.service.TouristService;
 import com.yxkj.shelf.utils.ApiUtils;
 import com.yxkj.shelf.utils.alipay.AuthUtil;
+import com.yxkj.shelf.utils.wxpay.WeixinUtil;
 
 @Service("touristServiceImpl")
 public class TouristServiceImpl extends BaseServiceImpl<Tourist, Long> implements TouristService {
@@ -129,6 +130,15 @@ public class TouristServiceImpl extends BaseServiceImpl<Tourist, Long> implement
   @Override
   public Tourist getByUserId(String userId) {
     return touristDao.getByUserId(userId);
+  }
+
+  @Override
+  public Map<String, Object> getJsapiConfig(String curUrl, String appId, String appSecret) {
+    String access_token = touristDao.getAccessToken(appId, appSecret);
+    String jsapi_ticket = touristDao.getJsApiTicket(access_token);
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.putAll(WeixinUtil.jsApiSign(jsapi_ticket, curUrl));
+    return map;
   }
 
 
