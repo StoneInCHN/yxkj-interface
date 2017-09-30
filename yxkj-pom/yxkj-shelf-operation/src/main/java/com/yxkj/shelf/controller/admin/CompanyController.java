@@ -33,7 +33,7 @@ import com.yxkj.shelf.json.base.ResponseMultiple;
  * 
  */
 @Controller("companyController")
-@RequestMapping("/company")
+@RequestMapping("/admin/company")
 @Api(value = "(货架后台)公司管理页面", description = "公司管理页面")
 public class CompanyController extends BaseController {
 	

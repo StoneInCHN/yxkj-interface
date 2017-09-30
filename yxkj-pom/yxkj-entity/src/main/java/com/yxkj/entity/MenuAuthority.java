@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.OrderEntity;
 
 /**
@@ -52,7 +53,17 @@ public class MenuAuthority extends OrderEntity {
 
   /** 下级菜单 */
   private Set<MenuAuthority> children = new HashSet<MenuAuthority>();
-
+  
+  public MenuAuthority(String name, String path, String icon, String component, String redirect, Boolean hidden,  Set<MenuAuthority> children){
+	  this.name = name;
+	  this.path = path;
+	  this.icon = icon;
+	  this.component = component;
+	  this.redirect = redirect;
+	  this.hidden = hidden;
+	  this.children = children;
+  }
+  @JsonProperty
   @NotEmpty
   @Length(max = 100)
   @Column(nullable = false, length = 100)
@@ -63,6 +74,7 @@ public class MenuAuthority extends OrderEntity {
     this.name = name;
   }
   
+  @JsonProperty
   @Column(nullable = false)
   public String getPath() {
 	return path;
@@ -71,7 +83,8 @@ public class MenuAuthority extends OrderEntity {
   public void setPath(String path) {
 	this.path = path;
   }
-
+  
+  @JsonProperty
   public String getIcon() {
 	return icon;
   }
@@ -79,7 +92,8 @@ public class MenuAuthority extends OrderEntity {
   public void setIcon(String icon) {
 	this.icon = icon;
   }
-
+  
+  @JsonProperty
   public String getComponent() {
 	return component;
   }
@@ -87,7 +101,8 @@ public class MenuAuthority extends OrderEntity {
   public void setComponent(String component) {
 	this.component = component;
   }
-
+  
+  @JsonProperty
   public String getRedirect() {
 	return redirect;
   }
@@ -105,6 +120,7 @@ public class MenuAuthority extends OrderEntity {
 	this.parent = parent;
   }
   
+  @JsonProperty
   @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   @OrderBy("order asc")
   public Set<MenuAuthority> getChildren() {
@@ -114,7 +130,8 @@ public class MenuAuthority extends OrderEntity {
   public void setChildren(Set<MenuAuthority> children) {
 	this.children = children;
   }
-
+  
+  @JsonProperty
   public Boolean getHidden() {
 	return hidden;
   }

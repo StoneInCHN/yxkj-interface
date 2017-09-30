@@ -114,6 +114,7 @@ public class Role extends BaseEntity {
    * 获取菜单权限
    * @return 权限
    */
+  @JsonProperty
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "t_role_authority")  
   public Set<MenuAuthority> getAuthorities() {

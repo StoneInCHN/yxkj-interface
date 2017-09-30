@@ -17,6 +17,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 
@@ -35,7 +36,7 @@ public class Admin extends BaseEntity {
 
 
   /** 用户名 */
-  private String username;
+  private String userName;
 
   /** 密码 */
   private String password;
@@ -53,7 +54,6 @@ public class Admin extends BaseEntity {
   /** 最后登录IP */
   private String loginIp;
 
-
   /** 帐号状态 */
   private AccountStatus adminStatus;
 
@@ -65,30 +65,29 @@ public class Admin extends BaseEntity {
    */
   private Boolean isSystem;
 
-
-
+  
   /**
    * 获取用户名
    * 
    * @return 用户名
    */
+  @JsonProperty
   @NotEmpty(groups = Save.class)
   @Length(min = 2, max = 20)
   @Column(nullable = false, updatable = false, unique = true, length = 100)
-  public String getUsername() {
-    return username;
+  public String getUserName() {
+	return userName;
   }
-
   /**
    * 设置用户名
    * 
-   * @param username 用户名
+   * @param userName 用户名
    */
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUserName(String userName) {
+	this.userName = userName;
   }
 
-  /**
+/**
    * 获取密码
    * 
    * @return 密码
@@ -119,6 +118,7 @@ public class Admin extends BaseEntity {
   @Email
   @Length(max = 200)
   @Column(nullable = false)
+  @JsonProperty
   public String getEmail() {
     return email;
   }
@@ -158,6 +158,7 @@ public class Admin extends BaseEntity {
    * 
    * @return 最后登录日期
    */
+  @JsonProperty
   public Date getLoginDate() {
     return loginDate;
   }
@@ -176,6 +177,7 @@ public class Admin extends BaseEntity {
    * 
    * @return 最后登录IP
    */
+  @JsonProperty
   public String getLoginIp() {
     return loginIp;
   }
@@ -214,6 +216,7 @@ public class Admin extends BaseEntity {
    * 
    * @return 角色
    */
+  @JsonProperty
   @NotEmpty
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "t_admin_role")

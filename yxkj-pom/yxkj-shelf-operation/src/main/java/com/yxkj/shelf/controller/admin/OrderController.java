@@ -30,7 +30,7 @@ import com.yxkj.shelf.json.base.ResponseMultiple;
  * 
  */
 @Controller("orderController")
-@RequestMapping("/order")
+@RequestMapping("/admin/order")
 @Api(value = "(货架后台)订单管理页面", description = "订单管理页面")
 public class OrderController extends BaseController {   
 
