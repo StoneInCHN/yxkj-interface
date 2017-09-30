@@ -6,11 +6,24 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    accessToken: '',
     init: true,
     goodItems: [],
     totalPrice: 100,
     isWXBrowser: true,
-    isZFBBrowser: false
+    isZFBBrowser: false,
+    wxConfig: {
+      debug: false,
+      appId: 'wx3598eb401cb80f00',
+      timestamp: 1506690795,
+      nonceStr: 'H0pUJ8NF3yUTIuuR',
+      signature: '2fcc888479538bc8065edea20d600b4a26ae2582',
+      jsApiList: [
+        'checkJsApi',
+        'scanQRCode',
+        'chooseWXPay'
+      ]
+    }
   },
   mutations: {
     setTotalPrice (state, {totalPrice}) {
@@ -24,6 +37,9 @@ export default new Vuex.Store({
     },
     setGoodItems (state, {goodItems}) {
       state.goodItems = goodItems
+    },
+    setAccessToken (state, {accessToken}) {
+      state.accessToken = accessToken
     }
   },
   getters: {
@@ -38,6 +54,12 @@ export default new Vuex.Store({
     },
     getIsWXBrowser (state) {
       return state.isWXBrowser
+    },
+    getAccessToken (state) {
+      return state.accessToken
+    },
+    getWxConfig (state) {
+      return state.wxConfig
     }
   },
   actions: {
@@ -57,6 +79,16 @@ export default new Vuex.Store({
       console.log('*******')
       console.log(payload)
       Api.getGoodsBySn().then(response => {
+        const data = {
+          goodItems: response.msg
+        }
+        context.commit('setGoodItems', data)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    setAccessToken (context, payload) {
+      Api.getAccessToken().then(response => {
         const data = {
           goodItems: response.msg
         }

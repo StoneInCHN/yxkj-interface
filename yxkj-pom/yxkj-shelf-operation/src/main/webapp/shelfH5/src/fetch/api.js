@@ -52,5 +52,8 @@ export default{
   },
   getGoodsBySn (params) {
     return postFetch('getGoodsBySn.jhtml', params)
+  },
+  getAccessToken (params) {
+    return null
   }
 }
