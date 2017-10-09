@@ -36,7 +36,7 @@ public class CommonController extends MobileBaseController {
     /**
      * 获取公匙
      *
-     * @param request
+     * @param
      * @return
      */
     @RequestMapping(value = "/rsa", method = RequestMethod.POST)
@@ -64,7 +64,7 @@ public class CommonController extends MobileBaseController {
     /**
      * 用户登录
      *
-     * @param request
+     * @param
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -86,7 +86,7 @@ public class CommonController extends MobileBaseController {
     /**
      * swagger测试
      *
-     * @param request
+     * @param
      * @return
      */
     @RequestMapping(value = "/test", method = RequestMethod.POST)
@@ -115,12 +115,13 @@ public class CommonController extends MobileBaseController {
             notes = "Redis测试")
     public
     @ResponseBody
-    BaseResponse testSendCmd(@RequestBody BaseRequest req) {
+    BaseResponse testSendCmd(@RequestBody CmdMsg cmdMsg) {
         BaseResponse response = new BaseResponse();
 
-        CmdMsg cmdMsg = new CmdMsg();
-        cmdMsg.setContent("test");
-        cmdMsg.setType(0);
+//        CmdMsg cmdMsg = new CmdMsg();
+//        cmdMsg.setContent("test");
+//        cmdMsg.setType(0);
+//        cmdMsg.setDeviceNo("001");
         cmdService.sendCmd(cmdMsg);
         response.setCode(CommonAttributes.SUCCESS);
         response.setDesc("测试Redis队列");

@@ -12,31 +12,10 @@ import java.util.Set;
  * Created by Kinglf on 2016/10/17.
  */
 public class JedisUtil {
-    private static String JEDIS_IP;
-    private static int JEDIS_PORT;
-    private static String JEDIS_PASSWORD;
     private static JedisPool jedisPool;
 
-    static {
-        //Configuration自行写的配置文件解析类,继承自Properties
-//        Configuration conf= Configuration.getInstance();
-//        JEDIS_IP=conf.getString("jedis.ip","127.0.0.1");
-//        JEDIS_PORT=conf.getInt("jedis.port",6379);
-//        JEDIS_PASSWORD=conf.getString("jedis.password",null);
-        JEDIS_IP = "127.0.0.1";
-        JEDIS_PORT = 6379;
-        JEDIS_PASSWORD = null;
-        JedisPoolConfig config = new JedisPoolConfig();
-//        config.setMaxActive(5000);
-        config.setMaxIdle(256);
-//        config.setMaxWait(5000L);
-        config.setTestOnBorrow(true);
-        config.setTestOnReturn(true);
-        config.setTestWhileIdle(true);
-        config.setMinEvictableIdleTimeMillis(60000L);
-        config.setTimeBetweenEvictionRunsMillis(3000L);
-        config.setNumTestsPerEvictionRun(-1);
-        jedisPool = new JedisPool(config, JEDIS_IP, JEDIS_PORT, 60000);
+    public static void init(JedisPoolConfig config, String jedisIp, int jedisPort, int timeOut) {
+        jedisPool = new JedisPool(config, jedisIp, jedisPort, timeOut);
     }
 
     /**

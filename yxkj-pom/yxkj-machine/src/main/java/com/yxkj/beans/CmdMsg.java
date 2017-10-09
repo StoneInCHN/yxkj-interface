@@ -7,12 +7,32 @@ import java.io.Serializable;
  * @since 2017/9/26
  */
 public class CmdMsg implements Serializable {
+    private static final long serialVersionUID = -5098028238072646730L;
     private Long id;
 
     /**
      * 消息内容
      */
     private String content;
+
+    /**
+     * 货柜号
+     */
+    private int address;
+
+    /**
+     * 货柜类型
+     * 1：弹簧柜
+     * 2：格子柜
+     */
+    private int addressType;
+    /**
+     *货道号
+     */
+    private int box;
+
+    /**设备号*/
+    private String deviceNo;
 
     /**
      * 消息类型
@@ -44,5 +64,37 @@ public class CmdMsg implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getDeviceNo() {
+        return deviceNo;
+    }
+
+    public void setDeviceNo(String deviceNo) {
+        this.deviceNo = deviceNo;
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    public void setAddress(int address) {
+        this.address = address;
+    }
+
+    public int getBox() {
+        return box;
+    }
+
+    public void setBox(int box) {
+        this.box = box;
+    }
+
+    public int getAddressType() {
+        return addressType;
+    }
+
+    public void setAddressType(int addressType) {
+        this.addressType = addressType;
     }
 }
