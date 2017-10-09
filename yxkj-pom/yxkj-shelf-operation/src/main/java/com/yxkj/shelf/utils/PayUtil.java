@@ -124,9 +124,9 @@ public class PayUtil {
     AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();// 创建API对应的request
     alipayRequest.setReturnUrl(alipay_return_url);
     alipayRequest.setNotifyUrl(alipay_notify_url);// 在公共参数中设置回跳和通知地址
-    alipayRequest.setBizContent("{" + " \"out_trade_no\":" + order_sn + "," + " \"total_amount\":"
-        + total_fee + "," + " \"subject\":" + subject + "," + " \"product_code\":\"QUICK_WAP_PAY\""
-        + " }");// 填充业务参数
+    alipayRequest.setBizContent("{" + " \"out_trade_no\":\"" + order_sn + "\","
+        + " \"total_amount\":" + total_fee + "," + " \"subject\":\"" + subject + "\","
+        + " \"product_code\":\"QUICK_WAP_PAY\"" + " }");// 填充业务参数
     String form = "";
     try {
       form = alipayClient.pageExecute(alipayRequest).getBody(); // 调用SDK生成表单

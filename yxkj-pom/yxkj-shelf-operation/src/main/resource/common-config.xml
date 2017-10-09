@@ -78,7 +78,7 @@
 		<!-- 支付宝异步通知接口 -->
 		<setting name="alipayNotifyUrl" value="http://test.ybjcq.com/h5/shelf/pay/notify_alipay" />
 		<!-- 支付宝同步通知接口 -->
-		<setting name="alipayReturnUrl" value="http://test.ybjcq.com/h5/shelf/index.html" />
+		<setting name="alipayReturnUrl" value="http://test.ybjcq.com/shelfH5/index.html" />
 		
 		<!-- 开发者私钥(合作伙伴密钥) -->
 		<setting name="alipayPartnerPrivateKey" value="MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAM1RF3xdq7wNpvdEB8skbduL+A0DzDwmyhzvNEpr5I/It0Dxix0zzbm+ibPejsUY7BojAFaHUqi4X0eHVY1khZn6O4lZMe+zMiDQwa6do/kcvsILHx4DBDl1AwMK+MHzEkruy1cqn8HFbhS3QqWj4UdIoL5J30pahWSRl/lC2aDrAgMBAAECgYBkLCdgRzdt1d9bjraat1heIIlSmELCKk68FT0W/lMSj+RQ7EhqZAcAk+UNfA1+Pm2bRu54SSfcJ7Bc7ruf86Z2nMC3C2twz10wrBvczhuBB9HpIK3H3UEwa6pLxeDcXFZD+em2+8UxfOnE4FR5rHogGqCFb51OiGLdeB4ejAZtsQJBAO+WIJHUsiBFkKZkpsK89TzvVCGO6b4A2btqH0hvV4c6AnGZMF+lpR1RTdxpveqBxT8wmMx+CPI7gBBW4TN0M3MCQQDbYfE0Sx7bAR93kD1H9AALb9O7Lw1Le1edplALCU5C/e8fLlE/BKuNLWQ1gd6AVIK+T3TWsyJgqdtSZZ8HRy6pAkAoX8A1UwaBcbeikquXfYhGMH6Y+SBiqHoInyWOa1TwsNHgmtQQCjX87sqULi2W6y92KpZVP5f6WhSGrF1e8mIJAkEAqx9Kti+icdH+aZTpOCbrogAod+nLxQUA4sfHx9QKZ9cLnpbSaQWLiyPM9q/GjvNcyHXR/WbdeekEWtFJqrOrgQJBANy1kYIW46Ak53pXT292uKeaLBfRGQyV7W6sb8lWC/tI5xK68GtIw/23AwtHKqhhertL5sBvTcswYybwcleRkS0=" />

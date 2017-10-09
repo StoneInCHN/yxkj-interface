@@ -41,7 +41,7 @@ import com.yxkj.entity.ShelfOrder;
 import com.yxkj.shelf.aspect.UserValidCheck;
 import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.common.log.LogUtil;
-import com.yxkj.shelf.controller.base.BaseController;
+import com.yxkj.shelf.controller.base.H5BaseController;
 import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.json.beans.GoodsBean;
 import com.yxkj.shelf.json.request.UserInfoReq;
@@ -61,7 +61,7 @@ import com.yxkj.shelf.utils.wxpay.WeixinUtil;
 @Controller("shelfH5Controller")
 @RequestMapping("/h5/shelf")
 @Api(value = "货架H5页面", description = "货架H5页面")
-public class ShelfH5Controller extends BaseController {
+public class ShelfH5Controller extends H5BaseController {
 
   @Resource(name = "touristServiceImpl")
   private TouristService touristService;
@@ -228,7 +228,7 @@ public class ShelfH5Controller extends BaseController {
   @ApiOperation(value = "获取微信jsapi参数信息", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取微信jsapi参数信息")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
-  // @UserValidCheck
+  @UserValidCheck
   public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(@ApiParam(name = "请求参数(json)",
       value = "curUrl:当前网页url地址 |header token", required = true) @RequestBody UserInfoReq req) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
@@ -253,7 +253,7 @@ public class ShelfH5Controller extends BaseController {
   @RequestMapping(value = "/pay", method = RequestMethod.POST)
   @ApiOperation(value = "商品支付", httpMethod = "POST", response = ResponseOne.class, notes = "商品支付")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
-  // @UserValidCheck
+  @UserValidCheck
   public @ResponseBody ResponseOne<Map<String, Object>> pay(@ApiParam(name = "请求参数(json)",
       value = "ip:客户端ip|gInfo:下单商品信息 |userName:用户标识|compId:公司ID|type:支付方式|header token",
       required = true) @RequestBody UserInfoReq req, HttpServletResponse httpResponse) {
@@ -440,7 +440,7 @@ public class ShelfH5Controller extends BaseController {
         new String(request.getParameter("trade_status").getBytes("ISO-8859-1"), "UTF-8");
     // 交易金额
     String total_fee =
-        new String(request.getParameter("total_fee").getBytes("ISO-8859-1"), "UTF-8");
+        new String(request.getParameter("total_amount").getBytes("ISO-8859-1"), "UTF-8");
     // 购买者id
     // String buyer_id = new String(request.getParameter("buyer_id").getBytes("ISO-8859-1"),
     // "UTF-8");
