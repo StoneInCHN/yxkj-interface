@@ -1,0 +1,11 @@
+package com.yxkj.dao.impl; 
+
+import org.springframework.stereotype.Repository; 
+
+import com.yxkj.entity.Sn;
+import com.yxkj.framework.dao.impl.BaseDaoImpl;
+import com.yxkj.dao.SnDao;
+@Repository("snDaoImpl")
+public class SnDaoImpl extends  BaseDaoImpl<Sn,Long> implements SnDao {
+
+}

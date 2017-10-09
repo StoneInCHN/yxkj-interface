@@ -304,7 +304,9 @@ public class CommonEnum {
     /** 充足 0 */
     SUFFICIENT,
     /** 缺货(达到预警值) 1 */
-    LACK
+    LACK,
+    /** 断货 2 */
+    EMPTY
   }
 
 

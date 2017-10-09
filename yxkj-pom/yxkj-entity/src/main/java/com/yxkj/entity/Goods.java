@@ -45,7 +45,7 @@ public class Goods extends BaseEntity {
   private String name;
 
   /**
-   * 商品名称
+   * 商品全名
    */
   private String fullName;
 

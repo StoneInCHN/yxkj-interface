@@ -25,7 +25,7 @@ public class TokenUtil {
    * @param ttlMillis
    * @return
    */
-  public static String getJWTString(String id, String subject, long ttlMillis) {
+  public static String getJWTString(String id, String subject) {
     // The JWT signature algorithm we will be using to sign the token
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -42,6 +42,7 @@ public class TokenUtil {
             .signWith(signatureAlgorithm, signingKey);
 
     // if it has been specified, let's add the expiration
+    long ttlMillis = setting.getTokenTimeOut();
     if (ttlMillis >= 0) {
       long expMillis = nowMillis + ttlMillis;
       Date exp = new Date(expMillis);

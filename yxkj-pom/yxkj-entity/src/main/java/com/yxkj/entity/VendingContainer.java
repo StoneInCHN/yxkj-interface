@@ -3,11 +3,13 @@ package com.yxkj.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -28,7 +30,7 @@ public class VendingContainer extends BaseEntity {
   private static final long serialVersionUID = -5143795184127147282L;
 
   /**
-   * 货柜编号
+   * 货柜编号(中控货柜则是imei编号)
    */
   private String sn;
 
@@ -71,26 +73,46 @@ public class VendingContainer extends BaseEntity {
    */
   private ContainerCategory category;
 
-  /**
-   * 货柜分组编号
-   */
-  private String groupId;
+  /** 中控货柜 */
+  private VendingContainer parent;
+
+  /** 下级子货柜 */
+  private Set<VendingContainer> children = new HashSet<VendingContainer>();
+
 
   /**
    * 管家ID
    */
   private Long keeperId;
 
-  /**
-   * 极光push注册ID
-   */
-  private String jpushRegId;
+  // /**
+  // * 极光push注册ID
+  // */
+  // private String jpushRegId;
 
   /**
    * 货道
    */
   private Set<ContainerChannel> cntrChannel = new HashSet<ContainerChannel>();
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  public VendingContainer getParent() {
+    return parent;
+  }
+
+  public void setParent(VendingContainer parent) {
+    this.parent = parent;
+  }
+
+  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OrderBy("sn asc")
+  public Set<VendingContainer> getChildren() {
+    return children;
+  }
+
+  public void setChildren(Set<VendingContainer> children) {
+    this.children = children;
+  }
 
   @OneToMany(mappedBy = "cntr")
   public Set<ContainerChannel> getCntrChannel() {
@@ -101,14 +123,14 @@ public class VendingContainer extends BaseEntity {
     this.cntrChannel = cntrChannel;
   }
 
-  @Column(length = 100)
-  public String getJpushRegId() {
-    return jpushRegId;
-  }
-
-  public void setJpushRegId(String jpushRegId) {
-    this.jpushRegId = jpushRegId;
-  }
+  // @Column(length = 100)
+  // public String getJpushRegId() {
+  // return jpushRegId;
+  // }
+  //
+  // public void setJpushRegId(String jpushRegId) {
+  // this.jpushRegId = jpushRegId;
+  // }
 
 
   public Long getKeeperId() {
@@ -154,14 +176,6 @@ public class VendingContainer extends BaseEntity {
     this.category = category;
   }
 
-  @Column(length = 50)
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
-  }
 
   public CommonStatus getStatus() {
     return status;
