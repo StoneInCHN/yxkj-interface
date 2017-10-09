@@ -202,20 +202,6 @@ public class Setting implements Serializable {
    */
   private String bdCarConvert;
 
-  /**
-   * 兑吧appkey
-   */
-  private String duibaAppKey;
-
-  /**
-   * 兑吧appsecret
-   */
-  private String duibaAppSecret;
-
-  /**
-   * 兑吧login url
-   */
-  private String duibaLoginUrl;
 
   /**
    * 对外接口APIKEY
@@ -272,15 +258,15 @@ public class Setting implements Serializable {
    */
   private String alipayPartner;
 
-  /**
-   * 开发者私钥(合作伙伴密钥)
-   */
-  private String alipayPartnerPrivateKey;
-
-  /**
-   * 支付宝的公钥(合作伙伴密钥)
-   */
-  private String alipayPartnerPublicKey;
+  // /**
+  // * 开发者私钥(合作伙伴密钥)
+  // */
+  // private String alipayPartnerPrivateKey;
+  //
+  // /**
+  // * 支付宝的公钥(合作伙伴密钥)
+  // */
+  // private String alipayPartnerPublicKey;
 
   /**
    * 支付宝商户的私钥
@@ -569,30 +555,6 @@ public class Setting implements Serializable {
 
   public void setBdApiStoreWeatherUrl(String bdApiStoreWeatherUrl) {
     this.bdApiStoreWeatherUrl = bdApiStoreWeatherUrl;
-  }
-
-  public String getDuibaLoginUrl() {
-    return duibaLoginUrl;
-  }
-
-  public void setDuibaLoginUrl(String duibaLoginUrl) {
-    this.duibaLoginUrl = duibaLoginUrl;
-  }
-
-  public String getDuibaAppKey() {
-    return duibaAppKey;
-  }
-
-  public void setDuibaAppKey(String duibaAppKey) {
-    this.duibaAppKey = duibaAppKey;
-  }
-
-  public String getDuibaAppSecret() {
-    return duibaAppSecret;
-  }
-
-  public void setDuibaAppSecret(String duibaAppSecret) {
-    this.duibaAppSecret = duibaAppSecret;
   }
 
   public String getBdCarConvert() {
@@ -954,23 +916,5 @@ public class Setting implements Serializable {
   public void setAuthRedirectUrl(String authRedirectUrl) {
     this.authRedirectUrl = authRedirectUrl;
   }
-
-  public String getAlipayPartnerPrivateKey() {
-    return alipayPartnerPrivateKey;
-  }
-
-  public void setAlipayPartnerPrivateKey(String alipayPartnerPrivateKey) {
-    this.alipayPartnerPrivateKey = alipayPartnerPrivateKey;
-  }
-
-  public String getAlipayPartnerPublicKey() {
-    return alipayPartnerPublicKey;
-  }
-
-  public void setAlipayPartnerPublicKey(String alipayPartnerPublicKey) {
-    this.alipayPartnerPublicKey = alipayPartnerPublicKey;
-  }
-
-
 
 }
