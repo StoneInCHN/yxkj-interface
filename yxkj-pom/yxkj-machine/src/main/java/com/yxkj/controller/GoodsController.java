@@ -6,7 +6,9 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -21,11 +23,19 @@ import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.ContainerChannel;
 import com.yxkj.entity.Goods;
+import com.yxkj.entity.GoodsCategory;
 import com.yxkj.entity.GoodsPic;
+import com.yxkj.framework.filter.Filter;
+import com.yxkj.framework.filter.Filter.Operator;
+import com.yxkj.framework.ordering.Ordering;
+import com.yxkj.framework.ordering.Ordering.Direction;
+import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.json.request.GoodsInfoReq;
 import com.yxkj.service.ContainerChannelService;
+import com.yxkj.service.GoodsCategoryService;
 import com.yxkj.service.GoodsService;
+import com.yxkj.utils.FieldFilterUtils;
 
 /**
  * Controller - 商品
@@ -37,6 +47,10 @@ public class GoodsController extends MobileBaseController {
 
   @Resource(name = "goodsServiceImpl")
   private GoodsService goodsService;
+
+  @Resource(name = "goodsCategoryServiceImpl")
+  private GoodsCategoryService goodsCategoryService;
+
 
   @Resource(name = "containerChannelServiceImpl")
   private ContainerChannelService containerChannelService;
@@ -73,7 +87,6 @@ public class GoodsController extends MobileBaseController {
     gMap.put("status", cc.getChgsStatus());
     String gImg = "";
     for (GoodsPic goodsPic : g.getGoodsPics()) {
-      gImg = goodsPic.getSource();
       if (goodsPic.getOrder() != null && goodsPic.getOrder() == 1) {// 获取中控显示的大图
         gImg = goodsPic.getSource();
       }
@@ -83,6 +96,54 @@ public class GoodsController extends MobileBaseController {
     response.setMsg(gMap);
     response.setCode(CommonAttributes.SUCCESS);
 
+    return response;
+  }
+
+  /**
+   * 查询商品类别
+   * 
+   * @param req
+   * @return
+   */
+  @RequestMapping(value = "/getCategory", method = RequestMethod.POST)
+  @ApiOperation(value = "查询商品类别", httpMethod = "POST", response = ResponseMultiple.class,
+      notes = "查询商品类别")
+  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success")})
+  public @ResponseBody ResponseMultiple<Map<String, Object>> getCategory() {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
+
+    List<Filter> filters = new ArrayList<Filter>();
+    filters.add(new Filter("isActive", Operator.eq, true));
+    List<Ordering> orderings = new ArrayList<Ordering>();
+    orderings.add(new Ordering("cateOrder", Direction.asc));
+
+    List<GoodsCategory> categories = goodsCategoryService.findList(null, filters, orderings);
+    String[] properties = {"id", "cateName", "cateOrder"};
+    List<Map<String, Object>> result = FieldFilterUtils.filterCollectionMap(properties, categories);
+    response.setMsg(result);
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+
+  /**
+   * 根据类别查询所有商品
+   * 
+   * @param req
+   * @return
+   */
+  @RequestMapping(value = "/getAllSg", method = RequestMethod.POST)
+  @ApiOperation(value = "根据类别查询所有商品", httpMethod = "POST", response = ResponseMultiple.class,
+      notes = "根据类别查询所有商品")
+  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success")})
+  public @ResponseBody ResponseMultiple<Map<String, Object>> getAllSg(
+      @ApiParam(name = "请求参数(json)", value = "cateId:商品类别ID | cImei:中控imei号", required = true) @RequestBody GoodsInfoReq req) {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
+    Long cateId = req.getCateId();
+    String cImei = req.getcImei();
+    Integer pageSize = req.getPageSize();
+    Integer pageNum = req.getPageNumber();
+    response = goodsService.getGoodsByCate(cateId, cImei, pageSize, pageNum);
+    response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
 }

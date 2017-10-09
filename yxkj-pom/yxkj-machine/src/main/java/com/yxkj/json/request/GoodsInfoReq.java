@@ -20,6 +20,19 @@ public class GoodsInfoReq extends BaseRequest {
    */
   private String cImei;
 
+  /**
+   * 商品类别ID
+   */
+  private Long cateId;
+
+
+  public Long getCateId() {
+    return cateId;
+  }
+
+  public void setCateId(Long cateId) {
+    this.cateId = cateId;
+  }
 
   public String getcImei() {
     return cImei;
