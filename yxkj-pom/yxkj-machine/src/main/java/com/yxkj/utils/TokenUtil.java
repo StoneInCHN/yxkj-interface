@@ -17,6 +17,14 @@ public class TokenUtil {
 
   public static Setting setting = SettingUtils.get();
 
+  /**
+   * 生成jwt token
+   * 
+   * @param id
+   * @param subject
+   * @param ttlMillis
+   * @return
+   */
   public static String getJWTString(String id, String subject, long ttlMillis) {
     // The JWT signature algorithm we will be using to sign the token
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -25,7 +33,7 @@ public class TokenUtil {
     Date now = new Date(nowMillis);
 
     // We will sign our JWT with our ApiKey secret
-    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("secret");
+    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(setting.getTokenKey());
     Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
     // Let's set the JWT Claims
@@ -44,10 +52,16 @@ public class TokenUtil {
     return builder.compact();
   }
 
+  /**
+   * 验证jwt token
+   * 
+   * @param jwt
+   * @return
+   */
   public static Claims parseJWT(String jwt) {
     try {
       Claims claims =
-          Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary("secret"))
+          Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(setting.getTokenKey()))
               .parseClaimsJws(jwt).getBody();
       // This line will throw an exception if it is not a signed JWS (as expected)
 

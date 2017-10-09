@@ -4,28 +4,21 @@ import java.lang.reflect.Type;
 
 public class UserParam {
 
+  private String userId;
 
-
-  public enum CheckUserType {
-    /**
-     * 终端用户
-     */
-    ENDUSER,
-    /**
-     * 商家
-     */
-    SELLER
-
-
-  };
-
-  private Long userId;
-
-  private CheckUserType userType;
+  private String userName;
 
   private Type returnType;
 
   private String token;
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
 
   public String getToken() {
@@ -36,14 +29,6 @@ public class UserParam {
     this.token = token;
   }
 
-  public CheckUserType getUserType() {
-    return userType;
-  }
-
-  public void setUserType(CheckUserType userType) {
-    this.userType = userType;
-  }
-
   public Type getReturnType() {
     return returnType;
   }
@@ -52,11 +37,11 @@ public class UserParam {
     this.returnType = returnType;
   }
 
-  public Long getUserId() {
+  public String getUserId() {
     return userId;
   }
 
-  public void setUserId(Long userId) {
+  public void setUserId(String userId) {
     this.userId = userId;
   }
 
