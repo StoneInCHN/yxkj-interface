@@ -60,14 +60,15 @@ public class GoodsDaoImpl extends BaseDaoImpl<Goods, Long> implements GoodsDao {
       resultMap.add(map);
     }
 
-    // Msg
-    response.setMsg(resultMap);
 
+    response.setMsg(resultMap);
     // 总记录数
     BigInteger total =
         (BigInteger) entityManager.createNativeQuery("select FOUND_ROWS()")
             .setFlushMode(FlushModeType.COMMIT).getSingleResult();
     response.getPage().setTotal(total.intValue());
+    response.getPage().setPageNumber(pageNum);
+    response.getPage().setPageSize(pageSize);
     return response;
   }
 }
