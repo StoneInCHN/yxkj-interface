@@ -14,9 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
+import com.yxkj.entity.commonenum.CommonEnum.PaymentStatus;
 
 /**
  * Entity - 无人货架订单
@@ -78,18 +81,28 @@ public class ShelfOrder extends BaseEntity {
    * 订单状态
    */
   private OrderStatus status;
+  
+  /**
+   * 交易状态
+   */
+  private PaymentStatus paymentStatus;
 
   /**
    * 订单项
    */
   private Set<ShelfOrderItem> shelfOrderItems = new HashSet<ShelfOrderItem>();
+  
+  /**
+   * 商品数量
+   */
+  private Integer goodsCount;
 
   /**
    * 无人货架的使用公司
    */
   private Company comp;
 
-
+  @JsonProperty
   @ManyToOne(fetch = FetchType.LAZY)
   public Company getComp() {
     return comp;
@@ -99,7 +112,7 @@ public class ShelfOrder extends BaseEntity {
     this.comp = comp;
   }
 
-
+  @JsonProperty
   @ManyToOne(fetch = FetchType.LAZY)
   public Tourist getTourist() {
     return tourist;
@@ -108,7 +121,8 @@ public class ShelfOrder extends BaseEntity {
   public void setTourist(Tourist tourist) {
     this.tourist = tourist;
   }
-
+  
+  @JsonProperty
   public Integer getItemCount() {
     return itemCount;
   }
@@ -116,7 +130,8 @@ public class ShelfOrder extends BaseEntity {
   public void setItemCount(Integer itemCount) {
     this.itemCount = itemCount;
   }
-
+  
+  @JsonProperty
   @OneToMany(mappedBy = "shelfOrder", cascade = CascadeType.ALL)
   public Set<ShelfOrderItem> getShelfOrderItems() {
     return shelfOrderItems;
@@ -125,7 +140,8 @@ public class ShelfOrder extends BaseEntity {
   public void setShelfOrderItems(Set<ShelfOrderItem> shelfOrderItems) {
     this.shelfOrderItems = shelfOrderItems;
   }
-
+  
+  @JsonProperty
   @Column(scale = 2, precision = 10)
   public BigDecimal getProfit() {
     return profit;
@@ -145,7 +161,7 @@ public class ShelfOrder extends BaseEntity {
     this.paymentTypeId = paymentTypeId;
   }
 
-
+  @JsonProperty
   public Date getPaymentTime() {
     return paymentTime;
   }
@@ -154,17 +170,16 @@ public class ShelfOrder extends BaseEntity {
     this.paymentTime = paymentTime;
   }
 
-
-  public OrderStatus getStatus() {
-    return status;
+  @JsonProperty
+  public PaymentStatus getPaymentStatus() {
+	return paymentStatus;
   }
 
-
-  public void setStatus(OrderStatus status) {
-    this.status = status;
+  public void setPaymentStatus(PaymentStatus paymentStatus) {
+	this.paymentStatus = paymentStatus;
   }
 
-
+  @JsonProperty
   @Column(length = 30)
   public String getSn() {
     return sn;
@@ -175,7 +190,7 @@ public class ShelfOrder extends BaseEntity {
     this.sn = sn;
   }
 
-
+  @JsonProperty
   @Column(scale = 2, precision = 10)
   public BigDecimal getAmount() {
     return amount;
@@ -185,7 +200,8 @@ public class ShelfOrder extends BaseEntity {
   public void setAmount(BigDecimal amount) {
     this.amount = amount;
   }
-
+  
+  @JsonProperty
   @Column(length = 20)
   public String getPaymentType() {
     return paymentType;
@@ -195,7 +211,28 @@ public class ShelfOrder extends BaseEntity {
   public void setPaymentType(String paymentType) {
     this.paymentType = paymentType;
   }
+  
+  @JsonProperty
+  @Transient
+  public Integer getGoodsCount() {
+	int count = 0;
+	for (ShelfOrderItem shelfOrderItem : shelfOrderItems) {
+		count += shelfOrderItem.getCount();
+	}
+	return count;
+  }
 
+  public void setGoodsCount(Integer goodsCount) {
+	this.goodsCount = goodsCount;
+  }
+
+  public OrderStatus getStatus() {
+	return status;
+  }
+
+  public void setStatus(OrderStatus status) {
+	this.status = status;
+  }
 
 
 }

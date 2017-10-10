@@ -374,4 +374,17 @@ public class CommonEnum {
      */
     Failed
   }
+  
+  /**
+   * 
+   * 交易状态
+   */
+  public enum PaymentStatus{
+	  /** 未支付 0 */
+	  UNPAID,
+	  /** 交易成功 1*/
+	  SUCCESS,
+	  /** 交易失败 2 */
+	  FAILED
+  }
 }

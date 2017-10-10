@@ -10,6 +10,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
@@ -62,7 +63,7 @@ public class ShelfOrderItem extends BaseEntity {
   private Integer count;
 
 
-
+  @JsonProperty
   public String getSpec() {
     return spec;
   }
@@ -71,7 +72,6 @@ public class ShelfOrderItem extends BaseEntity {
   public void setSpec(String spec) {
     this.spec = spec;
   }
-
 
   @Transient
   public BigDecimal getTotalPrice() {
@@ -83,7 +83,7 @@ public class ShelfOrderItem extends BaseEntity {
   // this.totalPrice = totalPrice;
   // }
 
-
+  @JsonProperty
   public Integer getCount() {
     return count;
   }
@@ -93,7 +93,7 @@ public class ShelfOrderItem extends BaseEntity {
     this.count = count;
   }
 
-
+  @JsonProperty
   @Column(length = 100)
   public String getgName() {
     return gName;
@@ -103,7 +103,8 @@ public class ShelfOrderItem extends BaseEntity {
   public void setgName(String gName) {
     this.gName = gName;
   }
-
+  
+  @JsonProperty
   @Column(length = 50)
   public String getgSn() {
     return gSn;
@@ -115,7 +116,7 @@ public class ShelfOrderItem extends BaseEntity {
   }
 
 
-
+  @JsonProperty
   @Column(scale = 2, precision = 10)
   public BigDecimal getPrice() {
     return price;

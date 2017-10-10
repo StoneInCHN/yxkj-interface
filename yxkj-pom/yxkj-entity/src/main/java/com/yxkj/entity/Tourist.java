@@ -8,6 +8,7 @@ import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.DeviceType;
 import com.yxkj.entity.commonenum.CommonEnum.Gender;
@@ -140,7 +141,8 @@ public class Tourist extends BaseEntity {
   public void setUserChannel(UserChannel userChannel) {
     this.userChannel = userChannel;
   }
-
+  
+  @JsonProperty
   public Gender getGender() {
     return gender;
   }
@@ -148,7 +150,8 @@ public class Tourist extends BaseEntity {
   public void setGender(Gender gender) {
     this.gender = gender;
   }
-
+  
+  @JsonProperty
   @Column(length = 50)
   public String getUserName() {
     return userName;
@@ -157,7 +160,8 @@ public class Tourist extends BaseEntity {
   public void setUserName(String userName) {
     this.userName = userName;
   }
-
+  
+  @JsonProperty
   @Column(length = 20)
   public String getCellPhoneNum() {
     return cellPhoneNum;
@@ -166,7 +170,8 @@ public class Tourist extends BaseEntity {
   public void setCellPhoneNum(String cellPhoneNum) {
     this.cellPhoneNum = cellPhoneNum;
   }
-
+  
+  @JsonProperty
   public String getNickName() {
     return nickName;
   }

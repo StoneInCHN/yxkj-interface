@@ -78,7 +78,7 @@ public class TokenValidation {
           Claims claims = TokenUtil.parseJWT(xAuthToken);
           //token超时,抛出异常
           if (claims == null) {       	  
-        	  throw new RuntimeException("Token失效,请重新登录");
+        	  throw new RuntimeException("Token过期,请重新登录");
           } 
           //用户ID与token不匹配
           else {

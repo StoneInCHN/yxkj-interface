@@ -90,7 +90,6 @@ public class BaseEntity implements Serializable {
    * 
    * @return 创建日期
    */
-  @JsonProperty
   @Column(nullable = false, updatable = false)
   @Field(index = Index.YES, store = Store.NO, analyze = Analyze.NO)
   @FieldBridge(impl = DateBridgeImpl.class)
@@ -111,8 +110,7 @@ public class BaseEntity implements Serializable {
    * 获取修改日期
    * 
    * @return 修改日期
-   */
-  @JsonProperty
+   */  
   @Column(nullable = false)
   public Date getModifyDate() {
     return modifyDate;

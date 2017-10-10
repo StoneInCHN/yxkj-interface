@@ -1,5 +1,6 @@
 package com.yxkj.shelf.controller.base;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import com.yxkj.shelf.beans.Message;
 import com.yxkj.shelf.beans.Setting;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.json.base.BaseResponse;
+import com.yxkj.shelf.utils.HttpServletRequestUtils;
 import com.yxkj.shelf.utils.SettingUtils;
 import com.yxkj.shelf.utils.SpringUtils;
 
@@ -148,8 +150,14 @@ public class BaseController {
    */
   @ExceptionHandler(RuntimeException.class)
   public @ResponseBody BaseResponse runtimeException(HttpServletRequest request,
-  RuntimeException runtimeException) {
-   
+		  RuntimeException runtimeException) {
+    //获取请求参数
+    try {
+		String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     BaseResponse response = new BaseResponse();
     response.setCode(CommonAttributes.FAIL_COMMON);
     response.setDesc(runtimeException.getMessage());

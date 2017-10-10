@@ -14,10 +14,12 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.OrderEntity;
 
 /**
@@ -59,8 +61,11 @@ public class Area extends OrderEntity {
   /**
    * 是否为热门城市
    */
-  private Boolean isHotCity;
+  private Boolean isHotCity; 
 
+  private String value;
+  
+  private String label;  
 
   public Boolean getIsHotCity() {
     return isHotCity;
@@ -83,7 +88,7 @@ public class Area extends OrderEntity {
    * 获取名称
    * 
    * @return 名称
-   */
+   */  
   @NotEmpty
   @Length(max = 100)
   @Column(nullable = false, length = 100)
@@ -105,6 +110,7 @@ public class Area extends OrderEntity {
    * 
    * @return 全称
    */
+  @JsonProperty
   @Column(nullable = false, length = 500)
   public String getFullName() {
     return fullName;
@@ -162,6 +168,7 @@ public class Area extends OrderEntity {
    * 
    * @return 下级地区
    */
+  @JsonProperty
   @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   @OrderBy("order asc")
   public Set<Area> getChildren() {
@@ -176,8 +183,28 @@ public class Area extends OrderEntity {
   public void setChildren(Set<Area> children) {
     this.children = children;
   }
+  
+  @JsonProperty
+  @Transient
+  public String getValue() {
+	  return getId().toString();
+  }
 
-  /**
+  public void setValue(String value) {
+	this.value = value;
+  }
+  
+  @JsonProperty
+  @Transient
+  public String getLabel() {
+	return this.name;
+  }
+
+  public void setLabel(String label) {
+	this.label = label;
+  }
+
+/**
    * 持久化前处理
    */
   @PrePersist

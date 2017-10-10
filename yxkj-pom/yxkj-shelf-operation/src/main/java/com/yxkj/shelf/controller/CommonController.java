@@ -6,12 +6,20 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Controller;
@@ -20,8 +28,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.yxkj.entity.Admin;
+import com.yxkj.entity.Company;
+import com.yxkj.entity.Goods;
 import com.yxkj.entity.MenuAuthority;
 import com.yxkj.entity.Role;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
@@ -29,10 +41,15 @@ import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.controller.base.BaseController;
 import com.yxkj.shelf.json.admin.request.AdminRequest;
+import com.yxkj.shelf.json.admin.request.CompanyGoods;
 import com.yxkj.shelf.json.base.BaseRequest;
 import com.yxkj.shelf.json.base.BaseResponse;
 import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.AdminService;
+import com.yxkj.shelf.service.CompanyService;
+import com.yxkj.shelf.service.GoodsService;
+import com.yxkj.shelf.utils.FieldFilterUtils;
+import com.yxkj.shelf.utils.GeneratePdf;
 import com.yxkj.shelf.utils.TimeUtils;
 import com.yxkj.shelf.utils.TokenUtil;
 
@@ -48,7 +65,16 @@ public class CommonController extends BaseController {
 	
 	@Resource(name = "adminServiceImpl")
 	private AdminService adminService;
-	  
+	
+	@Resource(name = "companyServiceImpl")
+	private CompanyService companyService;
+	
+	@Resource(name = "goodsServiceImpl")
+	private GoodsService goodsService;
+	
+	@Resource(name = "taskExecutor")
+	private Executor threadPoolExecutor;
+	
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "用户登录", httpMethod = "POST", response = BaseResponse.class, notes = "用户登录")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -63,7 +89,7 @@ public class CommonController extends BaseController {
             response.setDesc(message("yxkj.request.param.missing"));
             return response;
         }
-        LogUtil.debug(this.getClass(), "login", "登录名:%s  登录密码:%s", userName, password);        
+        LogUtil.debug(this.getClass(), "login", "登录名:%s", userName);        
         Admin admin = adminService.findByUserName(userName);
           
         if (admin == null) {
@@ -99,14 +125,22 @@ public class CommonController extends BaseController {
         MenuAuthority order = new MenuAuthority("订单管理", "/orderList", "clipboard", "order/OrderList", null, null, null);
         MenuAuthority orderDetail = new MenuAuthority("订单详情", "/orderDetail/:id", null, "order/OrderDetail", null, true, null);
         MenuAuthority company = new MenuAuthority("公司管理", "/companyList", "ios-photos-outline", "company/CompanyList", null, null, null);
-        MenuAuthority goods = new MenuAuthority("商品管理", "/goodsList", "android-playstore", "order/OrderList", null, null, null);
-        MenuAuthority user = new MenuAuthority("用户管理", "/userList", "android-contacts", "order/OrderList", null, null, null);
+        MenuAuthority companyAdd = new MenuAuthority("公司新增", "/companyAdd", null, "company/CompanyAdd", null, true, null);
+        MenuAuthority companyEdit = new MenuAuthority("编辑公司", "/companyEdit/:id", null, "company/CompanyEdit", null, true, null);     
+        MenuAuthority companyGoodsQr = new MenuAuthority("商品二维码", "/companyGoodsQr/:id", null, "company/CompanyGoodsQr", null, true, null); 
+        MenuAuthority goods = new MenuAuthority("商品管理", "/goodsList", "android-playstore", "goods/GoodsList", null, null, null);
+        MenuAuthority goodsAdd = new MenuAuthority("商品新增", "/goodsAdd", null, "goods/GoodsAdd", null, true, null);
+        MenuAuthority endUser = new MenuAuthority("用户管理", "/touristList", "android-contacts", "user/TouristList", null, null, null);
         authorities.add(home);
         authorities.add(order);
         authorities.add(orderDetail);
         authorities.add(company);
+        authorities.add(companyAdd);
+        authorities.add(companyEdit);
+        authorities.add(companyGoodsQr);
         authorities.add(goods);
-        authorities.add(user);
+        authorities.add(goodsAdd);
+        authorities.add(endUser);
         /** 角色 */
         Role role = new Role();
         role.setName("admin");
@@ -135,6 +169,82 @@ public class CommonController extends BaseController {
       //删除token
       response.setCode(CommonAttributes.SUCCESS);
       return response;
+    }
+    @RequestMapping(value = "/uploadImg", method = {RequestMethod.GET, RequestMethod.POST})
+    public void uploadImg(HttpServletRequest request, HttpServletResponse response) {
+      Map<String, Object> map = new HashMap<String, Object>();
+      MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+      Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+      System.out.println("w23e4");
+//      for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+//        try {
+//          MultipartFile mf = entity.getValue();
+//          String displayPath = fileService.saveImage(mf, ImageType.ADVERTISEMENT);
+//          map.put("url", displayPath);
+//          map.put("error", 0);
+//          String result = JsonUtil.getJsonString4JavaPOJO(map);
+//          String callback = request.getParameter("callback");
+//          if (callback == null) {
+//            response.getWriter().print(result);
+//          } else {
+//            response.getWriter().print("<script>" + callback + "(" + result + ")</script>");
+//          }
+//
+//        } catch (IOException e) {
+//          e.printStackTrace();
+//        }
+//      }
+    }
+    /**
+     * 下载商品二维码pdf
+     * 
+     */
+    @RequestMapping(value = "/downloadQrPdf", method = {RequestMethod.GET, RequestMethod.POST})
+    public void downloadQrPdf(CompanyGoods companyGoods, HttpServletResponse response, HttpSession session) {
+      Company company = companyService.find(companyGoods.getCompanyId());
+      if (company == null) {
+        LogUtil.debug(this.getClass(), "downloadQrPdf", "company is null");
+        return;
+      }
+      if (companyGoods.getSelectKeys() == null && companyGoods.getSelectKeys().size() > 0) {
+          LogUtil.debug(this.getClass(), "downloadQrPdf", "SelectKeys is null");
+          return;
+      }
+      List<Goods> goods = new ArrayList<Goods>();
+      List<Long> selectKeys = companyGoods.getSelectKeys();
+      for (int i = 0; i < selectKeys.size(); i++) {
+    	  goods.add(goodsService.find(selectKeys.get(i)));
+	  }      
+      String[] propertys = {"sn", "name", "spec"};
+      List<Map<String, Object>> goodsList = FieldFilterUtils.filterCollection(propertys, goods);
+
+      try {
+        response.setContentType("octets/stream");
+        String filename = TimeUtils.getDateFormatString("yyyyMMddHHmmss", new Date());
+        response.addHeader("Content-Disposition", "attachment;filename=" + filename + ".pdf");
+
+        OutputStream out = response.getOutputStream();// 获得输出流        
+        GeneratePdf generatePdf = new GeneratePdf(company.getFullName(),company.getSn(),goodsList,out);        
+        Object locker = new Object();// 当前主线程的一把锁
+        synchronized (locker) {
+          threadPoolExecutor.execute(// 加入到线程池中执行
+              new Runnable() {
+                public void run() {
+                	generatePdf.generatePdf();
+                  synchronized (locker) {
+                    locker.notify();
+                  }
+                }
+              });
+          locker.wait();// 主线程等待
+        }
+
+        out.flush();
+        out.close();
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
     
 }

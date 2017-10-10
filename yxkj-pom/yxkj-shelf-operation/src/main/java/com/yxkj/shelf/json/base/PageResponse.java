@@ -16,6 +16,14 @@ public class PageResponse {
        * 每一页数据
        */
       private Integer pageSize;
+      
+      public PageResponse(){}
+      
+      public PageResponse(Integer pageNumber, Integer pageSize, Integer total) {
+		this.total = total;
+		this.pageNumber = pageNumber;
+		this.pageSize = pageSize;
+	  }
 
       public Integer getTotal() {
         return total;

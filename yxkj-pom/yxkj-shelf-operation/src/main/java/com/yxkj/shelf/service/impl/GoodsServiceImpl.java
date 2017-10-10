@@ -1,5 +1,7 @@
 package com.yxkj.shelf.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.yxkj.entity.Goods;
 import com.yxkj.shelf.dao.GoodsDao;
 import com.yxkj.shelf.framework.service.impl.BaseServiceImpl;
+import com.yxkj.shelf.json.admin.response.GoodsProfile;
 import com.yxkj.shelf.service.GoodsService;
 
 @Service("goodsServiceImpl")
@@ -23,5 +26,10 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods, Long> implements Go
   @Override
   public Goods getBySn(String sn) {
     return goodsDao.getBySn(sn);
+  }
+
+  @Override
+  public List<GoodsProfile> getAllGoodsProfile() {
+	return goodsDao.getAllGoodsProfile();
   }
 }

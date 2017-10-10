@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -85,9 +86,10 @@ public class Company extends BaseEntity {
    * 货架
    */
   private Set<CompanyShelf> goodsShelves = new HashSet<CompanyShelf>();
+  
 
   @JsonProperty
-  @OneToMany(mappedBy = "comp")
+  @OneToMany(mappedBy = "comp", cascade = CascadeType.ALL)
   public Set<CompanyShelf> getGoodsShelves() {
     return goodsShelves;
   }
@@ -95,7 +97,8 @@ public class Company extends BaseEntity {
   public void setGoodsShelves(Set<CompanyShelf> goodsShelves) {
     this.goodsShelves = goodsShelves;
   }
-
+  
+  @JsonProperty
   @Column(length = 100)
   public String getFullName() {
     return fullName;
@@ -104,7 +107,8 @@ public class Company extends BaseEntity {
   public void setFullName(String fullName) {
     this.fullName = fullName;
   }
-
+  
+  @JsonProperty
   @Column(length = 50)
   public String getDisplayName() {
     return displayName;
@@ -113,6 +117,7 @@ public class Company extends BaseEntity {
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
   }
+  
   @JsonProperty
   @Column(length = 20)
   public String getContactPerson() {
@@ -122,6 +127,7 @@ public class Company extends BaseEntity {
   public void setContactPerson(String contactPerson) {
     this.contactPerson = contactPerson;
   }
+  
   @JsonProperty
   @Column(length = 20)
   public String getContactPhone() {
@@ -131,7 +137,8 @@ public class Company extends BaseEntity {
   public void setContactPhone(String contactPhone) {
     this.contactPhone = contactPhone;
   }
-
+  
+  @JsonProperty
   @Column(length = 200)
   public String getRemark() {
     return remark;
@@ -168,7 +175,8 @@ public class Company extends BaseEntity {
   public void setAddress(String address) {
     this.address = address;
   }
-
+  
+  @JsonProperty
   @ManyToOne(fetch = FetchType.LAZY)
   public Area getArea() {
     return area;
@@ -187,7 +195,5 @@ public class Company extends BaseEntity {
   public void setSn(String sn) {
     this.sn = sn;
   }
-
-
 
 }
