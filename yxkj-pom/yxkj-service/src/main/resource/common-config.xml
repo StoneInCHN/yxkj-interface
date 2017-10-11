@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<yxkj>
+		
+		<!-- shelf url -->
+		<setting name="shelfSysUrl" value="http://test.ybjcq.com/yxkj-shelf/shelfH5/item.jsp" />
+		<!-- auth Redirect url -->
+		<setting name="authRedirectUrl" value="http://test.ybjcq.com/auth.jsp" />
+		<!-- 微信公众平台 -->
+		<!-- 公众平台appid -->
+		<setting name="wxPublicAppId" value="wx3598eb401cb80f00" />
+		<!-- 支付宝平台 -->
+		<!-- 应用APPID -->
+		<setting name="alipayAppId" value="2017061707509713" />
+		
+	</yxkj>	
+	

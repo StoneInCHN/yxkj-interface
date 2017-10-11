@@ -20,11 +20,12 @@ public class ContainerChannelDaoImpl extends BaseDaoImpl<ContainerChannel, Long>
     }
     try {
       String jpql =
-          "select cc from ContainerChannel as cc left join cc.cntr as vc where vc.sn = :channel and vc.parent.sn=:cImei";
+          "select cc from ContainerChannel as cc left join cc.cntr as vc where cc.sn = :channel and vc.sn = :cSn and vc.parent.sn=:cImei";
       ContainerChannel cc =
           entityManager.createQuery(jpql, ContainerChannel.class)
               .setFlushMode(FlushModeType.COMMIT).setParameter("cImei", cImei)
-              .setParameter("channel", channel).getSingleResult();
+              .setParameter("cSn", channel.subSequence(0, 1)).setParameter("channel", channel)
+              .getSingleResult();
       return cc;
     } catch (NoResultException e) {
       return null;

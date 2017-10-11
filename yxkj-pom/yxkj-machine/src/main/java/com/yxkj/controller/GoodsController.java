@@ -72,7 +72,7 @@ public class GoodsController extends MobileBaseController {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
     String cSn = req.getcSn();
     String cImei = req.getcImei();
-    ContainerChannel cc = containerChannelService.getByCImeiAndChannel(cImei, cSn.substring(0, 1));
+    ContainerChannel cc = containerChannelService.getByCImeiAndChannel(cImei, cSn);
     if (cc == null || cc.getGoods() == null) {
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.goods.noexist", cSn));
@@ -84,7 +84,7 @@ public class GoodsController extends MobileBaseController {
     gMap.put("gName", g.getName());
     gMap.put("gSpec", g.getSpec());
     gMap.put("price", cc.getPrice());
-    gMap.put("status", cc.getChgsStatus());
+    gMap.put("count", cc.getSurplus());
     String gImg = "";
     for (GoodsPic goodsPic : g.getGoodsPics()) {
       if (goodsPic.getOrder() != null && goodsPic.getOrder() == 1) {// 获取中控显示的大图
@@ -131,7 +131,7 @@ public class GoodsController extends MobileBaseController {
    * @param req
    * @return
    */
-  @RequestMapping(value = "/getAllSg", method = RequestMethod.POST)
+  @RequestMapping(value = "/getByCate", method = RequestMethod.POST)
   @ApiOperation(value = "根据类别查询所有商品", httpMethod = "POST", response = ResponseMultiple.class,
       notes = "根据类别查询所有商品")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success")})

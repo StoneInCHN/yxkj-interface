@@ -1,4 +1,4 @@
-package com.yxkj.shelf.utils;
+package com.yxkj.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,9 +24,9 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.core.io.ClassPathResource;
 
-import com.yxkj.shelf.beans.CommonAttributes;
-import com.yxkj.shelf.beans.EnumConverter;
-import com.yxkj.shelf.beans.Setting;
+import com.yxkj.beans.CommonAttributes;
+import com.yxkj.beans.EnumConverter;
+import com.yxkj.beans.Setting;
 
 
 
@@ -108,7 +108,7 @@ public final class SettingUtils {
   }
 
   /**
-   * 不可实例化
+   * 不可实例�?
    */
   private SettingUtils() {}
 
