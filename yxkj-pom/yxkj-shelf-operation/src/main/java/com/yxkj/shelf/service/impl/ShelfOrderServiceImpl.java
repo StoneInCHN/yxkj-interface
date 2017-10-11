@@ -17,6 +17,7 @@ import com.yxkj.entity.ShelfOrderItem;
 import com.yxkj.entity.Sn.Type;
 import com.yxkj.entity.Tourist;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
+import com.yxkj.entity.commonenum.CommonEnum.ShelfOrderStatus;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.dao.CompanyDao;
 import com.yxkj.shelf.dao.ShelfOrderDao;
@@ -52,7 +53,7 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
       List<GoodsBean> goodsBeans) {
     ShelfOrder shelfOrder = new ShelfOrder();
     shelfOrder.setPaymentType(payType);
-    shelfOrder.setStatus(OrderStatus.UNPAID);
+    shelfOrder.setStatus(ShelfOrderStatus.UNPAID);
     Company company = companyDao.find(compId);
     shelfOrder.setComp(company);
     Tourist t = touristDao.getByUserId(userName);
@@ -97,7 +98,7 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
           shelfOrder.getStatus().toString());
       return shelfOrder;
     }
-    shelfOrder.setStatus(OrderStatus.PAID);
+    shelfOrder.setStatus(ShelfOrderStatus.PAID);
     shelfOrder.setPaymentTime(new Date());
     shelfOrderDao.merge(shelfOrder);
     LogUtil

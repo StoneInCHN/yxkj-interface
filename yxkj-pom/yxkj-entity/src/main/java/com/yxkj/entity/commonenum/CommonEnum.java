@@ -216,6 +216,12 @@ public class CommonEnum {
     FILE
   }
 
+  /**
+   * 货柜订单状态
+   * 
+   * @author Andrea
+   * @version 2017年10月11日 下午2:57:59
+   */
   public enum OrderStatus {
     /** 未支付 0 */
     UNPAID,
@@ -374,17 +380,17 @@ public class CommonEnum {
      */
     Failed
   }
-  
+
   /**
+   * 货架订单状态
    * 
-   * 交易状态
+   * @author Andrea
+   * @version 2017年10月11日 下午2:59:12
    */
-  public enum PaymentStatus{
-	  /** 未支付 0 */
-	  UNPAID,
-	  /** 交易成功 1*/
-	  SUCCESS,
-	  /** 交易失败 2 */
-	  FAILED
+  public enum ShelfOrderStatus {
+    /** 未支付(交易失败) 0 */
+    UNPAID,
+    /** 已支付(交易成功) 1 */
+    PAID
   }
 }

@@ -80,7 +80,8 @@ public class GoodsController extends MobileBaseController {
     }
     Goods g = cc.getGoods();
     Map<String, Object> gMap = new HashMap<String, Object>();
-    gMap.put("gId", g.getId());
+    gMap.put("cSn", cSn);
+    gMap.put("cId", cc.getId());
     gMap.put("gName", g.getName());
     gMap.put("gSpec", g.getSpec());
     gMap.put("price", cc.getPrice());

@@ -26,7 +26,7 @@ public class GoodsDaoImpl extends BaseDaoImpl<Goods, Long> implements GoodsDao {
 
     StringBuffer sqlPage = new StringBuffer();
     sqlPage
-        .append("select SQL_CALC_FOUND_ROWS goods.id,goods.name,goods.spec,goodsImage.source,channel.price,channel.surplus ");
+        .append("select SQL_CALC_FOUND_ROWS channel.id,goods.name,goods.spec,goodsImage.source,channel.price,channel.surplus,channel.sn ");
     sqlPage
         .append("from t_goods goods,t_cntr_channel channel,t_vending_container vc,t_goods_image goodsImage");
     sqlPage.append(" where 1=1 ");
@@ -51,12 +51,13 @@ public class GoodsDaoImpl extends BaseDaoImpl<Goods, Long> implements GoodsDao {
     for (Object object : list) {
       Object[] arrays = (Object[]) object;
       Map<String, Object> map = new HashMap<String, Object>();
-      map.put("gId", arrays[0]);
+      map.put("cId", arrays[0]);
       map.put("gName", arrays[1]);
       map.put("gSpec", arrays[2]);
       map.put("gImg", arrays[3]);
       map.put("price", arrays[4]);
       map.put("count", arrays[5]);
+      map.put("cSn", arrays[6]);
       resultMap.add(map);
     }
 
