@@ -48,6 +48,15 @@ public class BaseServiceImpl<T, ID extends Serializable> implements BaseService<
   public T find(ID id) {
     return baseDao.find(id);
   }
+  
+  @Transactional(readOnly = true)
+  public T findFirst(List<Filter> filters, List<Ordering> orderings) {
+	List<T> list = baseDao.findList(null, 1, filters, orderings);
+	if (list != null && list.size() > 0) {
+		return list.get(0);
+	}
+    return null;
+  }
 
   @Transactional(readOnly = true)
   public List<T> findAll() {

@@ -13,6 +13,6 @@ public class test {
 
     String jwtToken2 =
         "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwiaWF0IjoxNTA1MjA3ODUyLCJzdWIiOiIyMzIzIiwiZXhwIjoxNTA1MjA4ODUyfQ.jBBLpRo2Po6J-eRl8Gg5SZmS-jztqNz-xuGtDi-JgrE";
-    TokenUtil.parseJWT(TokenUtil.getJWTString("1", "2323", 1000000));
+    TokenUtil.parseJWT(TokenUtil.getJWTString("1", "2323"));
   }
 }

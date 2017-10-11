@@ -1,9 +1,7 @@
 package com.yxkj.beans;
 
-import com.yxkj.utils.JedisUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.JedisPoolConfig;
 
 @Component
 public class RedisConfig {
