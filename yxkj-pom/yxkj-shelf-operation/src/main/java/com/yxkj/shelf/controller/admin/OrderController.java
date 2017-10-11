@@ -62,7 +62,7 @@ public class OrderController extends BaseController {
       Page<ShelfOrder> orderPage = shelfOrderService.findPage(pageable);      
       String[] propertys =
           {"id", "sn", "tourist.userName", "tourist.nickName", "paymentType", 
-    		  "paymentTime", "amount", "profit", "paymentStatus", "goodsCount", "comp.sn", "comp.displayName"};
+    		  "paymentTime", "amount", "profit", "status", "goodsCount", "comp.sn", "comp.displayName"};
       List<Map<String, Object>> result =
           FieldFilterUtils.filterCollection(propertys, orderPage.getContent());
       PageResponse pageInfo = new PageResponse(pageable.getPageNumber(), 
@@ -73,13 +73,14 @@ public class OrderController extends BaseController {
       response.setCode(CommonAttributes.SUCCESS);
       return response;
     }
+    
     @RequestMapping(value = "/getOrderDetail", method = RequestMethod.POST)
     @ApiOperation(value = "订单详情", httpMethod = "POST", response = ResponseOne.class, notes = "用于获取订单详情")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseOne<ShelfOrder> getOrderDetail(
     		@ApiParam @RequestBody ShelfOrderRequest request) {
     	
-    	ResponseOne<ShelfOrder> response = new ResponseOne<ShelfOrder>(); 
+      ResponseOne<ShelfOrder> response = new ResponseOne<ShelfOrder>(); 
       Long orderId = request.getId();  	
       if (orderId == null || orderId <= 0) {
           response.setCode(CommonAttributes.FAIL_LOGIN);

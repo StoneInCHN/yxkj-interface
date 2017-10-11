@@ -37,6 +37,7 @@ import com.yxkj.entity.Goods;
 import com.yxkj.entity.MenuAuthority;
 import com.yxkj.entity.Role;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
+import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.controller.base.BaseController;
@@ -47,6 +48,7 @@ import com.yxkj.shelf.json.base.BaseResponse;
 import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.AdminService;
 import com.yxkj.shelf.service.CompanyService;
+import com.yxkj.shelf.service.FileService;
 import com.yxkj.shelf.service.GoodsService;
 import com.yxkj.shelf.utils.FieldFilterUtils;
 import com.yxkj.shelf.utils.GeneratePdf;
@@ -71,6 +73,9 @@ public class CommonController extends BaseController {
 	
 	@Resource(name = "goodsServiceImpl")
 	private GoodsService goodsService;
+	
+	@Resource(name = "fileServiceImpl")
+	private FileService fileService;
 	
 	@Resource(name = "taskExecutor")
 	private Executor threadPoolExecutor;
@@ -130,6 +135,7 @@ public class CommonController extends BaseController {
         MenuAuthority companyGoodsQr = new MenuAuthority("商品二维码", "/companyGoodsQr/:id", null, "company/CompanyGoodsQr", null, true, null); 
         MenuAuthority goods = new MenuAuthority("商品管理", "/goodsList", "android-playstore", "goods/GoodsList", null, null, null);
         MenuAuthority goodsAdd = new MenuAuthority("商品新增", "/goodsAdd", null, "goods/GoodsAdd", null, true, null);
+        MenuAuthority goodsEdit = new MenuAuthority("编辑商品", "/goodsEdit/:id", null, "goods/GoodsEdit", null, true, null);
         MenuAuthority endUser = new MenuAuthority("用户管理", "/touristList", "android-contacts", "user/TouristList", null, null, null);
         authorities.add(home);
         authorities.add(order);
@@ -140,6 +146,7 @@ public class CommonController extends BaseController {
         authorities.add(companyGoodsQr);
         authorities.add(goods);
         authorities.add(goodsAdd);
+        authorities.add(goodsEdit);
         authorities.add(endUser);
         /** 角色 */
         Role role = new Role();
@@ -171,29 +178,19 @@ public class CommonController extends BaseController {
       return response;
     }
     @RequestMapping(value = "/uploadImg", method = {RequestMethod.GET, RequestMethod.POST})
-    public void uploadImg(HttpServletRequest request, HttpServletResponse response) {
-      Map<String, Object> map = new HashMap<String, Object>();
+    public @ResponseBody BaseResponse uploadImg(HttpServletRequest request) {
+      BaseResponse response = new BaseResponse();
       MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
       Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-      System.out.println("w23e4");
-//      for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
-//        try {
-//          MultipartFile mf = entity.getValue();
-//          String displayPath = fileService.saveImage(mf, ImageType.ADVERTISEMENT);
-//          map.put("url", displayPath);
-//          map.put("error", 0);
-//          String result = JsonUtil.getJsonString4JavaPOJO(map);
-//          String callback = request.getParameter("callback");
-//          if (callback == null) {
-//            response.getWriter().print(result);
-//          } else {
-//            response.getWriter().print("<script>" + callback + "(" + result + ")</script>");
-//          }
-//
-//        } catch (IOException e) {
-//          e.printStackTrace();
-//        }
-//      }
+      for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+          MultipartFile mf = entity.getValue();
+          String displayPath = fileService.saveImage(mf, ImageType.GOODS_IMG);
+          response.setDesc(displayPath); 
+          System.out.println(displayPath);
+          break;
+      }
+      response.setCode(CommonAttributes.SUCCESS);            
+      return response;
     }
     /**
      * 下载商品二维码pdf
@@ -215,7 +212,7 @@ public class CommonController extends BaseController {
       for (int i = 0; i < selectKeys.size(); i++) {
     	  goods.add(goodsService.find(selectKeys.get(i)));
 	  }      
-      String[] propertys = {"sn", "name", "spec"};
+      String[] propertys = {"id", "sn", "name", "spec"};
       List<Map<String, Object>> goodsList = FieldFilterUtils.filterCollection(propertys, goods);
 
       try {
@@ -224,7 +221,8 @@ public class CommonController extends BaseController {
         response.addHeader("Content-Disposition", "attachment;filename=" + filename + ".pdf");
 
         OutputStream out = response.getOutputStream();// 获得输出流        
-        GeneratePdf generatePdf = new GeneratePdf(company.getFullName(),company.getSn(),goodsList,out);        
+        GeneratePdf generatePdf = new GeneratePdf(
+        		company.getDisplayName(),company.getId().toString(),goodsList,out);        
         Object locker = new Object();// 当前主线程的一把锁
         synchronized (locker) {
           threadPoolExecutor.execute(// 加入到线程池中执行

@@ -33,13 +33,13 @@ import com.yxkj.shelf.utils.QRCodeGenerator;
 public class GeneratePdf {
 	
 	private String companyName;
-	private String companySn;
+	private String companyId;
 	private List<Map<String,Object>> goodsList;
 	private OutputStream out;
 	
-	public GeneratePdf(String companyName,String companySn,List<Map<String,Object>> goodsList,OutputStream out){
+	public GeneratePdf(String companyName,String companyId,List<Map<String,Object>> goodsList,OutputStream out){
 		this.companyName = companyName;
-		this.companySn = companySn;
+		this.companyId = companyId;
 		this.goodsList = goodsList;
 		this.out = out;
 	}
@@ -88,8 +88,15 @@ public class GeneratePdf {
             Image img = null;
             for (int i = 0; i < goodsList.size()/4; i++) {
             	for (int j = 0; j < 4; j++) {
-            		Map<String,Object> goods = goodsList.get(i*4 + j);    
-            		String desc = goods.get("name")!=null?goods.get("name").toString():""+goods.get("spec")!=null?goods.get("spec").toString():"";
+            		Map<String,Object> goods = goodsList.get(i*4 + j);   
+        			String desc = "";
+        			if (goods.get("name")!=null) {
+        				desc += goods.get("name").toString();
+					}
+        			if (goods.get("spec")!=null) {
+        				desc += goods.get("spec").toString();
+					}
+            		//String desc = goods.get("name")!=null?goods.get("name").toString():""+goods.get("spec")!=null?goods.get("spec").toString():"";
                     qrCell = new PdfPCell(new Phrase(desc, textFont));
                     qrCell.setMinimumHeight(18); //设置单元格高度
                     qrCell.setUseAscender(true); //设置可以居中
@@ -99,7 +106,8 @@ public class GeneratePdf {
 				}
             	for (int j = 0; j < 4; j++) {
             		Map<String,Object> goods = goodsList.get(i*4 + j);                    
-                    String content = "{\"companySn\":\"" + companySn + "\",\"goodsSn\":\"" + goods.get("sn") + "\"}";//二维码格式  待定????
+                    //String content = "{\"companySn\":\"" + companySn + "\",\"goodsSn\":\"" + goods.get("sn") + "\"}";//二维码格式  待定????
+                    String content = "/h5/shelf/"+companyId+"/"+goods.get("id");                    
                     QRCodeGenerator qr = new QRCodeGenerator();
                     img = Image.getInstance(qr.generateQrImage(content));
                     qrCell= new PdfPCell(img);
@@ -117,7 +125,14 @@ public class GeneratePdf {
             	for (int j = 0; j < 4; j++) {
             		if (j<left) {
             			Map<String,Object> goods = goodsList.get(level*4 + j); 
-            			String desc = goods.get("name")!=null?goods.get("name").toString():""+goods.get("spec")!=null?goods.get("spec").toString():"";
+            			String desc = "";
+            			if (goods.get("name")!=null) {
+            				desc += goods.get("name").toString();
+						}
+            			if (goods.get("spec")!=null) {
+            				desc += goods.get("spec").toString();
+						}
+            			//String desc = goods.get("name")!=null?goods.get("name").toString():""+goods.get("spec")!=null?goods.get("spec").toString():"";
                         qrCell = new PdfPCell(new Phrase(desc, textFont));
 					}else {
 	                    qrCell = new PdfPCell(new Phrase(" ", textFont));
@@ -131,7 +146,8 @@ public class GeneratePdf {
             	for (int j = 0; j < 4; j++) {
             		if (j<left) {
             			Map<String,Object> goods = goodsList.get(level*4 + j); 
-                        String content = "{\"companySn\":\"" + companySn + "\",\"goodsSn\":\"" + goods.get("sn") + "\"}";//二维码格式  待定????
+                        //String content = "{\"companySn\":\"" + companySn + "\",\"goodsSn\":\"" + goods.get("sn") + "\"}";//二维码格式  待定????
+                        String content = "/h5/shelf/"+companyId+"/"+goods.get("id");  
                         QRCodeGenerator qr = new QRCodeGenerator();
                         img = Image.getInstance(qr.generateQrImage(content));
                         qrCell= new PdfPCell(img);
@@ -166,13 +182,14 @@ public class GeneratePdf {
         	List<Map<String,Object>> goodsList = new ArrayList<Map<String,Object>>();
         	Map<String,Object> map = new HashMap<String, Object>();
         	for (int i = 0; i < 23; i++) {
+        		map.put("id", "1");
             	map.put("sn", "000000001");
             	map.put("name", "旺仔小馒头");
             	map.put("spec", "80g");
             	goodsList.add(map);
         	}
         	OutputStream out = new FileOutputStream(new File("E:\\商品二维码.pdf"));
-            GeneratePdf gp = new GeneratePdf("XXXX有限公司","000000001",goodsList,out);
+            GeneratePdf gp = new GeneratePdf("XXXX有限公司","2",goodsList,out);
             gp.generatePdf();
         } catch (Exception e) {
             e.printStackTrace();
