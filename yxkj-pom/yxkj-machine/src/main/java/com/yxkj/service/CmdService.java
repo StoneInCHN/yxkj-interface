@@ -1,6 +1,6 @@
 package com.yxkj.service;
 
-import com.yxkj.beans.CmdMsg;
+import com.yxkj.entity.CmdMsg;
 import com.yxkj.entity.CommandRecord;
 import com.yxkj.framework.service.BaseService;
 

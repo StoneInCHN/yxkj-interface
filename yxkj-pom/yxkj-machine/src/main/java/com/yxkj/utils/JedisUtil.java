@@ -14,8 +14,8 @@ import java.util.Set;
 public class JedisUtil {
     private static JedisPool jedisPool;
 
-    public static void init(JedisPoolConfig config, String jedisIp, int jedisPort, int timeOut) {
-        jedisPool = new JedisPool(config, jedisIp, jedisPort, timeOut);
+    public static void init(JedisPoolConfig config, String jedisIp, int jedisPort, int timeOut,String password) {
+        jedisPool = new JedisPool(config, jedisIp, jedisPort, timeOut,password);
     }
 
     /**

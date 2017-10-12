@@ -1,5 +1,6 @@
 package com.yxkj.controller;
 
+import com.yxkj.entity.CmdMsg;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.aspect.UserValidCheck;
-import com.yxkj.beans.CmdMsg;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.json.base.BaseRequest;

@@ -1,4 +1,4 @@
-package com.yxkj.beans;
+package com.yxkj.entity;
 
 import java.io.Serializable;
 
@@ -27,11 +27,13 @@ public class CmdMsg implements Serializable {
      */
     private int addressType;
     /**
-     *货道号
+     * 货道号
      */
     private int box;
 
-    /**设备号*/
+    /**
+     * 设备号
+     */
     private String deviceNo;
 
     /**

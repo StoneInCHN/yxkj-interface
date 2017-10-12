@@ -470,11 +470,17 @@
 	    <dependency>
               <groupId>alipay-sdk</groupId>
               <artifactId>alipay-sdk-java</artifactId>
-        </dependency> 
+        </dependency>
         <dependency>
               <groupId>commons-logging</groupId>
 			  <artifactId>commons-logging</artifactId>
         </dependency>
+	  <dependency>
+		  <groupId>com.yxkj</groupId>
+		  <artifactId>common-entity</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+	  </dependency>
+
   </dependencies>
   
     <properties> 

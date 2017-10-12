@@ -1,7 +1,7 @@
 package com.yxkj.service.impl;
 
-import com.yxkj.beans.CmdMsg;
 import com.yxkj.beans.RedisConfig;
+import com.yxkj.entity.CmdMsg;
 import com.yxkj.entity.CommandRecord;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
 import com.yxkj.service.CmdService;
@@ -34,7 +34,7 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
         config.setMinEvictableIdleTimeMillis(60000L);
         config.setTimeBetweenEvictionRunsMillis(3000L);
         config.setNumTestsPerEvictionRun(-1);
-        JedisUtil.init(config, redisConfig.getJedisIp(), redisConfig.getJedisPort(), redisConfig.getJedisTimeout());
+        JedisUtil.init(config, redisConfig.getJedisIp(), redisConfig.getJedisPort(), redisConfig.getJedisTimeout(),redisConfig.getJedisPassword());
     }
 
     @Override
