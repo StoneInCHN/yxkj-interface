@@ -19,4 +19,5 @@ public interface GoodsService extends BaseService<Goods, Long> {
    */
   ResponseMultiple<Map<String, Object>> getGoodsByCate(Long cateId, String cImei, Integer pageSize,
       Integer pageNum);
+
 }

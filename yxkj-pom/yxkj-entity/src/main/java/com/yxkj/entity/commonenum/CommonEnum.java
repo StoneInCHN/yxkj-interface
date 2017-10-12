@@ -199,7 +199,7 @@ public class CommonEnum {
     /** 身份证照片 */
     AUTH_IDCARD,
     /** 商品图片 */
-    GOODS_IMG, 
+    GOODS_IMG,
   }
 
   /**
@@ -394,7 +394,20 @@ public class CommonEnum {
     UNPAID,
     /** 已支付(交易成功) 1 */
     PAID,
-    /** 支付失败(交易失败)*/
+    /** 支付失败(交易失败) */
     PAID_FAILED
+  }
+
+  /**
+   * 货柜温度
+   * 
+   * @author Andrea
+   * @version 2017年10月11日 下午2:59:12
+   */
+  public enum CntrTemp {
+    /** 冷冻 0 */
+    COLD,
+    /** 常温 1 */
+    NORMAL
   }
 }

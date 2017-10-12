@@ -168,6 +168,7 @@ public class VendingContainer extends BaseEntity {
     this.qrCodeUrl = qrCodeUrl;
   }
 
+  @ManyToOne
   public ContainerCategory getCategory() {
     return category;
   }

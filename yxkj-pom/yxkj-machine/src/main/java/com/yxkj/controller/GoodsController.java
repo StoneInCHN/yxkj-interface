@@ -136,7 +136,7 @@ public class GoodsController extends MobileBaseController {
   @ApiOperation(value = "根据类别查询所有商品", httpMethod = "POST", response = ResponseMultiple.class,
       notes = "根据类别查询所有商品")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success")})
-  public @ResponseBody ResponseMultiple<Map<String, Object>> getAllSg(
+  public @ResponseBody ResponseMultiple<Map<String, Object>> getByCate(
       @ApiParam(name = "请求参数(json)", value = "cateId:商品类别ID | cImei:中控imei号", required = true) @RequestBody GoodsInfoReq req) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     Long cateId = req.getCateId();
@@ -145,6 +145,27 @@ public class GoodsController extends MobileBaseController {
     Integer pageNum = req.getPageNumber();
     response = goodsService.getGoodsByCate(cateId, cImei, pageSize, pageNum);
     response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+
+
+  /**
+   * 验证商品库存数量
+   * 
+   * @param req
+   * @return
+   */
+  @RequestMapping(value = "/verifyStock", method = RequestMethod.POST)
+  @ApiOperation(value = "验证商品库存数量", httpMethod = "POST", response = ResponseMultiple.class,
+      notes = "验证商品库存数量")
+  @ApiResponses({@ApiResponse(code = 200,
+      message = "code:0000-request success|1000-goods stock insufficient")})
+  public @ResponseBody ResponseMultiple<Map<String, Object>> verifyStock(
+      @ApiParam(name = "请求参数(json)", value = "[cId(货道ID)-count(商品数量),cId(货道ID)-count(商品数量)]",
+          required = true) @RequestBody GoodsInfoReq req) {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
+    List<String> gList = req.getgList();
+    response = containerChannelService.verifyStock(gList);
     return response;
   }
 }
