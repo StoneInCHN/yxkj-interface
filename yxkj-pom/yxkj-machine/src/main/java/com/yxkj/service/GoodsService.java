@@ -1,5 +1,6 @@
 package com.yxkj.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.yxkj.entity.Goods;
@@ -19,5 +20,14 @@ public interface GoodsService extends BaseService<Goods, Long> {
    */
   ResponseMultiple<Map<String, Object>> getGoodsByCate(Long cateId, String cImei, Integer pageSize,
       Integer pageNum);
+
+
+  /**
+   * 扫码H5页面获取商品列表
+   * 
+   * @param gList
+   * @return
+   */
+  List<Map<String, Object>> getGforScanH5(String gList);
 
 }

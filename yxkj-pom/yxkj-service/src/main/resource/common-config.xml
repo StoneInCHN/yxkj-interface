@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<yxkj>
 		
-		<!-- shelf url -->
+		<!-- 货架 shelf url -->
 		<setting name="shelfSysUrl" value="http://test.ybjcq.com/yxkj-shelf/shelfH5/item.jsp" />
+		<!-- 货柜  cntr url -->
+		<setting name="cntrSysUrl" value="http://test.ybjcq.com/yxkj-shelf/shelfH5/item.jsp" />
+		
 		<!-- auth Redirect url -->
 		<setting name="authRedirectUrl" value="http://test.ybjcq.com/auth.jsp" />
 		<!-- 微信公众平台 -->

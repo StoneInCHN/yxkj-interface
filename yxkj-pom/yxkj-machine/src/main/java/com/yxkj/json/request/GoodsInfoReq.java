@@ -33,7 +33,6 @@ public class GoodsInfoReq extends BaseRequest {
   private List<String> gList;
 
 
-
   public List<String> getgList() {
     return gList;
   }

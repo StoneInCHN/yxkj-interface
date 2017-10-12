@@ -295,11 +295,6 @@ public class Setting implements Serializable {
   private String alipaySellerId;
 
 
-  /**
-   * 入住商家折扣最小值
-   */
-  private String sellerDiscountMin;
-
 
   /**
    * 聚合数据 银行卡四元素验证URL
@@ -396,13 +391,6 @@ public class Setting implements Serializable {
     this.downloadUrl = downloadUrl;
   }
 
-  public String getSellerDiscountMin() {
-    return sellerDiscountMin;
-  }
-
-  public void setSellerDiscountMin(String sellerDiscountMin) {
-    this.sellerDiscountMin = sellerDiscountMin;
-  }
 
   public String getAlipaySellerId() {
     return alipaySellerId;
