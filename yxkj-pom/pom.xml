@@ -12,23 +12,24 @@
 	<url>http://maven.apache.org</url>
 
 	 
-	<!-- <repositories>
-		<repository>
-			<id>nexus</id>
-			<name>Team Nexus Repository</name>
-			<url>http://10.50.20.72:8081/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>nexus</id>
-			<name>Team Nexus Repository</name>
-			<url>http://10.50.20.72:8081/nexus/content/groups/public/</url>
-		</pluginRepository>
-	</pluginRepositories>  -->
 	<repositories>
 		<repository>
 			<id>nexus</id>
+			<name>Team Nexus Repository</name>
+			<url>http://192.167.1.243:8081/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+			<name>Team Nexus Repository</name>
+			<url>http://192.167.1.243:8081/nexus/content/groups/public/</url>
+		</pluginRepository>
+	</pluginRepositories> 
+	
+	<!-- <repositories>
+		<repository>
+			<id>nexus</id>
 			<name>aliyun maven</name>
 			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
 		</repository>
@@ -39,7 +40,7 @@
 			<name>aliyun maven</name>
 			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
 		</pluginRepository>
-	</pluginRepositories>
+	</pluginRepositories> -->
 	<properties>
 		<org.springframework.version>4.0.4.RELEASE</org.springframework.version>
 		<org.hibernate.version>4.3.6.Final</org.hibernate.version>
@@ -468,8 +469,8 @@
 	<modules>
 		<module>yxkj-entity</module>
 		<!-- <module>yxkj-app</module>
-		<module>yxkj-operation</module>
-		<module>yxkj-machine</module> -->
+		<module>yxkj-operation</module>-->
+		<module>yxkj-machine</module>
 		<module>yxkj-shelf-operation</module>
 		<module>yxkj-service</module>
 	</modules>
