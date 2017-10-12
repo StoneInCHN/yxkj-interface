@@ -4,4 +4,5 @@ import com.yxkj.framework.dao.BaseDao;
 
 public interface ContainerKeeperDao extends  BaseDao<ContainerKeeper,Long>{
 
+	void updatePassword(String cellPhoneNum, String password);
 }

@@ -100,7 +100,7 @@ public final class RSAUtils {
 		Assert.notNull(privateKey);
 		Assert.notNull(data);
 		try {
-			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", PROVIDER);
+			Cipher cipher = Cipher.getInstance("RSA", PROVIDER);
 			cipher.init(Cipher.DECRYPT_MODE, privateKey);
 			return cipher.doFinal(data);
 		} catch (Exception e) {

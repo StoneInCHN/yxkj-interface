@@ -3,7 +3,8 @@ package com.yxkj.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource; 
+import javax.annotation.Resource;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,6 +18,9 @@ import com.yxkj.framework.service.impl.BaseServiceImpl;
 @Service("containerKeeperServiceImpl")
 public class ContainerKeeperServiceImpl extends BaseServiceImpl<ContainerKeeper,Long> implements ContainerKeeperService {
 
+	  @Resource(name="containerKeeperDaoImpl")
+	  private ContainerKeeperDao containerKeeperDao;
+	
       @Resource(name="containerKeeperDaoImpl")
       public void setBaseDao(ContainerKeeperDao containerKeeperDao) {
          super.setBaseDao(containerKeeperDao);
@@ -33,5 +37,10 @@ public class ContainerKeeperServiceImpl extends BaseServiceImpl<ContainerKeeper,
   		
   		return findFirst(filters, null);
   	}
+
+	@Override
+	public void resetPassword(String cellPhoneNum, String password) {
+		containerKeeperDao.updatePassword(cellPhoneNum, password);
+	}
 
 }
