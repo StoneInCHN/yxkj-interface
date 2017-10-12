@@ -25,8 +25,8 @@ import com.yxkj.shelf.framework.ordering.Ordering;
 import com.yxkj.shelf.framework.paging.Page;
 import com.yxkj.shelf.framework.paging.Pageable;
 import com.yxkj.shelf.json.admin.request.AdminRequest;
+import com.yxkj.shelf.json.admin.request.GoodsData;
 import com.yxkj.shelf.json.admin.request.GoodsRequest;
-import com.yxkj.shelf.json.admin.request.ShelfOrderRequest;
 import com.yxkj.shelf.json.base.BaseResponse;
 import com.yxkj.shelf.json.base.PageResponse;
 import com.yxkj.shelf.json.base.ResponseMultiple;
@@ -56,12 +56,16 @@ public class GoodsController extends BaseController {
       ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>(); 
       Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
       List<Filter> filters = pageable.getFilters();
-      if (request.getSn() != null) {
-          filters.add(Filter.eq("sn", request.getSn()));
-      }
-      if (request.getName() != null) {
-          filters.add(Filter.eq("name", request.getName()));
-      }
+      GoodsData goodsData = request.getGoodsData();
+      if (goodsData != null) {
+          if (goodsData.getSn() != null) {
+              filters.add(Filter.eq("sn", goodsData.getSn()));
+          }
+          if (goodsData.getName() != null) {
+              filters.add(Filter.eq("name", goodsData.getName()));
+          }		
+	  }
+
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
 
@@ -78,13 +82,13 @@ public class GoodsController extends BaseController {
       response.setCode(CommonAttributes.SUCCESS);
       return response;
     }
-    @RequestMapping(value = "/getGoodsDetail", method = RequestMethod.POST)
+    @RequestMapping(value = "/getGoodsData", method = RequestMethod.POST)
     @ApiOperation(value = "商品详情", httpMethod = "POST", response = ResponseOne.class, notes = "用于获取商品详情")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-    public @ResponseBody ResponseOne<Goods> getGoodsDetail(
+    public @ResponseBody ResponseOne<GoodsData> getGoodsData(
     		@ApiParam @RequestBody AdminRequest request) {
     	
-      ResponseOne<Goods> response = new ResponseOne<Goods>(); 
+      ResponseOne<GoodsData> response = new ResponseOne<GoodsData>(); 
       Long goodsId = request.getId();  	
       if (goodsId == null || goodsId <= 0) {
           response.setCode(CommonAttributes.FAIL_LOGIN);
@@ -92,8 +96,8 @@ public class GoodsController extends BaseController {
           return response;
       }      
       Goods goods = goodsService.find(goodsId);
-      
-      response.setMsg(goods);
+      GoodsData goodsData = goodsService.getGoodsData(goods);
+      response.setMsg(goodsData);
       response.setCode(CommonAttributes.SUCCESS);
       return response;
     }
@@ -112,4 +116,32 @@ public class GoodsController extends BaseController {
 	  }
       return response;
     }  
+    @RequestMapping(value = "/addGoods", method = RequestMethod.POST)
+    @ApiOperation(value = "添加商品", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加商品")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody BaseResponse addGoods(@ApiParam @RequestBody GoodsRequest request) {
+        BaseResponse response = new BaseResponse(); 
+        GoodsData goodsData = request.getGoodsData();
+        if (goodsData != null ) {      	  
+      	    Goods goods = goodsService.getGoodsEntity(goodsData, null);
+      	    goodsService.save(goods);
+            response.setCode(CommonAttributes.SUCCESS);
+            response.setDesc(message("yxkj.request.success"));
+  	  }
+        return response;
+    }
+    @RequestMapping(value = "/updateGoods", method = RequestMethod.POST)
+    @ApiOperation(value = "更新商品", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新商品")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody BaseResponse updateGoods(@ApiParam @RequestBody GoodsRequest request) {
+        BaseResponse response = new BaseResponse(); 
+        GoodsData goodsData = request.getGoodsData();
+        if (goodsData != null && request.getId() != null) {
+      	  Goods goods = goodsService.getGoodsEntity(goodsData, request.getId());
+      	  goodsService.update(goods);
+          response.setCode(CommonAttributes.SUCCESS);
+          response.setDesc(message("yxkj.request.success"));
+  	    }
+        return response;
+    }
 }

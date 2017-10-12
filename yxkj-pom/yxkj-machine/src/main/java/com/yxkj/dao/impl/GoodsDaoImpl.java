@@ -26,10 +26,11 @@ public class GoodsDaoImpl extends BaseDaoImpl<Goods, Long> implements GoodsDao {
 
     StringBuffer sqlPage = new StringBuffer();
     sqlPage
-        .append("select SQL_CALC_FOUND_ROWS channel.id,goods.name,goods.spec,goodsImage.source,channel.price,channel.surplus,channel.sn ");
+        .append("select SQL_CALC_FOUND_ROWS channel.id,goods.name,goods.spec,goodsImage.source,channel.price,channel.surplus,channel.sn,cate.c_temp ");
     sqlPage
-        .append("from t_goods goods,t_cntr_channel channel,t_vending_container vc,t_goods_image goodsImage");
+        .append("from t_goods goods,t_cntr_channel channel,t_vending_container vc,t_goods_image goodsImage,t_cntr_category cate");
     sqlPage.append(" where 1=1 ");
+    sqlPage.append("and vc.category = cate.id ");
     sqlPage.append("and vc.parent = (select v.id from t_vending_container v where v.sn=" + cImei
         + ") ");
     sqlPage.append("and vc.id=channel.cntr and goods.id=channel.goods ");
@@ -58,6 +59,7 @@ public class GoodsDaoImpl extends BaseDaoImpl<Goods, Long> implements GoodsDao {
       map.put("price", arrays[4]);
       map.put("count", arrays[5]);
       map.put("cSn", arrays[6]);
+      map.put("cTemp", arrays[7]);// 0冷冻 1常温
       resultMap.add(map);
     }
 

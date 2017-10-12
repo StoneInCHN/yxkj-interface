@@ -38,6 +38,9 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
 
 	@Override
 	public CompanyData getCompanyData(Company company) {
+		  if (company == null) {
+			return null;
+		  }
 	      CompanyData companyData = new CompanyData();
 	      companyData.setSn(company.getSn());
 	      companyData.setRemark(company.getRemark());

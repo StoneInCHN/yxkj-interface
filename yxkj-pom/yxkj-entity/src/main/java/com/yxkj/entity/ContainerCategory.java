@@ -9,6 +9,7 @@ import javax.persistence.Transient;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum.CntrTemp;
 
 /**
  * Entity - 货柜类别
@@ -75,11 +76,25 @@ public class ContainerCategory extends BaseEntity {
    */
   private Integer totalChannel;
 
+  /**
+   * 货柜温度
+   */
+  private CntrTemp cTemp;
+
 
   /**
    * 备注
    */
   private String remark;
+
+
+  public CntrTemp getcTemp() {
+    return cTemp;
+  }
+
+  public void setcTemp(CntrTemp cTemp) {
+    this.cTemp = cTemp;
+  }
 
   @Column(length = 200)
   public String getRemark() {

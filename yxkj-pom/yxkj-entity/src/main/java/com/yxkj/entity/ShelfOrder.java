@@ -96,7 +96,7 @@ public class ShelfOrder extends BaseEntity {
    */
   private Company comp;
 
-
+  @JsonProperty
   public ShelfOrderStatus getStatus() {
     return status;
   }

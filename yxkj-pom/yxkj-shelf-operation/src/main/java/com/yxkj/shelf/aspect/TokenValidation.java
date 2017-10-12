@@ -80,7 +80,7 @@ public class TokenValidation {
           if (claims == null) {       	  
         	  throw new RuntimeException("Token过期,请重新登录");
           } 
-          //用户ID与token不匹配
+          //用户登录名与token不匹配
           else {
         	JSONObject jsonobject = (JSONObject)JSONObject.parse(requestParam);        	
         	String userName = getStrFromJSON(jsonobject, "userName"); 

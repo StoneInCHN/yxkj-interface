@@ -197,7 +197,9 @@ public class CommonEnum {
     /** 店铺环境 */
     STORE_ENV,
     /** 身份证照片 */
-    AUTH_IDCARD
+    AUTH_IDCARD,
+    /** 商品图片 */
+    GOODS_IMG,
   }
 
   /**
@@ -388,9 +390,24 @@ public class CommonEnum {
    * @version 2017年10月11日 下午2:59:12
    */
   public enum ShelfOrderStatus {
-    /** 未支付(交易失败) 0 */
+    /** 未支付(未交易) 0 */
     UNPAID,
     /** 已支付(交易成功) 1 */
-    PAID
+    PAID,
+    /** 支付失败(交易失败) */
+    PAID_FAILED
+  }
+
+  /**
+   * 货柜温度
+   * 
+   * @author Andrea
+   * @version 2017年10月11日 下午2:59:12
+   */
+  public enum CntrTemp {
+    /** 冷冻 0 */
+    COLD,
+    /** 常温 1 */
+    NORMAL
   }
 }

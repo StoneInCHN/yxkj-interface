@@ -1,5 +1,7 @@
 package com.yxkj.json.request;
 
+import java.util.List;
+
 import com.yxkj.json.base.BaseRequest;
 
 /**
@@ -25,6 +27,20 @@ public class GoodsInfoReq extends BaseRequest {
    */
   private Long cateId;
 
+  /**
+   * 商品
+   */
+  private List<String> gList;
+
+
+
+  public List<String> getgList() {
+    return gList;
+  }
+
+  public void setgList(List<String> gList) {
+    this.gList = gList;
+  }
 
   public Long getCateId() {
     return cateId;

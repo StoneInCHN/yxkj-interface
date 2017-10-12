@@ -148,8 +148,8 @@ public class CompanyController extends BaseController {
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody BaseResponse addCompany(@ApiParam @RequestBody CompanyRequest request) {
       BaseResponse response = new BaseResponse(); 
-      if (request.getCompanyData() != null ) {
-    	  CompanyData companyData = request.getCompanyData();
+      CompanyData companyData = request.getCompanyData();
+      if (companyData != null ) {
     	  Company company = companyService.getCompnayEntity(companyData, null);
     	  companyService.save(company);
           response.setCode(CommonAttributes.SUCCESS);
