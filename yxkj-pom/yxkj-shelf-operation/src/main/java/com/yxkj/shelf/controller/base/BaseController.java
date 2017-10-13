@@ -1,14 +1,19 @@
 package com.yxkj.shelf.controller.base;
 
-import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.beans.DateEditor;
@@ -24,9 +30,10 @@ import com.yxkj.shelf.beans.Message;
 import com.yxkj.shelf.beans.Setting;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.json.base.BaseResponse;
-import com.yxkj.shelf.utils.HttpServletRequestUtils;
+import com.yxkj.shelf.utils.ExportExcel;
 import com.yxkj.shelf.utils.SettingUtils;
 import com.yxkj.shelf.utils.SpringUtils;
+import com.yxkj.shelf.utils.TimeUtils;
 
 
 public class BaseController {
@@ -46,6 +53,9 @@ public class BaseController {
 
   @Resource(name = "validator")
   private Validator validator;
+  
+  @Resource(name = "taskExecutor")
+  private Executor threadPoolExecutor;
 
   /**
    * 数据绑定
@@ -151,13 +161,7 @@ public class BaseController {
   @ExceptionHandler(RuntimeException.class)
   public @ResponseBody BaseResponse runtimeException(HttpServletRequest request,
 		  RuntimeException runtimeException) {
-    //获取请求参数
-    try {
-		String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	  
     BaseResponse response = new BaseResponse();
     response.setCode(CommonAttributes.FAIL_COMMON);
     response.setDesc(runtimeException.getMessage());
@@ -166,5 +170,54 @@ public class BaseController {
     LogUtil.debug(BaseController.class, "runtimeException", "response = %s", responseResult);
     
     return response;
+  }
+  /**
+   * 导出数据到Excel
+   * 
+   * @param response
+   * @param baseEntityList 源集合
+   * @param headers 需要导出的字段
+   * @param headersName 字段对应列的列名
+   * @author luzhang
+   */
+  protected void exportListToExcel(HttpServletResponse response,
+      List<Map<String, String>> eventRecordMapList, String title, String[] headers,
+      String[] headersName) {
+    if (StringUtils.isBlank(title)) {
+      title = "YXKJ_DATA";
+    }
+    if (headers != null && headersName != null && headers.length == headersName.length) {
+      JSONArray jsonArray = new JSONArray();
+      for (int i = 0; i < headersName.length; i++) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("headerName", headersName[i]);
+        jsonObject.put("header", headers[i]);
+        jsonArray.add(jsonObject);
+      }
+
+      try {
+        response.setContentType("octets/stream");
+        // 导出文件名
+        String filename = title + "_" + TimeUtils.getDateFormatString("yyyyMMddHHmmss", new Date());
+        response.addHeader("Content-Disposition", "attachment;filename=" + filename + ".xls");
+        OutputStream out = response.getOutputStream();// 获得输出流
+
+        Object locker = new Object();//当前主线程的一把锁
+
+        ExportExcel ex = new ExportExcel(title, jsonArray, eventRecordMapList, out,locker);// 开启一个导出数据的线程
+
+        synchronized (locker) {
+          threadPoolExecutor.execute(ex); // 加入到线程池中执行
+          locker.wait();//释放对象锁的控制，主线程等待，当且仅当其他线程notify该对象锁，主线程才可以继续执行下去
+        }
+
+        out.flush();
+        out.close();
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
   }
 }

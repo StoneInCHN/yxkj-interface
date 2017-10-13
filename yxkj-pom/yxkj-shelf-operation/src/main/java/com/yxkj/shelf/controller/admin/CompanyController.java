@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import com.yxkj.shelf.json.admin.request.AdminRequest;
 import com.yxkj.shelf.json.admin.request.CompanyData;
 import com.yxkj.shelf.json.admin.request.CompanyRequest;
 import com.yxkj.shelf.json.admin.request.GoodsShelveRow;
+import com.yxkj.shelf.json.admin.request.ShelfOrderData;
 import com.yxkj.shelf.json.admin.request.ShelfOrderRequest;
 import com.yxkj.shelf.json.admin.response.GoodsProfile;
 import com.yxkj.shelf.json.base.BaseResponse;
@@ -66,14 +68,17 @@ public class CompanyController extends BaseController {
     @ApiOperation(value = "公司列表", httpMethod = "POST", response = BaseResponse.class, notes = "用于获取公司列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseMultiple<Company> getCompanyList(
-                @ApiParam @RequestBody ShelfOrderRequest request) {    	
+                @ApiParam @RequestBody CompanyRequest request) {    	
     	
       ResponseMultiple<Company> response = new ResponseMultiple<Company>(); 
       Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
       List<Filter> filters = pageable.getFilters();
-      if (request.getSn() != null) {
-        filters.add(Filter.eq("sn", request.getSn()));
-      }
+      CompanyData companyData = request.getCompanyData();
+      if (companyData != null) {
+          if (StringUtils.isNotBlank(companyData.getSn())) {
+              filters.add(Filter.like("sn", "%"+companyData.getSn()+"%"));
+          }
+	  }
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
 
