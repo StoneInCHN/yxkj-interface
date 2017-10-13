@@ -129,8 +129,8 @@ public class CommonController extends MobileBaseController {
       notes = "获取授权用户信息(微信及支付宝)")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   public @ResponseBody ResponseOne<Map<String, Object>> authUserInfo(
-      @ApiParam(name = "请求参数(json)", value = "authCode:授权码|gList:商品集合字符串|type:支付类型wx,alipay",
-          required = true) @RequestBody UserInfoReq req) {
+      @ApiParam(name = "请求参数(json)",
+          value = "authCode:授权码|imei:中控IMEi号|gList:商品集合字符串|type:支付类型wx,alipay", required = true) @RequestBody UserInfoReq req) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
     Map<String, Object> resMap = new HashMap<String, Object>();
     String authCode = req.getAuthCode();
@@ -161,11 +161,39 @@ public class CommonController extends MobileBaseController {
     String userId = (String) result.get("userId");
     String nickName = (String) result.get("nickname");
     response.setToken(TokenUtil.getJWTString(userId, ""));
+    touristService.saveTourist(userId, nickName, req.getType(), req.getImei());
     // taskExecutor.execute(new Runnable() {
     // public void run() {
     // touristService.saveTourist(userId, nickName, req.getType(), company);
     // }
     // });
+    return response;
+  }
+
+
+  /**
+   * 获取微信jsapi参数信息
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/jsapiConfig", method = RequestMethod.POST)
+  @ApiOperation(value = "获取微信jsapi参数信息", httpMethod = "POST", response = ResponseOne.class,
+      notes = "获取微信jsapi参数信息")
+  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
+  @UserValidCheck
+  public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(
+      @ApiParam(name = "请求参数(json)", value = "curUrl:当前网页url地址  |userName:用户标识|header token",
+          required = true) @RequestBody UserInfoReq req) {
+    ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
+
+    Map<String, Object> res =
+        touristService.getJsapiConfig(req.getCurUrl(), setting.getWxPublicAppId(),
+            setting.getWxPublicAppSecret());
+
+    response.setMsg(res);
+    response.setCode(CommonAttributes.SUCCESS);
+
     return response;
   }
 }

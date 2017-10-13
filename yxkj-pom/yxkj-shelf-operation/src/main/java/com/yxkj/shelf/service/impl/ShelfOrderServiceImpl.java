@@ -49,6 +49,7 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
   }
 
   @Override
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   public ShelfOrder createShelfOrder(String payType, String userName, Long compId,
       List<GoodsBean> goodsBeans) {
     ShelfOrder shelfOrder = new ShelfOrder();

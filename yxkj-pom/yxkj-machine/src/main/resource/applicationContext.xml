@@ -71,14 +71,14 @@
 
 	<cache:annotation-driven cache-manager="cacheManager" />
 
-	<!-- <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
 		<property name="configLocation" value="classpath:/ehcache.xml" />
 		<property name="shared" value="true" />
 	</bean>
 
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
 		<property name="cacheManager" ref="ehCacheManager" />
-	</bean> -->
+	</bean>
 
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="cacheSeconds" value="${message.cache_seconds}" />
@@ -97,21 +97,21 @@
 	<!-- redis缓存 -->
 
 	<!-- Jedis ConnectionFactory -->
-    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+    <!-- <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
 	    <property name="hostName"   value="${redis.ip}" />
 	    <property name="port"       value="${redis.port}" />
 	    <property name="password"   value="${redis.requirepass}"/>
 	    <property name="timeout"    value="${redis.timeout}" />
-	</bean>
+	</bean> -->
     <!-- redis template definition -->
-    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+    <!-- <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
     	<property name="connectionFactory" ref="jedisConnectionFactory" />
-    </bean>
+    </bean> -->
 
 	<!-- declare Redis Cache Manager -->
 
-    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"
-        c:template-ref="redisTemplate" />
+    <!-- <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"
+        c:template-ref="redisTemplate" /> -->
 
        <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 		<property name="corePoolSize" value="${task.core_pool_size}" />

@@ -1,7 +1,15 @@
-package com.yxkj.dao; 
+package com.yxkj.dao;
+
 import com.yxkj.entity.Sn;
+import com.yxkj.entity.Sn.Type;
 import com.yxkj.framework.dao.BaseDao;
 
-public interface SnDao extends  BaseDao<Sn,Long>{
-
+public interface SnDao extends BaseDao<Sn, Long> {
+  /**
+   * 生成序列号
+   * 
+   * @param type 类型
+   * @return 序列号
+   */
+  String generate(Type type);
 }

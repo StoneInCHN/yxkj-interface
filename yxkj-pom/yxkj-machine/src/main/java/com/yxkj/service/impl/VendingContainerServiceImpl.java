@@ -1,19 +1,28 @@
-package com.yxkj.service.impl; 
+package com.yxkj.service.impl;
 
-import javax.annotation.Resource; 
+import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service; 
+import org.springframework.stereotype.Service;
 
-import com.yxkj.entity.VendingContainer;
 import com.yxkj.dao.VendingContainerDao;
-import com.yxkj.service.VendingContainerService;
+import com.yxkj.entity.VendingContainer;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
+import com.yxkj.service.VendingContainerService;
 
 @Service("vendingContainerServiceImpl")
-public class VendingContainerServiceImpl extends BaseServiceImpl<VendingContainer,Long> implements VendingContainerService {
+public class VendingContainerServiceImpl extends BaseServiceImpl<VendingContainer, Long> implements
+    VendingContainerService {
 
-      @Resource(name="vendingContainerDaoImpl")
-      public void setBaseDao(VendingContainerDao vendingContainerDao) {
-         super.setBaseDao(vendingContainerDao);
+  @Resource(name = "vendingContainerDaoImpl")
+  private VendingContainerDao vendingContainerDao;
+
+  @Resource(name = "vendingContainerDaoImpl")
+  public void setBaseDao(VendingContainerDao vendingContainerDao) {
+    super.setBaseDao(vendingContainerDao);
+  }
+
+  @Override
+  public VendingContainer getByImei(String imei) {
+    return vendingContainerDao.getByImei(imei);
   }
 }

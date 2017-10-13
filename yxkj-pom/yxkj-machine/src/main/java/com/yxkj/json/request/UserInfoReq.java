@@ -27,6 +27,32 @@ public class UserInfoReq extends BaseRequest {
    */
   private String type;
 
+  /**
+   * 中控imei号
+   */
+  private String imei;
+
+  /**
+   * 当前页面url地址
+   */
+  private String curUrl;
+
+
+  public String getCurUrl() {
+    return curUrl;
+  }
+
+  public void setCurUrl(String curUrl) {
+    this.curUrl = curUrl;
+  }
+
+  public String getImei() {
+    return imei;
+  }
+
+  public void setImei(String imei) {
+    this.imei = imei;
+  }
 
   public String getgList() {
     return gList;

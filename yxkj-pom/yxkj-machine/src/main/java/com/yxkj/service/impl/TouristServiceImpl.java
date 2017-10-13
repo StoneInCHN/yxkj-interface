@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yxkj.common.log.LogUtil;
+import com.yxkj.dao.SceneDao;
 import com.yxkj.dao.TouristDao;
-import com.yxkj.entity.Company;
+import com.yxkj.entity.Scene;
 import com.yxkj.entity.Tourist;
 import com.yxkj.entity.commonenum.CommonEnum.DeviceType;
 import com.yxkj.entity.commonenum.CommonEnum.UserChannel;
@@ -26,6 +27,9 @@ public class TouristServiceImpl extends BaseServiceImpl<Tourist, Long> implement
 
   @Resource(name = "touristDaoImpl")
   private TouristDao touristDao;
+
+  @Resource(name = "sceneDaoImpl")
+  private SceneDao sceneDao;
 
   @Resource(name = "touristDaoImpl")
   public void setBaseDao(TouristDao touristDao) {
@@ -106,7 +110,7 @@ public class TouristServiceImpl extends BaseServiceImpl<Tourist, Long> implement
 
 
   @Override
-  public Tourist saveTourist(String userId, String nickName, String type, Company company) {
+  public Tourist saveTourist(String userId, String nickName, String type, String imei) {
     Tourist t = getByUserId(userId);
     if (t == null) {
       t = new Tourist();
@@ -118,9 +122,11 @@ public class TouristServiceImpl extends BaseServiceImpl<Tourist, Long> implement
         t.setUserChannel(UserChannel.ALIPAY);
       }
       t.setNickName(nickName);
-      t.setDeviceType(DeviceType.SHELF);
-      t.setCompanyId(company.getId());
-      t.setCompanyName(company.getDisplayName());
+      t.setDeviceType(DeviceType.CONTAINER);
+
+      Scene scene = sceneDao.getByImei(imei);
+      t.setSceneId(scene.getId());
+      t.setSceneName(scene.getName());
       touristDao.persist(t);
     }
     return t;

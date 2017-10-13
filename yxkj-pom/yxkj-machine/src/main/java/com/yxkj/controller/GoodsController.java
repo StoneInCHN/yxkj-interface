@@ -170,22 +170,4 @@ public class GoodsController extends MobileBaseController {
   }
 
 
-  /**
-   * H5获取扫码后商品列表
-   * 
-   * @param req
-   * @return
-   */
-  @RequestMapping(value = "/getForH5Pay", method = RequestMethod.POST)
-  @ApiOperation(value = "H5获取扫码后商品列表", httpMethod = "POST", response = ResponseMultiple.class,
-      notes = "H5获取扫码后商品列表")
-  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success")})
-  public @ResponseBody ResponseMultiple<Map<String, Object>> getForH5Pay(
-      @ApiParam(name = "请求参数(json)", value = "[cId(货道ID)-count(商品数量),cId(货道ID)-count(商品数量)]",
-          required = true) @RequestBody GoodsInfoReq req) {
-    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
-    List<String> gList = req.getgList();
-    response = containerChannelService.verifyStock(gList);
-    return response;
-  }
 }

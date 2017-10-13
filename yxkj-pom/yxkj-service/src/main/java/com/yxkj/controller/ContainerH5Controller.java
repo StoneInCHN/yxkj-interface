@@ -27,18 +27,19 @@ public class ContainerH5Controller extends BaseController {
    * @param req
    * @return
    */
-  @RequestMapping(value = "/g/{gList}", method = RequestMethod.GET)
-  public String scanQr(@PathVariable("gList") String gList, HttpServletRequest req) {
+  @RequestMapping(value = "/{imei}/{gList}", method = RequestMethod.GET)
+  public String scanQr(@PathVariable("imei") String imei, @PathVariable("gList") String gList,
+      HttpServletRequest req) {
     String hearders = req.getHeader("user-agent");
     if (hearders.contains("AlipayClient")) {
       return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="
           + setting.getAlipayAppId() + "&scope=auth_user&redirect_uri="
-          + setting.getAuthRedirectUrl() + "?gList=" + gList + "&sys=cntr";
+          + setting.getAuthRedirectUrl() + "?imei=" + imei + "&gList=" + gList + "&sys=cntr";
     }
     if (hearders.contains("MicroMessenger")) {
       return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="
           + setting.getWxPublicAppId() + "&redirect_uri=" + setting.getAuthRedirectUrl()
-          + "&response_type=code&scope=snsapi_userinfo&state=cntr," + gList;
+          + "&response_type=code&scope=snsapi_userinfo&state=cntr," + imei + "," + gList;
     }
     return "redirect:/warn.jsp";
   }

@@ -52,9 +52,10 @@ public class OrderItem extends BaseEntity {
   private String gSn;
 
   /**
-   * 商品ID
+   * 商品规格
    */
-  private Long gId;
+  private String spec;
+
 
   /**
    * 货柜ID
@@ -85,6 +86,16 @@ public class OrderItem extends BaseEntity {
    * 退款状态
    */
   private RefundStatus refundStatus;
+
+
+  public String getSpec() {
+    return spec;
+  }
+
+
+  public void setSpec(String spec) {
+    this.spec = spec;
+  }
 
 
   public PickupStatus getPickupStatus() {
@@ -136,17 +147,6 @@ public class OrderItem extends BaseEntity {
   public void setgSn(String gSn) {
     this.gSn = gSn;
   }
-
-
-  public Long getgId() {
-    return gId;
-  }
-
-
-  public void setgId(Long gId) {
-    this.gId = gId;
-  }
-
 
   public Long getCntrId() {
     return cntrId;

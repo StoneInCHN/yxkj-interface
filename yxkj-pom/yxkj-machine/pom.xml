@@ -232,7 +232,7 @@
 		</dependency>
 
 		<!-- Cache -->
-		<!-- <dependency>
+		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
 			
@@ -241,7 +241,7 @@
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-web</artifactId>
 			
-		</dependency> -->
+		</dependency>
 
 		<!-- Datasource -->
 		<dependency>

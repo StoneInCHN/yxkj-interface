@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
+import com.yxkj.entity.commonenum.CommonEnum.PurMethod;
 
 /**
  * Entity - 用户订单
@@ -86,6 +87,11 @@ public class Order extends BaseEntity {
   private OrderStatus status;
 
   /**
+   * 购买方式
+   */
+  private PurMethod purMethod;
+
+  /**
    * 订单项
    */
   private Set<OrderItem> orderItems = new HashSet<OrderItem>();
@@ -100,6 +106,14 @@ public class Order extends BaseEntity {
    */
   private Long sceneId;
 
+
+  public PurMethod getPurMethod() {
+    return purMethod;
+  }
+
+  public void setPurMethod(PurMethod purMethod) {
+    this.purMethod = purMethod;
+  }
 
   @Column(length = 50)
   public String getSceneName() {
@@ -153,7 +167,7 @@ public class Order extends BaseEntity {
     this.profit = profit;
   }
 
-  @Column(length = 5)
+  @Column(length = 10)
   public String getPaymentTypeId() {
     return paymentTypeId;
   }

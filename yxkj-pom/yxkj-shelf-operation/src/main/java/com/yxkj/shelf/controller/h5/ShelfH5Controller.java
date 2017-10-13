@@ -229,8 +229,9 @@ public class ShelfH5Controller extends H5BaseController {
       notes = "获取微信jsapi参数信息")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
   @UserValidCheck
-  public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(@ApiParam(name = "请求参数(json)",
-      value = "curUrl:当前网页url地址 |header token", required = true) @RequestBody UserInfoReq req) {
+  public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(
+      @ApiParam(name = "请求参数(json)", value = "curUrl:当前网页url地址  |userName:用户标识|header token",
+          required = true) @RequestBody UserInfoReq req) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
 
     Map<String, Object> res =

@@ -1,6 +1,7 @@
 package com.yxkj.json.beans;
 
-import java.math.BigDecimal;
+import com.yxkj.entity.ContainerChannel;
+import com.yxkj.entity.Goods;
 
 /**
  *
@@ -13,68 +14,44 @@ import java.math.BigDecimal;
 public class GoodsBean {
 
   /**
-   * 商品ID
+   * 商品
    */
-  private Long id;
+  private Goods goods;
 
   /**
-   * 商品编号
+   * 商品货道
    */
-  private String sn;
+  private ContainerChannel channel;
 
   /**
-   * 商品名称
+   * 商品数量
    */
-  private String name;
+  private Integer count;
 
-  /**
-   * 价格
-   */
-  private BigDecimal price;
 
-  /**
-   * 商品图片
-   */
-  private String picUrl;
 
-  public Long getId() {
-    return id;
+  public ContainerChannel getChannel() {
+    return channel;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setChannel(ContainerChannel channel) {
+    this.channel = channel;
   }
 
-  public String getSn() {
-    return sn;
+  public Goods getGoods() {
+    return goods;
   }
 
-  public void setSn(String sn) {
-    this.sn = sn;
+  public void setGoods(Goods goods) {
+    this.goods = goods;
   }
 
-  public String getName() {
-    return name;
+  public Integer getCount() {
+    return count;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public BigDecimal getPrice() {
-    return price;
-  }
-
-  public void setPrice(BigDecimal price) {
-    this.price = price;
-  }
-
-  public String getPicUrl() {
-    return picUrl;
-  }
-
-  public void setPicUrl(String picUrl) {
-    this.picUrl = picUrl;
+  public void setCount(Integer count) {
+    this.count = count;
   }
 
 }
