@@ -18,7 +18,7 @@ public class CmdMsg implements Serializable {
     /**
      * 货柜号
      */
-    private int address;
+    private String address;
 
     /**
      * 货柜类型
@@ -76,11 +76,11 @@ public class CmdMsg implements Serializable {
         this.deviceNo = deviceNo;
     }
 
-    public int getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(int address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -98,5 +98,18 @@ public class CmdMsg implements Serializable {
 
     public void setAddressType(int addressType) {
         this.addressType = addressType;
+    }
+
+    @Override
+    public String toString() {
+        return "CmdMsg{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", address='" + address + '\'' +
+                ", addressType=" + addressType +
+                ", box=" + box +
+                ", deviceNo='" + deviceNo + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

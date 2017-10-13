@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
+
+	 <diskStore path="D:/temp/cache/shelfOperation" />
+	<!--<diskStore path="/home/env/mnt/cache/shelfOperation" />-->
+
+	<cache name="setting" maxElementsInMemory="100" eternal="true" overflowToDisk="true" />
+	<cache name="accessToken" maxElementsInMemory="100" eternal="false" timeToLiveSeconds="60" overflowToDisk="true" />
+	<cache name="jsapiTicket" maxElementsInMemory="100" eternal="false" timeToLiveSeconds="60" overflowToDisk="true" />
+</ehcache>
