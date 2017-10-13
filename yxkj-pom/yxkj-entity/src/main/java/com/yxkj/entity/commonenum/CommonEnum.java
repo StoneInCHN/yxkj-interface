@@ -354,7 +354,11 @@ public class CommonEnum {
     /**
      * 广告更新
      */
-    AD_UPDATE
+    AD_UPDATE,
+    /**
+     * 音量设置
+     */
+    VOLUME
   }
 
 

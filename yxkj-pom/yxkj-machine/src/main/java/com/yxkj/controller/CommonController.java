@@ -54,8 +54,8 @@ public class CommonController extends MobileBaseController {
     @Resource(name = "orderServiceImpl")
     private OrderService orderService;
 
-    @Resource(name = "taskExecutor")
-    private TaskExecutor taskExecutor;
+//    @Resource(name = "taskExecutor")
+//    private TaskExecutor taskExecutor;
 
 
     /**
@@ -117,8 +117,8 @@ public class CommonController extends MobileBaseController {
         // cmdMsg.setContent("test");
         // cmdMsg.setType(0);
         // cmdMsg.setDeviceNo("001");
-//        cmdService.sendCmd(cmdMsg);
-        orderService.salesOut(1L);
+        cmdService.sendCmd(cmdMsg);
+//        orderService.salesOut(1L);
         response.setCode(CommonAttributes.SUCCESS);
         response.setDesc("测试Redis队列");
         return response;
