@@ -1,5 +1,7 @@
 package com.yxkj.shelf.service;
 
+import java.util.List;
+
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +13,7 @@ public interface FileService {
 	   * @param multipartFile
 	   * @return
 	   */
-	  public String saveImage(MultipartFile[] multipartFile);
+	  public List<String> saveImage(MultipartFile[] multipartFile);
 
 	  /**
 	   * 按类型上传图片

@@ -21,7 +21,7 @@ import com.yxkj.entity.commonenum.CommonEnum.PurMethod;
 
 /**
  * Entity - 用户订单
- * 
+ *
  * @author Andrea
  * @version 2017年9月18日 上午10:42:49
  */
@@ -91,6 +91,7 @@ public class Order extends BaseEntity {
    */
   private PurMethod purMethod;
 
+
   /**
    * 订单项
    */
@@ -106,6 +107,17 @@ public class Order extends BaseEntity {
    */
   private Long sceneId;
 
+  /**
+   * 中控设备号
+   */
+  private String deviceNo;
+
+  @Column(length = 50)
+  public String getSceneName() {
+    return sceneName;
+  }
+
+
 
   public PurMethod getPurMethod() {
     return purMethod;
@@ -115,9 +127,8 @@ public class Order extends BaseEntity {
     this.purMethod = purMethod;
   }
 
-  @Column(length = 50)
-  public String getSceneName() {
-    return sceneName;
+  public Date getPaymentTime() {
+    return paymentTime;
   }
 
   public void setSceneName(String sceneName) {
@@ -174,11 +185,6 @@ public class Order extends BaseEntity {
 
   public void setPaymentTypeId(String paymentTypeId) {
     this.paymentTypeId = paymentTypeId;
-  }
-
-
-  public Date getPaymentTime() {
-    return paymentTime;
   }
 
   public void setPaymentTime(Date paymentTime) {
@@ -239,4 +245,12 @@ public class Order extends BaseEntity {
   }
 
 
+  @Column(length = 50)
+  public String getDeviceNo() {
+    return deviceNo;
+  }
+
+  public void setDeviceNo(String deviceNo) {
+    this.deviceNo = deviceNo;
+  }
 }

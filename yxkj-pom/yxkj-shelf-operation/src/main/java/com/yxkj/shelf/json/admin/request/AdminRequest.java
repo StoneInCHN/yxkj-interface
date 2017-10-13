@@ -1,7 +1,5 @@
 package com.yxkj.shelf.json.admin.request;
 
-import java.util.List;
-
 
 public class AdminRequest {
 	/**
@@ -24,6 +22,8 @@ public class AdminRequest {
 
 	/** 分页-当前页码*/
 	private Integer pageNumber = 1;
+	
+	private String token;
 	
 	public String getUserName() {
 		return userName;
@@ -71,6 +71,14 @@ public class AdminRequest {
 
 	public void setIds(Long[] ids) {
 		this.ids = ids;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

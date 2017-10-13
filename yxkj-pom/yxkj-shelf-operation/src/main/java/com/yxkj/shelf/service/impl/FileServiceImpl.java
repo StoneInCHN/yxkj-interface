@@ -2,6 +2,8 @@ package com.yxkj.shelf.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -9,15 +11,14 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.service.FileService;
 import com.yxkj.shelf.utils.ImageUtils;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service("fileServiceImpl")
 public class FileServiceImpl implements FileService {
@@ -30,6 +31,9 @@ public class FileServiceImpl implements FileService {
   @Value("${ProjectUploadPath}")
   private String projectUploadPath;
   
+  @Value("${system.project_name}")
+  private String projectName;	
+  
   @Resource(name = "taskExecutor")
   private Executor threadPoolExecutor;
 
@@ -40,8 +44,8 @@ public class FileServiceImpl implements FileService {
    * @return
    */
   @Override
-  public String saveImage(MultipartFile[] multipartFile) {
-    String webPath = null;
+  public List<String> saveImage(MultipartFile[] multipartFile) {
+	List<String> webPaths = new ArrayList<String>();
     String projectPath = projectUploadPath;
     if (multipartFile == null || multipartFile.length == 0) {
       return null;
@@ -52,10 +56,10 @@ public class FileServiceImpl implements FileService {
         String sourcePath =
             uploadPath + File.separator + "src_" + uuid + "."
                 + FilenameUtils.getExtension(multiFile.getOriginalFilename());
-        webPath =
+        String webPath =
             projectPath + File.separator + "src_" + uuid + "."
                 + FilenameUtils.getExtension(multiFile.getOriginalFilename());
-
+        webPaths.add(webPath);
         File tempFile =
             new File(System.getProperty("java.io.tmpdir") + File.separator + "upload_"
                 + UUID.randomUUID() + ".tmp");
@@ -79,7 +83,7 @@ public class FileServiceImpl implements FileService {
       e.printStackTrace();
     }
 
-    return webPath;
+    return webPaths;
   }
 
 
@@ -104,7 +108,7 @@ public class FileServiceImpl implements FileService {
           imgUploadPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
       webPath =
-          projectPath + File.separator + "src_" + uuid + "."
+    		  File.separator + projectName + File.separator + projectPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
 
       File tempFile =

@@ -33,4 +33,9 @@ public interface OrderService extends BaseService<Order, Long> {
    * @return
    */
   Order getOrderBySn(String orderSn);
+
+  /**
+   * 出货
+   */
+  void salesOut(Long orderId);
 }

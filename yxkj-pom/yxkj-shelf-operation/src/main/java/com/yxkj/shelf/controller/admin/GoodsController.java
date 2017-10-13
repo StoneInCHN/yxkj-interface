@@ -6,11 +6,14 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,7 @@ import com.yxkj.shelf.json.base.PageResponse;
 import com.yxkj.shelf.json.base.ResponseMultiple;
 import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.GoodsService;
+import com.yxkj.shelf.utils.ExportHelper;
 import com.yxkj.shelf.utils.FieldFilterUtils;
 
 
@@ -45,7 +49,11 @@ import com.yxkj.shelf.utils.FieldFilterUtils;
 public class GoodsController extends BaseController {   
 	
 	@Resource(name = "goodsServiceImpl")
-	private GoodsService goodsService;
+	private GoodsService goodsService;	
+	
+	@Autowired
+	private ExportHelper exportHelper;		
+	
 	
     @RequestMapping(value = "/getGoodsList", method = RequestMethod.POST)
     @ApiOperation(value = "商品列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取商品列表")
@@ -143,5 +151,33 @@ public class GoodsController extends BaseController {
           response.setDesc(message("yxkj.request.success"));
   	    }
         return response;
+    }
+    /**
+     * 商品数据导出Excel
+     */
+    @RequestMapping(value = "/goodsExport", method = {RequestMethod.GET, RequestMethod.POST})
+    public void dataExport(GoodsRequest request, HttpServletResponse response) {
+      List<Ordering> orders = new ArrayList<Ordering>();
+      orders.add(Ordering.desc("createDate"));
+      List<Filter> filters = new ArrayList<Filter>();
+      GoodsData goodsData = request.getGoodsData();
+      if (goodsData != null) {
+          if (goodsData.getSn() != null) {
+              filters.add(Filter.like("sn", "%"+goodsData.getSn()+"%"));
+          }
+          if (goodsData.getName() != null) {
+              filters.add(Filter.like("name", "%"+goodsData.getName()+"%"));
+          }		
+	  }
+      List<Goods> lists = goodsService.findList(null, filters, orders); 
+      if (lists != null && lists.size() > 0) {
+        String title = "Goods List"; // 工作簿标题，同时也是excel文件名前缀
+        String[] headers = {"sn", "name", "fullName", "spec", "costPrice", "salePrice", "status", "goodsUrl"}; // 需要导出的字段
+        String[] headersName = {"商品条码", "商品名称", "商品全名", "商品规格", "成本价", "销售价", "商品状态", "商品图片连接"}; // 字段对应列的列名
+        List<Map<String, String>> mapList = exportHelper.prepareExportGoods(lists);
+        if (mapList.size() > 0) {
+          exportListToExcel(response, mapList, title, headers, headersName);
+        }
+      }
     }
 }

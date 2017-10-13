@@ -15,6 +15,7 @@ import com.yxkj.dao.OrderDao;
 import com.yxkj.dao.SceneDao;
 import com.yxkj.dao.SnDao;
 import com.yxkj.dao.TouristDao;
+import com.yxkj.entity.CmdMsg;
 import com.yxkj.entity.ContainerChannel;
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.Order;
@@ -29,11 +30,11 @@ import com.yxkj.entity.commonenum.CommonEnum.PurMethod;
 import com.yxkj.entity.commonenum.CommonEnum.ShipmentStatus;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
 import com.yxkj.json.beans.GoodsBean;
+import com.yxkj.service.CmdService;
 import com.yxkj.service.OrderService;
 
 @Service("orderServiceImpl")
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
-
   @Resource(name = "orderDaoImpl")
   private OrderDao orderDao;
 
@@ -45,6 +46,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
   @Resource(name = "sceneDaoImpl")
   private SceneDao sceneDao;
+
+  @Resource(name = "cmdServiceImpl")
+  private CmdService cmdService;
+
 
   @Resource(name = "orderDaoImpl")
   public void setBaseDao(OrderDao orderDao) {
@@ -132,5 +137,18 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   @Override
   public Order getOrderBySn(String orderSn) {
     return orderDao.getOrderBySn(orderSn);
+  }
+
+  @Override
+  public void salesOut(Long orderId) {
+
+    // List<OrderItem> orderItemList = orderDao.salesOut(order);
+    //
+    List<CmdMsg> cmdMsgList = orderDao.salesOut(orderId);
+    cmdMsgList.forEach(cmdMsg -> {
+      cmdService.sendCmd(cmdMsg);
+    });
+
+
   }
 }

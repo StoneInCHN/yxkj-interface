@@ -354,7 +354,11 @@ public class CommonEnum {
     /**
      * 广告更新
      */
-    AD_UPDATE
+    AD_UPDATE,
+    /**
+     * 音量设置
+     */
+    VOLUME
   }
 
 
@@ -372,15 +376,15 @@ public class CommonEnum {
     CONTAINER
   }
 
-  public enum CmdResponse {
+  public enum CmdStatus {
     /**
-     * 成功
+     * 发出指令
      */
-    Success,
+    SendOut,
     /**
-     * 失败
+     * 执行完成
      */
-    Failed
+    Finished
   }
 
   /**
@@ -409,5 +413,17 @@ public class CommonEnum {
     COLD,
     /** 常温 1 */
     NORMAL
+  }
+  /**
+   * 货柜类型
+   *
+   * @author huyong
+   * @version 2017年10月11日 下午2:59:12
+   */
+  public enum CntrType {
+    /** 弹簧柜 0 */
+    SPRING_BOX,
+    /** 格子柜 1 */
+    GRID_BOX
   }
 }

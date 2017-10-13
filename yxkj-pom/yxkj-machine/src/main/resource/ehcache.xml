@@ -7,4 +7,5 @@
 	<cache name="setting" maxElementsInMemory="100" eternal="true" overflowToDisk="true" />
 	<cache name="accessToken" maxElementsInMemory="100" eternal="false" timeToLiveSeconds="7000" overflowToDisk="true" />
 	<cache name="jsapiTicket" maxElementsInMemory="100" eternal="false" timeToLiveSeconds="7000" overflowToDisk="true" />
+
 </ehcache>

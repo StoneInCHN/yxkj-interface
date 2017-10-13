@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.GoodsPic;
+import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 import com.yxkj.shelf.dao.GoodsDao;
 import com.yxkj.shelf.framework.service.impl.BaseServiceImpl;
 import com.yxkj.shelf.json.admin.request.GoodsData;
@@ -48,10 +49,19 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods, Long> implements Go
 	  goods.setSn(goodsData.getSn());
 	  goods.setName(goodsData.getName());
 	  goods.setSpec(goodsData.getSpec());
-	  GoodsPic goodsPic = new GoodsPic();
-	  goodsPic.setSource(goodsData.getUrl());
-	  goodsPic.setTitle(goodsData.getName());
-	  goods.getGoodsPics().add(goodsPic);
+	  goods.setStatus(CommonStatus.ACITVE);
+	  if (goods.getGoodsPics() != null) {
+		  if (goods.getGoodsPics().size() > 0) {
+			  GoodsPic goodsPic = goods.getGoodsPics().get(0);
+			  goodsPic.setSource(goodsData.getUrl());
+			  goodsPic.setTitle(goodsData.getName());
+		  }else {
+			  GoodsPic goodsPic = new GoodsPic();
+			  goodsPic.setSource(goodsData.getUrl());
+			  goodsPic.setTitle(goodsData.getName());
+			  goods.getGoodsPics().add(goodsPic);
+		  }
+	  }
 	  return goods;
   }
 

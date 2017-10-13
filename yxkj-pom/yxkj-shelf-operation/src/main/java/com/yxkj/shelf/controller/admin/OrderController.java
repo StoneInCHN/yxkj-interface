@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import com.yxkj.shelf.framework.filter.Filter;
 import com.yxkj.shelf.framework.ordering.Ordering;
 import com.yxkj.shelf.framework.paging.Page;
 import com.yxkj.shelf.framework.paging.Pageable;
+import com.yxkj.shelf.json.admin.request.ShelfOrderData;
 import com.yxkj.shelf.json.admin.request.ShelfOrderRequest;
 import com.yxkj.shelf.json.base.PageResponse;
 import com.yxkj.shelf.json.base.ResponseMultiple;
@@ -53,9 +55,18 @@ public class OrderController extends BaseController {
       ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>(); 
       Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
       List<Filter> filters = pageable.getFilters();
-      if (request.getSn() != null) {
-        filters.add(Filter.eq("sn", request.getSn()));
-      }
+      ShelfOrderData shelfOrderData = request.getShelfOrderData();
+      if (shelfOrderData != null) {
+          if (StringUtils.isNotBlank(shelfOrderData.getSn())) {
+              filters.add(Filter.like("sn", "%"+shelfOrderData.getSn()+"%"));
+          }
+          if (StringUtils.isNotBlank(shelfOrderData.getPaymentType())) {
+              filters.add(Filter.eq("paymentType", shelfOrderData.getPaymentType()));
+          }
+          if (shelfOrderData.getStatus() != null && shelfOrderData.getStatus().length > 0) {
+        	  filters.add(Filter.in("status", shelfOrderData.getStatus()));
+		  }
+	  }
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
 
