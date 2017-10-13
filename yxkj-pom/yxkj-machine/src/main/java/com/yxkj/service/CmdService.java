@@ -9,5 +9,5 @@ import com.yxkj.framework.service.BaseService;
  * @since 2017/9/26
  */
 public interface CmdService extends BaseService<CommandRecord,Long> {
-    public void sendCmd(CmdMsg cmdMsg);
+    void sendCmd(CmdMsg cmdMsg);
 }

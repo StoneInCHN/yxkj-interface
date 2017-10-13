@@ -10,39 +10,35 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.yxkj.controller.base.BaseController;
 
 /**
- *
- * 类说明
+ * 货柜
  * 
  * @author Andrea
- * @version 创建时间：2017年10月10日 下午4:30:24
- * 
+ * @version 2017年10月12日 下午3:42:34
  */
-@Controller("shelfH5Controller")
-@RequestMapping("/h5/shelf")
-public class ShelfH5Controller extends BaseController {
+@Controller("containerH5Controller")
+@RequestMapping("/h5/cntr")
+public class ContainerH5Controller extends BaseController {
 
   /**
-   * 货架二维码链接
+   * 货柜商品支付二维码链接
    * 
    * @param compId
    * @param goodsId
    * @param req
    * @return
    */
-  @RequestMapping(value = "/{compId}/{goodsId}", method = RequestMethod.GET)
-  public String scanQr(@PathVariable("compId") String compId,
-      @PathVariable("goodsId") String goodsId, HttpServletRequest req) {
+  @RequestMapping(value = "/g/{gList}", method = RequestMethod.GET)
+  public String scanQr(@PathVariable("gList") String gList, HttpServletRequest req) {
     String hearders = req.getHeader("user-agent");
     if (hearders.contains("AlipayClient")) {
       return "redirect:https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="
           + setting.getAlipayAppId() + "&scope=auth_user&redirect_uri="
-          + setting.getAuthRedirectUrl() + "?compId=" + compId + "&goodsId=" + goodsId
-          + "&sys=shelf";
+          + setting.getAuthRedirectUrl() + "?gList=" + gList + "&sys=cntr";
     }
     if (hearders.contains("MicroMessenger")) {
       return "redirect:https://open.weixin.qq.com/connect/oauth2/authorize?appid="
           + setting.getWxPublicAppId() + "&redirect_uri=" + setting.getAuthRedirectUrl()
-          + "&response_type=code&scope=snsapi_userinfo&state=shelf," + compId + "," + goodsId;
+          + "&response_type=code&scope=snsapi_userinfo&state=cntr," + gList;
     }
     return "redirect:/warn.jsp";
   }

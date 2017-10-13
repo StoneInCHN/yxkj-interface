@@ -18,20 +18,23 @@ public class UserInfoReq extends BaseRequest {
   private String authCode;
 
   /**
-   * 商品ID
+   * 商品集合字符串
    */
-  private Long gId;
+  private String gList;
 
   /**
-   * 公司ID
-   */
-  private Long compId;
-
-  /**
-   * 支付类型 微信: wx 支付宝: alipay
+   * 扫码类型
    */
   private String type;
 
+
+  public String getgList() {
+    return gList;
+  }
+
+  public void setgList(String gList) {
+    this.gList = gList;
+  }
 
   public String getType() {
     return type;
@@ -41,20 +44,12 @@ public class UserInfoReq extends BaseRequest {
     this.type = type;
   }
 
-  public Long getgId() {
-    return gId;
+  public String getAuthCode() {
+    return authCode;
   }
 
-  public void setgId(Long gId) {
-    this.gId = gId;
-  }
-
-  public Long getCompId() {
-    return compId;
-  }
-
-  public void setCompId(Long compId) {
-    this.compId = compId;
+  public void setAuthCode(String authCode) {
+    this.authCode = authCode;
   }
 
 

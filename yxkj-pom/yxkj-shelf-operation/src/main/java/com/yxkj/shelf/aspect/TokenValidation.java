@@ -1,7 +1,9 @@
 package com.yxkj.shelf.aspect;
 
 import io.jsonwebtoken.Claims;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -13,6 +15,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.json.base.BaseResponse;
@@ -64,16 +67,24 @@ public class TokenValidation {
 
       //获取请求参数
       String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");   
-      LogUtil.debug(TokenValidation.class, "aroundAdvice", "request = %s", requestParam);
-      
+      LogUtil.debug(TokenValidation.class, "aroundAdvice", "request = %s", requestParam);      
+  	     
       //获取token, 存放在header的 X-Auth-Token里
       String xAuthToken = request.getHeader("X-Auth-Token");
 
-      
       //开始验证token, 若验证失败，抛出运行时异常   统一在BaseController中处理
       if (xAuthToken == null) {
-    	  //header中token为null
-          throw new RuntimeException("Token缺失,请重新登录");
+    	  //如果header里面没有放token，那么试着获取请求参数里面的token
+    	  String reqToken = getReqPram(requestParam, "token");
+    	  String reqUserName = getReqPram(requestParam, "userName");
+    	  if (reqToken == null || reqUserName == null) {//请求参数里面的token为null
+             throw new RuntimeException("Token缺失,请重新登录");
+		  }else {
+			  Claims claims = TokenUtil.parseJWT(reqToken);
+	          if (!claims.getId().equals(reqUserName)) {
+	            	throw new RuntimeException("Token无效,请重新登录");
+	          }
+		  }
       }else {
           Claims claims = TokenUtil.parseJWT(xAuthToken);
           //token超时,抛出异常
@@ -82,11 +93,12 @@ public class TokenValidation {
           } 
           //用户登录名与token不匹配
           else {
-        	JSONObject jsonobject = (JSONObject)JSONObject.parse(requestParam);        	
-        	String userName = getStrFromJSON(jsonobject, "userName"); 
-            if (!claims.getId().equals(userName)) {
+        	  JSONObject jsonobject = (JSONObject)JSONObject.parse(requestParam);
+              //获取请求参数里面的用户名
+              String userName = getStrFromJSON(jsonobject, "userName");
+              if (!claims.getId().equals(userName)) {
             	throw new RuntimeException("Token无效,请重新登录");
-            }
+              }
           }
       }
         
@@ -116,6 +128,26 @@ public class TokenValidation {
         value = jsonobject.get(key).toString();
       }
       return value;
+    }
+    /**
+     * 获取请求参数中对应参数的value
+     * @param requestParam
+     * @param key
+     * @return
+     */
+    private String getReqPram(String requestParam, String key){
+  	  if (requestParam != null && requestParam.indexOf(key) >= 0) {
+		  String[] paramArray = requestParam.split("&");
+		  for (String param : paramArray) {
+			if (param.indexOf("=") >= 0) {
+				String[] keyValue = param.split("=");
+				if (keyValue[0].equalsIgnoreCase(key)) {
+					return keyValue[1];
+				}
+			}
+		  }
+	  }
+  	  return null;
     }
     
 

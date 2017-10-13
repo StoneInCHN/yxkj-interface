@@ -1,5 +1,6 @@
 package com.yxkj.service.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -27,6 +28,12 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods, Long> implements Go
   public ResponseMultiple<Map<String, Object>> getGoodsByCate(Long cateId, String cImei,
       Integer pageSize, Integer pageNum) {
     return goodsDao.getGoodsByCate(cateId, cImei, pageSize, pageNum);
+  }
+
+  @Override
+  public List<Map<String, Object>> getGforScanH5(String gList) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

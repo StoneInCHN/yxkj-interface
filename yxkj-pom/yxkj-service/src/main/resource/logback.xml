@@ -66,9 +66,6 @@
 	<logger name="org.springframework" level="off">
 		<appender-ref ref="rolling_file_appender" />
 	</logger>
-	<logger name="org.hibernate" level="off">
-		<appender-ref ref="rolling_file_appender" />
-	</logger>
 
 	<!-- ====================================================================================================== -->
 	<!-- If not part of com.cienet.* override or a specific 3p setting, logging 

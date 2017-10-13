@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiResponses;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -186,7 +185,6 @@ public class CommonController extends BaseController {
           MultipartFile mf = entity.getValue();
           String displayPath = fileService.saveImage(mf, ImageType.GOODS_IMG);
           response.setDesc(displayPath); 
-          System.out.println(displayPath);
           break;
       }
       response.setCode(CommonAttributes.SUCCESS);            

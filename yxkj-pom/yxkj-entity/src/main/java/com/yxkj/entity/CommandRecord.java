@@ -28,7 +28,7 @@ public class CommandRecord extends BaseEntity {
 
   private String deviceNo;
 
-  private CommonEnum.CmdResponse cmdResponse;
+  private CommonEnum.CmdStatus cmdStatus;
 
 
   @Column(length = 100)
@@ -57,11 +57,11 @@ public class CommandRecord extends BaseEntity {
     this.deviceNo = deviceNo;
   }
 
-  public CommonEnum.CmdResponse getCmdResponse() {
-    return cmdResponse;
+  public CommonEnum.CmdStatus getCmdStatus() {
+    return cmdStatus;
   }
 
-  public void setCmdResponse(CommonEnum.CmdResponse cmdResponse) {
-    this.cmdResponse = cmdResponse;
+  public void setCmdStatus(CommonEnum.CmdStatus cmdStatus) {
+    this.cmdStatus = cmdStatus;
   }
 }

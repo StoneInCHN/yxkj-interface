@@ -1,8 +1,11 @@
-package com.yxkj.service; 
+package com.yxkj.service;
 
 import com.yxkj.entity.Order;
 import com.yxkj.framework.service.BaseService;
 
-public interface OrderService extends BaseService<Order,Long>{
-
+public interface OrderService extends BaseService<Order, Long> {
+    /**
+     * 出货
+     */
+    void salesOut(Long orderId);
 }

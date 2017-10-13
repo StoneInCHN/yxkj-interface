@@ -41,6 +41,19 @@ public class Setting implements Serializable {
    */
   private String shelfSysUrl;
 
+  /**
+   * 货柜系统url
+   */
+  private String cntrSysUrl;
+
+
+  public String getCntrSysUrl() {
+    return cntrSysUrl;
+  }
+
+  public void setCntrSysUrl(String cntrSysUrl) {
+    this.cntrSysUrl = cntrSysUrl;
+  }
 
   public String getShelfSysUrl() {
     return shelfSysUrl;
