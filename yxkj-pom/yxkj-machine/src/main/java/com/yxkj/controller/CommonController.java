@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.json.base.ResponseOne;
@@ -87,6 +86,9 @@ public class CommonController extends MobileBaseController {
     }
     resMap.put("userInfo", result);
 
+    response.setMsg(resMap);
+    response.setCode(CommonAttributes.SUCCESS);
+
     String userId = (String) result.get("userId");
     String nickName = (String) result.get("nickname");
     response.setToken(TokenUtil.getJWTString(userId, ""));
@@ -110,7 +112,7 @@ public class CommonController extends MobileBaseController {
   @ApiOperation(value = "获取微信jsapi参数信息", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取微信jsapi参数信息")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
-  @UserValidCheck
+  // @UserValidCheck
   public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(
       @ApiParam(name = "请求参数(json)", value = "curUrl:当前网页url地址  |userName:用户标识|header token",
           required = true) @RequestBody UserInfoReq req) {
@@ -119,7 +121,7 @@ public class CommonController extends MobileBaseController {
     Map<String, Object> res =
         touristService.getJsapiConfig(req.getCurUrl(), setting.getWxPublicAppId(),
             setting.getWxPublicAppSecret());
-
+    res.put("appId", setting.getWxPublicAppId());
     response.setMsg(res);
     response.setCode(CommonAttributes.SUCCESS);
 

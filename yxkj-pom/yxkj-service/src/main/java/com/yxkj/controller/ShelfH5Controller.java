@@ -48,4 +48,9 @@ public class ShelfH5Controller extends BaseController {
   }
 
 
+  @RequestMapping(value = "/test", method = RequestMethod.GET)
+  public String test() {
+    System.out.println(setting.getAlipayAppId());
+    return "redirect:http://www.baidu.com";
+  }
 }

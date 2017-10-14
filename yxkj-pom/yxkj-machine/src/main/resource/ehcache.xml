@@ -2,7 +2,7 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
 
 	<diskStore path="D:/temp/cache/machine" />
-	<!-- <diskStore path="/home/env/mnt/cache/shelfOperation" /> -->
+	<!-- <diskStore path="/home/env/mnt/cache/machine" /> -->
 
 	<cache name="setting" maxElementsInMemory="100" eternal="true" overflowToDisk="true" />
 	<cache name="accessToken" maxElementsInMemory="100" eternal="false" timeToLiveSeconds="7000" overflowToDisk="true" />

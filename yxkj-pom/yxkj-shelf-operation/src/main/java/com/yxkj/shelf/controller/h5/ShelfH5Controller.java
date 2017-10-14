@@ -237,7 +237,7 @@ public class ShelfH5Controller extends H5BaseController {
     Map<String, Object> res =
         touristService.getJsapiConfig(req.getCurUrl(), setting.getWxPublicAppId(),
             setting.getWxPublicAppSecret());
-
+    res.put("appId", setting.getWxPublicAppId());
     response.setMsg(res);
     response.setCode(CommonAttributes.SUCCESS);
 
