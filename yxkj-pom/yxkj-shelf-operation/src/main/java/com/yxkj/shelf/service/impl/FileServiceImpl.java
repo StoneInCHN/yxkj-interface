@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,9 @@ public class FileServiceImpl implements FileService {
   
   @Resource(name = "taskExecutor")
   private Executor threadPoolExecutor;
+  
+  @Value("${system.project_deploy_url}")
+  private String projectDeployUrl;
 
   /**
    * 批量上传图片
@@ -177,4 +181,12 @@ public class FileServiceImpl implements FileService {
       e.printStackTrace();
     }
   }
+
+	@Override
+	public String getProjectDeployUrl() {
+		if (StringUtils.isNotBlank(projectDeployUrl)) {
+			return projectDeployUrl;
+		}
+		return "";
+	}
 }

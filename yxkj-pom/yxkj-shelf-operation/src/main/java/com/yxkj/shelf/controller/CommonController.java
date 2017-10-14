@@ -220,7 +220,7 @@ public class CommonController extends BaseController {
 
         OutputStream out = response.getOutputStream();// 获得输出流        
         GeneratePdf generatePdf = new GeneratePdf(
-        		company.getDisplayName(),company.getId().toString(),goodsList,out);        
+        		company.getDisplayName(),company.getId().toString(),goodsList,out,fileService.getProjectDeployUrl());        
         Object locker = new Object();// 当前主线程的一把锁
         synchronized (locker) {
           threadPoolExecutor.execute(// 加入到线程池中执行

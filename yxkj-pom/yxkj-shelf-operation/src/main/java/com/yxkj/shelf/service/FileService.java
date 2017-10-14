@@ -23,6 +23,7 @@ public interface FileService {
 	   * @return
 	   */
 	  public String saveImage(MultipartFile multipartFile, ImageType imageType);
-
+	  
+	  String getProjectDeployUrl();
 
 }

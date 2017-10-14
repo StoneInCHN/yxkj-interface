@@ -36,30 +36,24 @@ public class TokenValidation {
     @Autowired
     private HttpServletRequest request;           
     
-    //切入点
     @Pointcut( value = "execution(* com.yxkj.shelf.controller.admin.*Controller.*(..))" )
     public void pointcut(){}
     
-    //前置通知
     @Before("pointcut()")  
     public void before(){} 
     
-    //后置通知
     @After("pointcut()")  
     public void after(){} 
     
-    //返回通知
     @AfterReturning("pointcut()")
     public void afterReturning(){}
     
-    //异常通知
     @AfterThrowing(pointcut = "pointcut()", throwing = "ex")
     public void afterThrowing(JoinPoint joinPoint, Exception ex) throws Throwable {
       LogUtil.debug(TokenValidation.class, "afterThrowing", joinPoint.toString()  + "Throwing Exception " + "\t" + ex.getMessage());
       throw ex;
     }
     
-    //环绕通知
     @Around("pointcut()")
     public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 
@@ -74,10 +68,9 @@ public class TokenValidation {
 
       //开始验证token, 若验证失败，抛出运行时异常   统一在BaseController中处理
       if (xAuthToken == null) {
-    	  //如果header里面没有放token，那么试着获取请求参数里面的token
     	  String reqToken = getReqPram(requestParam, "token");
     	  String reqUserName = getReqPram(requestParam, "userName");
-    	  if (reqToken == null || reqUserName == null) {//请求参数里面的token为null
+    	  if (reqToken == null || reqUserName == null) {
              throw new RuntimeException("Token缺失,请重新登录");
 		  }else {
 			  Claims claims = TokenUtil.parseJWT(reqToken);

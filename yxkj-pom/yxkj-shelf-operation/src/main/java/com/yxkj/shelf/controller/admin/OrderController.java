@@ -6,12 +6,17 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +36,15 @@ import com.yxkj.shelf.json.base.PageResponse;
 import com.yxkj.shelf.json.base.ResponseMultiple;
 import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.ShelfOrderService;
+import com.yxkj.shelf.utils.ExportHelper;
 import com.yxkj.shelf.utils.FieldFilterUtils;
+import com.yxkj.shelf.utils.HttpServletRequestUtils;
+import com.yxkj.shelf.utils.TimeUtils;
 
 
 /**
  * Controller - 订单管理
+ * @author luzhang
  * 
  */
 @Controller("orderController")
@@ -45,6 +54,9 @@ public class OrderController extends BaseController {
 	
 	@Resource(name = "shelfOrderServiceImpl")
 	private ShelfOrderService shelfOrderService;
+	
+	@Autowired
+	private ExportHelper exportHelper;
 	
     @RequestMapping(value = "/getOrderList", method = RequestMethod.POST)
     @ApiOperation(value = "订单列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取订单列表")
@@ -57,8 +69,11 @@ public class OrderController extends BaseController {
       List<Filter> filters = pageable.getFilters();
       ShelfOrderData shelfOrderData = request.getShelfOrderData();
       if (shelfOrderData != null) {
-          if (StringUtils.isNotBlank(shelfOrderData.getSn())) {
-              filters.add(Filter.like("sn", "%"+shelfOrderData.getSn()+"%"));
+          if (StringUtils.isNotBlank(shelfOrderData.getCompanyName())) {
+              filters.add(Filter.like("comp.displayName", "%"+shelfOrderData.getCompanyName()+"%"));
+          }
+          if (StringUtils.isNotBlank(shelfOrderData.getCompanySn())) {
+              filters.add(Filter.like("comp.sn", "%"+shelfOrderData.getCompanySn()+"%"));
           }
           if (StringUtils.isNotBlank(shelfOrderData.getPaymentType())) {
               filters.add(Filter.eq("paymentType", shelfOrderData.getPaymentType()));
@@ -66,6 +81,12 @@ public class OrderController extends BaseController {
           if (shelfOrderData.getStatus() != null && shelfOrderData.getStatus().length > 0) {
         	  filters.add(Filter.in("status", shelfOrderData.getStatus()));
 		  }
+          if (shelfOrderData.getBeginDate() != null) {
+              filters.add(Filter.ge("paymentTime", TimeUtils.formatDate2Day0(shelfOrderData.getBeginDate())));
+            }
+            if (shelfOrderData.getEndDate() != null) {
+              filters.add(Filter.lt("paymentTime", TimeUtils.formatDate2Day59(shelfOrderData.getEndDate())));
+            }
 	  }
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
@@ -103,5 +124,30 @@ public class OrderController extends BaseController {
       response.setMsg(shelfOrder);
       response.setCode(CommonAttributes.SUCCESS);
       return response;
+    }
+    /**
+     * 导出Excel
+     * @throws IOException 
+     */
+    @RequestMapping(value = "/dataExport", method = {RequestMethod.GET, RequestMethod.POST})
+    public void dataExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      List<Ordering> orders = new ArrayList<Ordering>();
+      orders.add(Ordering.desc("createDate"));
+      List<Filter> filters = new ArrayList<Filter>();
+	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
+	  String sn = getReqPram(requestParam, "sn");
+      if (sn != null) {
+          filters.add(Filter.like("sn", "%"+sn+"%"));
+      }	
+      List<ShelfOrder> lists = shelfOrderService.findList(null, filters, orders); 
+      if (lists != null && lists.size() > 0) {
+        String title = "Order List"; // 工作簿标题，同时也是excel文件名前缀
+        String[] headers = {"sn", "company", "touristNickName", "touristUserName", "paymentType", "paymentTime", "amount",  "status", "goodsCount"}; // 需要导出的字段
+        String[] headersName = {"订单编号", "公司名", "用户昵称", "用户识别码", "支付方式", "支付时间", "订单金额", "交易状态", "商品数量"}; // 字段对应列的列名
+        List<Map<String, String>> mapList = exportHelper.prepareExportShelfOrder(lists);
+        if (mapList.size() > 0) {
+          exportListToExcel(response, mapList, title, headers, headersName);
+        }
+      }
     }
 }

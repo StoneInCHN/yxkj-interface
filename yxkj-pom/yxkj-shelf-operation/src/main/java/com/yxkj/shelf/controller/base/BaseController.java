@@ -218,6 +218,25 @@ public class BaseController {
         e.printStackTrace();
       }
     }
-
+  }
+  /**
+   * 获取请求参数中对应参数的value
+   * @param requestParam
+   * @param key
+   * @author luzhang
+   */
+  protected String getReqPram(String requestParam, String key){
+	  if (requestParam != null && requestParam.indexOf(key) >= 0) {
+		  String[] paramArray = requestParam.split("&");
+		  for (String param : paramArray) {
+			if (param.indexOf("=") >= 0) {
+				String[] keyValue = param.split("=");
+				if (keyValue[0].equalsIgnoreCase(key)) {
+					return keyValue[1];
+				}
+			}
+		  }
+	  }
+	  return null;
   }
 }

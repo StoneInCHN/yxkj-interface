@@ -6,12 +6,17 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +35,6 @@ import com.yxkj.shelf.json.admin.request.AdminRequest;
 import com.yxkj.shelf.json.admin.request.CompanyData;
 import com.yxkj.shelf.json.admin.request.CompanyRequest;
 import com.yxkj.shelf.json.admin.request.GoodsShelveRow;
-import com.yxkj.shelf.json.admin.request.ShelfOrderData;
-import com.yxkj.shelf.json.admin.request.ShelfOrderRequest;
 import com.yxkj.shelf.json.admin.response.GoodsProfile;
 import com.yxkj.shelf.json.base.BaseResponse;
 import com.yxkj.shelf.json.base.PageResponse;
@@ -41,10 +44,13 @@ import com.yxkj.shelf.service.AreaService;
 import com.yxkj.shelf.service.CompanyService;
 import com.yxkj.shelf.service.GoodsService;
 import com.yxkj.shelf.service.ShelfCategoryService;
+import com.yxkj.shelf.utils.ExportHelper;
+import com.yxkj.shelf.utils.HttpServletRequestUtils;
 
 
 /**
  * Controller - 公司管理
+ * @author luzhang
  * 
  */
 @Controller("companyController")
@@ -64,6 +70,9 @@ public class CompanyController extends BaseController {
 	@Resource(name = "goodsServiceImpl")
 	private GoodsService goodsService;
 	
+	@Autowired
+	private ExportHelper exportHelper;
+	
     @RequestMapping(value = "/getCompanyList", method = RequestMethod.POST)
     @ApiOperation(value = "公司列表", httpMethod = "POST", response = BaseResponse.class, notes = "用于获取公司列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -77,6 +86,9 @@ public class CompanyController extends BaseController {
       if (companyData != null) {
           if (StringUtils.isNotBlank(companyData.getSn())) {
               filters.add(Filter.like("sn", "%"+companyData.getSn()+"%"));
+          }
+          if (StringUtils.isNotBlank(companyData.getFullName())) {
+              filters.add(Filter.like("fullName", "%"+companyData.getFullName()+"%"));
           }
 	  }
       List<Ordering> orderings = pageable.getOrderings();
@@ -215,5 +227,35 @@ public class CompanyController extends BaseController {
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.request.success"));
       return response;
+    }
+    /**
+     * 导出Excel
+     * @throws IOException 
+     */
+    @RequestMapping(value = "/dataExport", method = {RequestMethod.GET, RequestMethod.POST})
+    public void dataExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      List<Ordering> orders = new ArrayList<Ordering>();
+      orders.add(Ordering.desc("createDate"));
+      List<Filter> filters = new ArrayList<Filter>();
+	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
+	  String sn = getReqPram(requestParam, "sn");
+	  String displayName = getReqPram(requestParam, "displayName");
+      if (sn != null) {
+          filters.add(Filter.like("sn", "%"+sn+"%"));
+      }
+      if (displayName != null) {
+          filters.add(Filter.like("displayName", "%"+displayName+"%"));
+      }		
+      List<Company> lists = companyService.findList(null, filters, orders); 
+
+      if (lists != null && lists.size() > 0) {
+        String title = "Company List"; // 工作簿标题，同时也是excel文件名前缀
+        String[] headers = {"sn", "fullName", "displayName", "contactPerson", "contactPhone", "area", "address", "remark"}; // 需要导出的字段
+        String[] headersName = {"公司编号", "公司全名", "公司展示名称", "联系人", "联系电话", "地区", "详细地址", "备注"}; // 字段对应列的列名
+        List<Map<String, String>> mapList = exportHelper.prepareExportCompany(lists);
+        if (mapList.size() > 0) {
+          exportListToExcel(response, mapList, title, headers, headersName);
+        }
+      }
     }
 }
