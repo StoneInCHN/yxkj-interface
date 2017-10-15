@@ -93,7 +93,7 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
   @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   public ShelfOrder callbackAfterPay(String orderSn) {
     ShelfOrder shelfOrder = shelfOrderDao.getShelfOrderBySn(orderSn);
-    if (!OrderStatus.UNPAID.equals(shelfOrder.getStatus())) {
+    if (!ShelfOrderStatus.UNPAID.equals(shelfOrder.getStatus())) {
       LogUtil.debug(this.getClass(), "callbackAfterPay",
           "This order already deal with. orderSn: %s, orderStatus: %s", shelfOrder.getSn(),
           shelfOrder.getStatus().toString());
