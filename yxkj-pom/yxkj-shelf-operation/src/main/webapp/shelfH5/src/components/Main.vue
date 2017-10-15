@@ -3,14 +3,13 @@
     <div class="only-one-goods" v-if="isOnly">
         <div class="goods-header">
          <h5>{{onlyItem.gName}}</h5>
-         <icon type="cancel" class="goods-header-icon" @click.native="canaelOnlyItem"></icon>
         </div>
         <div class="goods-content">
           <img :src="onlyItem.gImg" :alt="onlyItem.gName" />
           <group>
             <p><strong> ￥ {{onlyItem.gPrice}}</strong></p>
             <p>
-              <span>数量:</span><inline-x-number v-model="onlyItem.gCount" :min="0" button-style="round"></inline-x-number>
+              <span>数量:</span><inline-x-number v-model="onlyItem.gCount" :min="1" button-style="round"></inline-x-number>
             </p>   
           </group>
         </div>
@@ -21,14 +20,14 @@
           <div class="goods-item">
             <div class="goods-header">
              <h5>{{dataItem.gName}}</h5>
-             <icon type="cancel" class="goods-header-icon" @click.native="removeItem"></icon>
+             <icon type="cancel" class="goods-header-icon" :data-id="dataItem.gId" @click.native="removeGoods"></icon>
             </div>
             <div class="goods-content">
               <img :src=dataItem.gImg :alt=dataItem.gName />
               <group>
                 <p><strong> ￥ {{dataItem.gPrice}}</strong></p>
                 <p>
-                  <span>数量:</span><inline-x-number v-model="dataItem.gCount" :min="0" button-style="round"></inline-x-number>
+                  <span>数量:</span><inline-x-number v-model="dataItem.gCount" :min="1" button-style="round"></inline-x-number>
                 </p>
               </group>
             </div>
@@ -40,7 +39,7 @@
     <div class="goods-btns">
       <flexbox>
         <flexbox-item>
-          <x-button type="default" @click.native="scan">继续扫</x-button>
+          <x-button type="default" @click.native="scanQR">继续扫</x-button>
         </flexbox-item>
         <flexbox-item>
           <x-button type="default" link="pay">结算</x-button>
@@ -52,8 +51,7 @@
 
 <script>
 import { Group, Cell, Icon, InlineXNumber, Flexbox, FlexboxItem, XButton } from 'vux'
-import { mapActions } from 'vuex'
-
+import {numAdd, numMul} from '../utils/utils'
 export default {
   components: {
     Group,
@@ -66,31 +64,54 @@ export default {
   },
   data () {
     return {
-      datas: []
+      datas: [],
+      userName: '',
+      type: '',
+      config: {},
+      token: '',
+      urlPre: 'http://shelf.ybjcq.com/h5/shelf'
     }
   },
   mounted () {
-    console.log(this.$store.getters.getWxConfig)
-    this.$wechat.config({
-      debug: false,
-      appId: 'wx3598eb401cb80f00',
-      timestamp: 1506690795,
-      nonceStr: 'H0pUJ8NF3yUTIuuR',
-      signature: '2fcc888479538bc8065edea20d600b4a26ae2582',
-      jsApiList: [
-        'checkJsApi',
-        'scanQRCode',
-        'chooseWXPay'
-      ]
-    })
-    this.$wechat.ready(function () {
-      console.log('wx loading success')
-    })
-    this.$wechat.error(function (res) {
-      // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-      console.log('wx loading error')
-      console.log(res)
-    })
+    let parseParams = this.$querystring.parse()
+    let params = {
+      authCode: parseParams.authCode,
+      compId: parseParams.compId,
+      gId: parseParams.goodsId,
+      type: parseParams.type
+    }
+    console.log(params)
+    this.type = params.type
+    if (params) {
+      if (params.type === 'wx') {
+        this.$store.dispatch('setType', {type: 'wx'})
+      } else if (params.type === 'alipay') {
+        this.$store.dispatch('setType', {type: 'alipay'})
+      }
+      this.$api.authUserInfo(params).then(res => {
+        console.log(res)
+        if (res && res.code === '0000') {
+          this.token = res.token
+          this.$store.dispatch('setToken', {token: this.token})
+          if (res.msg.userInfo) {
+            this.userName = res.msg.userInfo.userId
+            this.$store.dispatch('setUserInfo', {userInfo: res.msg.userInfo})
+            this.getConfig()
+          }
+          if (res.msg.compInfo) {
+            this.$store.dispatch('setCompInfo', {compInfo: res.msg.compInfo})
+          }
+          if (res.msg.gInfo) {
+            let item = res.msg.gInfo
+            item.gCount = 1
+            this.datas.push(item)
+            this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+          }
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    }
   },
   computed: {
     onlyOneItem () {
@@ -115,9 +136,13 @@ export default {
       if (this.datas) {
         for (let item in this.datas) {
           let data = this.datas[item]
-          total += data.gPrice * data.gCount
+          if (data) {
+            let price = numMul(data.gPrice, data.gCount)
+            total = numAdd(total, price)
+          }
         }
       }
+      this.$store.dispatch('setTotalPrice', {totalPrice: total})
       return total
     }
   },
@@ -134,32 +159,139 @@ export default {
         }
       })
     },
-    removeItem () {
-      this.$vux.confirm.show({
-        title: '移除商品',
-        content: '确定要从购物栏中移除该商品吗？',
-        onCancel () {
-          console.log('plugin cancel')
-        },
-        onConfirm () {
-          console.log('plugin confirm')
+    removeGoods (e) {
+      let $el = e.target
+      let gId = $el.getAttribute('data-id')
+      let length = this.datas.length
+      let index
+      for (let i = 0; i < length; i++) {
+        let item = this.datas[i]
+        if (item && item.gId === gId) {
+          index = i
+          break
         }
+      }
+      if (index || index === 0) {
+        this.datas.splice(index, 1)
+        this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+      }
+    },
+    scanQR () {
+      if (this.type === 'wx') {
+        this.$wechat.scanQRCode({
+          needResult: 1,
+          desc: 'scanQRCode desc',
+          success: (res) => {
+            let url = res.resultStr
+            if (url && url.indexOf(this.urlPre) !== -1) {
+              let gId = this.parseUrl(url)
+              let params = {
+                userName: this.userName,
+                gId: gId
+              }
+              this.getGoodsInfo(params)
+            } else {
+              this.$vux.alert.show({
+                content: '请扫描正确的二维码'
+              })
+              setTimeout(() => {
+                this.$vux.alert.hide()
+              }, 3000)
+            }
+          }
+        })
+      } else if (this.type === 'alipay') {
+        this.alipayJSReady(() => {
+          window.AlipayJSBridge.call('scan', {
+            type: 'qr'
+          }, (result) => {
+            let url = result.qrCode
+            if (url && url.indexOf(this.urlPre) !== -1) {
+              let gId = this.parseUrl(url)
+              let params = {
+                userName: this.userName,
+                gId: gId
+              }
+              this.getGoodsInfo(params)
+            } else {
+              this.$vux.alert.show({
+                content: '请扫描正确的二维码'
+              })
+              setTimeout(() => {
+                this.$vux.alert.hide()
+              }, 3000)
+            }
+          })
+        })
+      }
+    },
+    getGoodsInfo (params) {
+      this.$api.getGoodsBySn(params).then(res => {
+        let item = res.msg
+        if (item) {
+          item.gCount = 1
+          this.datas.push(item)
+          this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+        }
+      }).catch(error => {
+        console.log(error)
       })
     },
-    scan () {
-      console.log(this.$wechat)
-      this.$wechat.scanQRCode({
-        needResult: 1,
-        desc: 'scanQRCode desc',
-        success: function (res) {
-          console.log(JSON.stringify(res))
+    parseUrl (url) {
+      let gId
+      if (url) {
+        let params = url.split('/')
+        if (params) {
+          gId = params[params.length - 1]
         }
+      }
+      return gId
+    },
+    getConfig () {
+      let params = {
+        userName: this.userName,
+        curUrl: location.href
+      }
+      this.$api.jsApiConfig(params).then(res => {
+        if (res && res.code === '0000' && res.msg) {
+          this.config.jsapi_ticket = res.msg.jsapi_ticket
+          this.config.signature = res.msg.signature
+          this.config.nonceStr = res.msg.nonceStr
+          this.config.timestamp = res.msg.timestamp
+          this.config.url = res.msg.url
+          this.config.appId = res.msg.appId
+        }
+        console.log(this.config)
+        if (this.config) {
+          this.$wechat.config({
+            debug: false,
+            appId: this.config.appId,
+            timestamp: this.config.timestamp,
+            nonceStr: this.config.nonceStr,
+            signature: this.config.signature,
+            jsApiList: [
+              'scanQRCode',
+              'chooseWXPay'
+            ]
+          })
+          this.$wechat.ready(function () {
+            console.log('wx loading success')
+          })
+          this.$wechat.error(function (res) {
+            console.log('wx loading error')
+          })
+        }
+      }).catch(error => {
+        console.log(error)
       })
     },
-    ...mapActions({
-      getGoodItems: 'setGoodItems',
-      getGoodsBySn: 'getGoodsBySn'
-    })
+    alipayJSReady (callback) {
+      if (window.AlipayJSBridge) {
+        callback && callback()
+      } else {
+        document.addEventListener('AlipayJSBridgeReady', callback, false)
+      }
+    }
   }
 }
 </script>
@@ -167,20 +299,21 @@ export default {
 <style scoped>
 .only-one-goods{
   margin:20px;
-  border: 1px solid #999999;
+  border: 1px solid #EAEAEA;
   border-radius: 10px;
+  background-color: #ffffff;
 }
 .goods-item{
   margin:10px;
-  border: 1px solid #999999;
+  border: 1px solid #EAEAEA;
   border-radius: 10px;
-  box-shadow: 0 0 5px #b1b2b3;
+  box-shadow: 0 0 5px #EAEAEA;
 }
 .goods-header{
   text-align: center;
   position: relative;
   height: 40px;
-  border-bottom:1px solid #999999;
+  border-bottom:1px solid #EAEAEA;
 }
 .goods-header h5{
   height: 20px;
@@ -191,14 +324,15 @@ export default {
   position:absolute;
   top: -7px;
   right: -12px;
-  color: black !important;
+  color: #b1b2b3 !important;
   font-size: 30px !important;
 }
 .goods-content{
    padding: 10px;
+   text-align: center;
 }
 .goods-content img{
-  width: 100%;
+  width: 60%;
 }
 .only-one-goods .goods-content p{
   margin:10px;
@@ -207,6 +341,9 @@ export default {
   vertical-align: top;
   display: inline-block;
   width: 60px;
+}
+.goods-item{
+  background-color: #ffffff;
 }
 .goods-item .goods-content span{
   vertical-align: top;
@@ -228,9 +365,9 @@ export default {
 .goods-item  .vux-number-selector{
     font-size: 15px!important;
     line-height: 15px!important;
-    color: #999999!important;
+    color: #EAEAEA!important;
     padding: 0 1px!important;
-    border: 1px solid #999999!important;
+    border: 1px solid #EAEAEA!important;
     height: 16px !important;
     width: 15px !important;
 }

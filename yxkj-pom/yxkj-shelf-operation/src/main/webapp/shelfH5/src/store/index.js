@@ -1,4 +1,3 @@
-import Api from '../fetch/api'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
@@ -6,12 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    accessToken: '',
+    token: '',
     init: true,
     goodItems: [],
-    totalPrice: 100,
-    isWXBrowser: true,
+    totalPrice: 0,
+    isWXBrowser: false,
     isZFBBrowser: false,
+    type: '',
+    userInfo: {},
+    compInfo: {},
     wxConfig: {
       debug: false,
       appId: 'wx3598eb401cb80f00',
@@ -40,6 +42,18 @@ export default new Vuex.Store({
     },
     setAccessToken (state, {accessToken}) {
       state.accessToken = accessToken
+    },
+    setUserInfo (state, {userInfo}) {
+      state.userInfo = userInfo
+    },
+    setCompInfo (state, {compInfo}) {
+      state.compInfo = compInfo
+    },
+    setToken (state, {token}) {
+      state.token = token
+    },
+    setType (state, {type}) {
+      state.type = type
     }
   },
   getters: {
@@ -60,6 +74,18 @@ export default new Vuex.Store({
     },
     getWxConfig (state) {
       return state.wxConfig
+    },
+    getUserInfo (state) {
+      return state.userInfo
+    },
+    getCompInfo (state) {
+      return state.compInfo
+    },
+    getToken (state) {
+      return state.token
+    },
+    getType (state) {
+      return state.type
     }
   },
   actions: {
@@ -75,27 +101,20 @@ export default new Vuex.Store({
     setGoodItems (context, payload) {
       context.commit('setGoodItems', payload)
     },
-    getGoodsBySn (context, payload) {
-      console.log('*******')
-      console.log(payload)
-      Api.getGoodsBySn().then(response => {
-        const data = {
-          goodItems: response.msg
-        }
-        context.commit('setGoodItems', data)
-      }).catch(error => {
-        console.log(error)
-      })
-    },
     setAccessToken (context, payload) {
-      Api.getAccessToken().then(response => {
-        const data = {
-          goodItems: response.msg
-        }
-        context.commit('setGoodItems', data)
-      }).catch(error => {
-        console.log(error)
-      })
+      context.commit('setGoodItems', payload)
+    },
+    setUserInfo (context, payload) {
+      context.commit('setUserInfo', payload)
+    },
+    setCompInfo (context, payload) {
+      context.commit('setCompInfo', payload)
+    },
+    setToken (context, payload) {
+      context.commit('setToken', payload)
+    },
+    setType (context, payload) {
+      context.commit('setType', payload)
     }
   }
 })
