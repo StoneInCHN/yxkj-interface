@@ -152,9 +152,10 @@ public class ShelfH5Controller extends H5BaseController {
     gMap.put("gPrice", goods.getSalePrice());
     String gImg = "";
     for (GoodsPic goodsPic : goods.getGoodsPics()) {
-      if (goodsPic.getOrder() != null && goodsPic.getOrder() == 0) {// 只获取手机显示的小图
-        gImg = goodsPic.getSource();
-      }
+      gImg = goodsPic.getSource();
+      // if (goodsPic.getOrder() != null && goodsPic.getOrder() == 0) {// 只获取手机显示的小图
+      // gImg = goodsPic.getSource();
+      // }
     }
     gMap.put("gImg", gImg);
     resMap.put("gInfo", gMap);
