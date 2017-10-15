@@ -55,7 +55,7 @@
 		<!-- 商户ID -->
 		<setting name="wechatMchId" value="1483176522" />
 		<!-- 通知地址 -->
-		<setting name="wechatNotifyUrl" value="http://test.ybjcq.com/h5/shelf/pay/notify_wechat" />
+		<setting name="wechatNotifyUrl" value="http://shelf.ybjcq.com/yxkj-shelf/h5/shelf/pay/notify_wechat" />
 		<!-- 微信下订单接口 -->
 		<setting name="wechatAddOrderUrl" value="https://api.mch.weixin.qq.com/pay/unifiedorder" />
 		<!-- 微信Token接口 -->
@@ -75,9 +75,9 @@
 		<!-- 支付宝的公钥(开放平台密钥用于授权和手机网页支付)-->
 		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB" />
 		<!-- 支付宝异步通知接口 -->
-		<setting name="alipayNotifyUrl" value="http://test.ybjcq.com/h5/shelf/pay/notify_alipay" />
+		<setting name="alipayNotifyUrl" value="http://shelf.ybjcq.com/yxkj-shelf/h5/shelf/pay/notify_alipay" />
 		<!-- 支付宝同步通知接口 -->
-		<setting name="alipayReturnUrl" value="http://test.ybjcq.com/shelfH5/index.html" />
+		<setting name="alipayReturnUrl" value="http://shelf.ybjcq.com/yxkj-shelf/shelfH5/index.html#/payResult" />
 		
 		
 		<!-- 百度API:GPS坐标转百度坐标 -->
