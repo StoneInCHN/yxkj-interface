@@ -69,7 +69,7 @@ export default {
       type: '',
       config: {},
       token: '',
-      urlPre: 'http://shelf.ybjcq.com/h5/shelf'
+      urlPre: 'http://test.ybjcq.com/h5/shelf'
     }
   },
   mounted () {
@@ -229,8 +229,23 @@ export default {
       this.$api.getGoodsBySn(params).then(res => {
         let item = res.msg
         if (item) {
-          item.gCount = 1
-          this.datas.push(item)
+          let flag = false
+          if (this.datas.length > 0) {
+            let datasTemp = []
+            for (let i = 0; i < this.datas.length; i++) {
+              let data = this.datas[i]
+              if (data.gId === item.gId) {
+                flag = true
+                data.gCount += 1
+              }
+              datasTemp.push(data)
+            }
+            this.datas = datasTemp
+          }
+          if (!flag) {
+            item.gCount = 1
+            this.datas.push(item)
+          }
           this.$store.dispatch('setGoodItems', {goodItems: this.datas})
         }
       }).catch(error => {

@@ -19,7 +19,7 @@
       </cell>
     </group>
     <div class="btns">
-      <x-button type="primary" @click.native="pay">{{payBtnInfo}}</x-button>
+      <x-button type="primary" @click.native="pay" :style="alipayStyle">{{payBtnInfo}}</x-button>
     </div>
   </div>
 </template>
@@ -72,6 +72,13 @@ export default {
         return '微信支付'
       } else if (this.type === 'alipay') {
         return '支付宝支付'
+      }
+    },
+    alipayStyle () {
+      if (this.type === 'alipay') {
+        return {backgroundColor: '#0F8CE6'}
+      } else {
+        return {}
       }
     }
   },
