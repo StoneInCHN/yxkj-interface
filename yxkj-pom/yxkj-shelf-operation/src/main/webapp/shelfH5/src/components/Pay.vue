@@ -19,22 +19,13 @@
       </cell>
     </group>
     <div class="btns">
-      <x-button type="primary" @click.native="pay">微信支付</x-button>
+      <x-button type="primary" @click.native="pay">{{payBtnInfo}}</x-button>
     </div>
-    <x-dialog v-model="showScrollBox" class="dialog-demo">
-      <p class="dialog-title">Long content</p>
-      <div class="img-box" style="height:100px;padding:15px 0;overflow:scroll;-webkit-overflow-scrolling:touch;">
-        {{pageInfo}}
-      </div>
-      <div @click="showScrollBox=false">
-        <span class="vux-close"></span>
-      </div>
-    </x-dialog>
   </div>
 </template>
 
 <script>
-import { Group, Cell, XButton, Flexbox, FlexboxItem, XDialog } from 'vux'
+import { Group, Cell, XButton, Flexbox, FlexboxItem } from 'vux'
 
 export default {
   components: {
@@ -42,8 +33,7 @@ export default {
     Cell,
     XButton,
     Flexbox,
-    FlexboxItem,
-    XDialog
+    FlexboxItem
   },
   data () {
     return {
@@ -76,6 +66,13 @@ export default {
         count += item.gCount
       }
       return count
+    },
+    payBtnInfo () {
+      if (this.type === 'wx') {
+        return '微信支付'
+      } else if (this.type === 'alipay') {
+        return '支付宝支付'
+      }
     }
   },
   methods: {
