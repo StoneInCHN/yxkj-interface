@@ -94,7 +94,7 @@ public class FileServiceImpl implements FileService {
 
   @Override
   public String saveImage(MultipartFile multiFile, ImageType imageType) {
-    String webPath = null;
+    String webPath = "";
     String imgUploadPath = "";
     String projectPath = "";
     try {
@@ -111,8 +111,10 @@ public class FileServiceImpl implements FileService {
       String sourcePath =
           imgUploadPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
-      webPath =
-    		  File.separator + projectName + File.separator + projectPath + File.separator + "src_" + uuid + "."
+      if (StringUtils.isNotBlank(projectName)) {
+    	  webPath += File.separator + projectName + File.separator;
+	  }
+      webPath += projectPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
 
       File tempFile =
