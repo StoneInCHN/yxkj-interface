@@ -32,6 +32,10 @@ public class CompanyData {
 	 */
 	private String fullName;
 	/**
+	 * 公司展示名称
+	 */
+	private String displayName;
+	/**
 	 * 公司货架情况
 	 */
 	private List<GoodsShelveRow> goodsShelves;
@@ -93,6 +97,12 @@ public class CompanyData {
 	}
 	public void setAreaFullName(String areaFullName) {
 		this.areaFullName = areaFullName;
+	}
+	public String getDisplayName() {
+		return displayName;
+	}
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 	
 }

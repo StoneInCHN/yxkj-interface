@@ -16,7 +16,6 @@ import com.yxkj.entity.ShelfOrder;
 import com.yxkj.entity.ShelfOrderItem;
 import com.yxkj.entity.Sn.Type;
 import com.yxkj.entity.Tourist;
-import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 import com.yxkj.entity.commonenum.CommonEnum.ShelfOrderStatus;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.dao.CompanyDao;

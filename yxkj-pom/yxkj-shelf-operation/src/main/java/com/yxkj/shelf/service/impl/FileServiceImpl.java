@@ -40,6 +40,10 @@ public class FileServiceImpl implements FileService {
   
   @Value("${system.project_deploy_url}")
   private String projectDeployUrl;
+  
+  @Value("${qrCode.prefix.url}")
+  private String qrCodePrefixUrl;
+  
 
   /**
    * 批量上传图片
@@ -191,4 +195,12 @@ public class FileServiceImpl implements FileService {
 		}
 		return "";
 	}
+	@Override
+	public String getQrCodePrefixUrl() {
+		if (StringUtils.isNotBlank(qrCodePrefixUrl)) {
+			return qrCodePrefixUrl;
+		}
+		return "";
+	}	
+	
 }

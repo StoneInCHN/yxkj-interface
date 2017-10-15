@@ -25,5 +25,7 @@ public interface FileService {
 	  public String saveImage(MultipartFile multipartFile, ImageType imageType);
 	  
 	  String getProjectDeployUrl();
+	  
+	  String getQrCodePrefixUrl();
 
 }
