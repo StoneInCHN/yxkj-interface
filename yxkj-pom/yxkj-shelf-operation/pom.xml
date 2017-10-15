@@ -494,7 +494,7 @@
   	</properties> 
  	<build>
 		<!-- <finalName>yxkj-app-${maven.build.timestamp}</finalName> -->
-		<finalName>yxkj-shelf-operation</finalName>
+		<finalName>yxkj-shelf</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>

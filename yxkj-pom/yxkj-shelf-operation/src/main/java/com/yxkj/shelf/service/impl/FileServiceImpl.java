@@ -40,6 +40,10 @@ public class FileServiceImpl implements FileService {
   
   @Value("${system.project_deploy_url}")
   private String projectDeployUrl;
+  
+  @Value("${qrCode.prefix.url}")
+  private String qrCodePrefixUrl;
+  
 
   /**
    * 批量上传图片
@@ -94,7 +98,7 @@ public class FileServiceImpl implements FileService {
 
   @Override
   public String saveImage(MultipartFile multiFile, ImageType imageType) {
-    String webPath = null;
+    String webPath = "";
     String imgUploadPath = "";
     String projectPath = "";
     try {
@@ -111,8 +115,10 @@ public class FileServiceImpl implements FileService {
       String sourcePath =
           imgUploadPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
-      webPath =
-    		  File.separator + projectName + File.separator + projectPath + File.separator + "src_" + uuid + "."
+      if (StringUtils.isNotBlank(projectName)) {
+    	  webPath += File.separator + projectName + File.separator;
+	  }
+      webPath += projectPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
 
       File tempFile =
@@ -189,4 +195,12 @@ public class FileServiceImpl implements FileService {
 		}
 		return "";
 	}
+	@Override
+	public String getQrCodePrefixUrl() {
+		if (StringUtils.isNotBlank(qrCodePrefixUrl)) {
+			return qrCodePrefixUrl;
+		}
+		return "";
+	}	
+	
 }
