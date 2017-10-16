@@ -152,9 +152,10 @@ public class ShelfH5Controller extends H5BaseController {
     gMap.put("gPrice", goods.getSalePrice());
     String gImg = "";
     for (GoodsPic goodsPic : goods.getGoodsPics()) {
-      if (goodsPic.getOrder() != null && goodsPic.getOrder() == 0) {// 只获取手机显示的小图
-        gImg = goodsPic.getSource();
-      }
+      gImg = goodsPic.getSource();
+      // if (goodsPic.getOrder() != null && goodsPic.getOrder() == 0) {// 只获取手机显示的小图
+      // gImg = goodsPic.getSource();
+      // }
     }
     gMap.put("gImg", gImg);
     resMap.put("gInfo", gMap);
@@ -229,14 +230,15 @@ public class ShelfH5Controller extends H5BaseController {
       notes = "获取微信jsapi参数信息")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
   @UserValidCheck
-  public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(@ApiParam(name = "请求参数(json)",
-      value = "curUrl:当前网页url地址 |header token", required = true) @RequestBody UserInfoReq req) {
+  public @ResponseBody ResponseOne<Map<String, Object>> jsapiConfig(
+      @ApiParam(name = "请求参数(json)", value = "curUrl:当前网页url地址  |userName:用户标识|header token",
+          required = true) @RequestBody UserInfoReq req) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
 
     Map<String, Object> res =
         touristService.getJsapiConfig(req.getCurUrl(), setting.getWxPublicAppId(),
             setting.getWxPublicAppSecret());
-
+    res.put("appId", setting.getWxPublicAppId());
     response.setMsg(res);
     response.setCode(CommonAttributes.SUCCESS);
 

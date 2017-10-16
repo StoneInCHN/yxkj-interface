@@ -1,13 +1,18 @@
 package com.yxkj.shelf.json.admin.request;
 
+import java.util.Date;
+
 import com.yxkj.entity.commonenum.CommonEnum.ShelfOrderStatus;
 
-public class ShelfOrderData {   	
+public class ShelfOrderData {   
 	/**
-	 * 订单编号
+	 * 所属公司编号
 	 */
-	private String sn;
-	
+	private String companySn;
+	/**
+	 * 所属公司名称
+	 */
+	private String companyName;
 	/**
 	 * 支付方式
 	 */
@@ -17,13 +22,26 @@ public class ShelfOrderData {
 	 * 订单状态
 	 */
 	private ShelfOrderStatus[] status;
+	
+	
+	private Date beginDate;
+	
+	private Date endDate;
 
-	public String getSn() {
-		return sn;
+	public String getCompanySn() {
+		return companySn;
 	}
 
-	public void setSn(String sn) {
-		this.sn = sn;
+	public void setCompanySn(String companySn) {
+		this.companySn = companySn;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public String getPaymentType() {
@@ -40,6 +58,22 @@ public class ShelfOrderData {
 
 	public void setStatus(ShelfOrderStatus[] status) {
 		this.status = status;
+	}
+
+	public Date getBeginDate() {
+		return beginDate;
+	}
+
+	public void setBeginDate(Date beginDate) {
+		this.beginDate = beginDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	

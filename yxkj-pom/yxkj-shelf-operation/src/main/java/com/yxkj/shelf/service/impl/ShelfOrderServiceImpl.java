@@ -16,7 +16,6 @@ import com.yxkj.entity.ShelfOrder;
 import com.yxkj.entity.ShelfOrderItem;
 import com.yxkj.entity.Sn.Type;
 import com.yxkj.entity.Tourist;
-import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 import com.yxkj.entity.commonenum.CommonEnum.ShelfOrderStatus;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.dao.CompanyDao;
@@ -49,6 +48,7 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
   }
 
   @Override
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   public ShelfOrder createShelfOrder(String payType, String userName, Long compId,
       List<GoodsBean> goodsBeans) {
     ShelfOrder shelfOrder = new ShelfOrder();
@@ -92,7 +92,7 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
   @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   public ShelfOrder callbackAfterPay(String orderSn) {
     ShelfOrder shelfOrder = shelfOrderDao.getShelfOrderBySn(orderSn);
-    if (!OrderStatus.UNPAID.equals(shelfOrder.getStatus())) {
+    if (!ShelfOrderStatus.UNPAID.equals(shelfOrder.getStatus())) {
       LogUtil.debug(this.getClass(), "callbackAfterPay",
           "This order already deal with. orderSn: %s, orderStatus: %s", shelfOrder.getSn(),
           shelfOrder.getStatus().toString());

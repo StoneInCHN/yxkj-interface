@@ -2,7 +2,6 @@ package com.yxkj.service;
 
 import java.util.Map;
 
-import com.yxkj.entity.Company;
 import com.yxkj.entity.Tourist;
 import com.yxkj.framework.service.BaseService;
 
@@ -36,9 +35,10 @@ public interface TouristService extends BaseService<Tourist, Long> {
    * @param userId
    * @param nickName
    * @param type
+   * @param imei
    * @return
    */
-  Tourist saveTourist(String userId, String nickName, String type, Company company);
+  Tourist saveTourist(String userId, String nickName, String type, String imei);
 
   /**
    * 根据游客唯一标识查询游客

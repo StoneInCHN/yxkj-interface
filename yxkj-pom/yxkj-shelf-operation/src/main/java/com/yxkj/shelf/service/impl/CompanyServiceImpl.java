@@ -44,6 +44,7 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
 	      CompanyData companyData = new CompanyData();
 	      companyData.setSn(company.getSn());
 	      companyData.setRemark(company.getRemark());
+	      companyData.setDisplayName(company.getDisplayName());
 	      companyData.setFullName(company.getFullName());
 	      companyData.setContactPerson(company.getContactPerson());
 	      companyData.setContactPhone(company.getContactPhone());
@@ -94,7 +95,7 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
   	  company.setAddress(companyData.getAddress());
   	  company.setContactPerson(companyData.getContactPerson());
   	  company.setContactPhone(companyData.getContactPhone());
-  	  company.setDisplayName(companyData.getFullName());
+  	  company.setDisplayName(companyData.getDisplayName());
   	  company.setFullName(companyData.getFullName());
   	  company.setRemark(companyData.getRemark());
   	  List<Long> areas = companyData.getArea();

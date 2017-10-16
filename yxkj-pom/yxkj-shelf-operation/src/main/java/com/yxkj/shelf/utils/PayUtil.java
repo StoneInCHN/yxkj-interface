@@ -201,7 +201,7 @@ public class PayUtil {
           data.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
           data.put("signType", "MD5");
           data.put("paySign", WeixinUtil.getSign(data));
-          data.put("out_trade_no", order_sn);
+          // data.put("out_trade_no", order_sn);
           response.setCode(CommonAttributes.SUCCESS);
           response.setMsg(data);
         } else {

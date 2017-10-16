@@ -7,13 +7,19 @@
 <title>Insert title here</title>
 </head>
 <body>
+<%if  ("alipay".equals(request.getParameter("type"))) {%>
 支付宝参数:  公司ID:<%= request.getParameter("compId")%><br/>
 商品ID:<%= request.getParameter("goodsId")%><br/>
 商品集合:<%= request.getParameter("gl")%><br/>
+中控IMEI:<%= request.getParameter("imei")%><br/>
 code:<%= request.getParameter("authCode")%><br/>
+<%} %>
+<%if  ("wx".equals(request.getParameter("type"))) {%>
 微信参数:   公司ID<%= request.getParameter("compId")%><br/>
 商品ID<%= request.getParameter("goodsId")%><br/>
 商品集合:<%= request.getParameter("gl")%><br/>
+中控IMEI:<%= request.getParameter("imei")%><br/>
 code: <%= request.getParameter("authCode")%><br/>
+<%} %>
 </body>
 </html>

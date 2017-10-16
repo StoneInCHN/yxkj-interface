@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
+import com.yxkj.entity.commonenum.CommonEnum.PurMethod;
 
 /**
  * Entity - 用户订单
@@ -26,215 +27,230 @@ import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
  */
 @Entity
 @Table(name = "t_order", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId"),
-        @Index(name = "snIndex", columnList = "sn"),
-        @Index(name = "paymentTimeIndex", columnList = "paymentTime")})
+    @Index(name = "snIndex", columnList = "sn"),
+    @Index(name = "paymentTimeIndex", columnList = "paymentTime")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_order_sequence")
 public class Order extends BaseEntity {
 
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * 订单编号
-     */
-    private String sn;
+  /**
+   * 订单编号
+   */
+  private String sn;
 
-    /**
-     * 订单所属用户
-     */
-    private EndUser endUser;
+  /**
+   * 订单所属用户
+   */
+  private EndUser endUser;
 
-    /**
-     * 订单所属游客
-     */
-    private Tourist tourist;
+  /**
+   * 订单所属游客
+   */
+  private Tourist tourist;
 
-    /**
-     * 订单项数量
-     */
-    private Integer itemCount;
+  /**
+   * 订单项数量
+   */
+  private Integer itemCount;
 
-    /**
-     * 支付方式
-     */
-    private String paymentType;
+  /**
+   * 支付方式
+   */
+  private String paymentType;
 
-    /**
-     * 支付方式ID
-     */
-    private String paymentTypeId;
+  /**
+   * 支付方式ID
+   */
+  private String paymentTypeId;
 
-    /**
-     * 支付时间
-     */
-    private Date paymentTime;
+  /**
+   * 支付时间
+   */
+  private Date paymentTime;
 
-    /**
-     * 消费金额
-     */
-    private BigDecimal amount;
+  /**
+   * 消费金额
+   */
+  private BigDecimal amount;
 
-    /**
-     * 毛利
-     */
-    private BigDecimal profit;
-
-
-    /**
-     * 订单状态
-     */
-    private OrderStatus status;
-
-    /**
-     * 订单项
-     */
-    private Set<OrderItem> orderItems = new HashSet<OrderItem>();
-
-    /**
-     * 优享空间名称
-     */
-    private String sceneName;
-
-    /**
-     * 优享空间ID
-     */
-    private Long sceneId;
-
-    /**
-     * 中控设备号
-     */
-    private String deviceNo;
-
-    @Column(length = 50)
-    public String getSceneName() {
-        return sceneName;
-    }
-
-    public void setSceneName(String sceneName) {
-        this.sceneName = sceneName;
-    }
-
-    public Long getSceneId() {
-        return sceneId;
-    }
-
-    public void setSceneId(Long sceneId) {
-        this.sceneId = sceneId;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    public Tourist getTourist() {
-        return tourist;
-    }
-
-    public void setTourist(Tourist tourist) {
-        this.tourist = tourist;
-    }
-
-    public Integer getItemCount() {
-        return itemCount;
-    }
-
-    public void setItemCount(Integer itemCount) {
-        this.itemCount = itemCount;
-    }
-
-    @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    @Column(scale = 2, precision = 10)
-    public BigDecimal getProfit() {
-        return profit;
-    }
-
-    public void setProfit(BigDecimal profit) {
-        this.profit = profit;
-    }
-
-    @Column(length = 5)
-    public String getPaymentTypeId() {
-        return paymentTypeId;
-    }
-
-    public void setPaymentTypeId(String paymentTypeId) {
-        this.paymentTypeId = paymentTypeId;
-    }
+  /**
+   * 毛利
+   */
+  private BigDecimal profit;
 
 
-    public Date getPaymentTime() {
-        return paymentTime;
-    }
+  /**
+   * 订单状态
+   */
+  private OrderStatus status;
 
-    public void setPaymentTime(Date paymentTime) {
-        this.paymentTime = paymentTime;
-    }
-
-
-    public OrderStatus getStatus() {
-        return status;
-    }
+  /**
+   * 购买方式
+   */
+  private PurMethod purMethod;
 
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
+  /**
+   * 订单项
+   */
+  private Set<OrderItem> orderItems = new HashSet<OrderItem>();
+
+  /**
+   * 优享空间名称
+   */
+  private String sceneName;
+
+  /**
+   * 优享空间ID
+   */
+  private Long sceneId;
+
+  /**
+   * 中控设备号
+   */
+  private String deviceNo;
+
+  @Column(length = 50)
+  public String getSceneName() {
+    return sceneName;
+  }
 
 
-    @Column(length = 30)
-    public String getSn() {
-        return sn;
-    }
+
+  public PurMethod getPurMethod() {
+    return purMethod;
+  }
+
+  public void setPurMethod(PurMethod purMethod) {
+    this.purMethod = purMethod;
+  }
+
+  public Date getPaymentTime() {
+    return paymentTime;
+  }
+
+  public void setSceneName(String sceneName) {
+    this.sceneName = sceneName;
+  }
+
+  public Long getSceneId() {
+    return sceneId;
+  }
+
+  public void setSceneId(Long sceneId) {
+    this.sceneId = sceneId;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  public Tourist getTourist() {
+    return tourist;
+  }
+
+  public void setTourist(Tourist tourist) {
+    this.tourist = tourist;
+  }
+
+  public Integer getItemCount() {
+    return itemCount;
+  }
+
+  public void setItemCount(Integer itemCount) {
+    this.itemCount = itemCount;
+  }
+
+  @OneToMany(mappedBy = "userOrder", cascade = CascadeType.ALL)
+  public Set<OrderItem> getOrderItems() {
+    return orderItems;
+  }
+
+  public void setOrderItems(Set<OrderItem> orderItems) {
+    this.orderItems = orderItems;
+  }
+
+  @Column(scale = 2, precision = 10)
+  public BigDecimal getProfit() {
+    return profit;
+  }
+
+  public void setProfit(BigDecimal profit) {
+    this.profit = profit;
+  }
+
+  @Column(length = 10)
+  public String getPaymentTypeId() {
+    return paymentTypeId;
+  }
+
+  public void setPaymentTypeId(String paymentTypeId) {
+    this.paymentTypeId = paymentTypeId;
+  }
+
+  public void setPaymentTime(Date paymentTime) {
+    this.paymentTime = paymentTime;
+  }
 
 
-    public void setSn(String sn) {
-        this.sn = sn;
-    }
+  public OrderStatus getStatus() {
+    return status;
+  }
 
 
-    @Column(scale = 2, precision = 10)
-    public BigDecimal getAmount() {
-        return amount;
-    }
+  public void setStatus(OrderStatus status) {
+    this.status = status;
+  }
 
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    @Column(length = 20)
-    public String getPaymentType() {
-        return paymentType;
-    }
+  @Column(length = 30)
+  public String getSn() {
+    return sn;
+  }
 
 
-    public void setPaymentType(String paymentType) {
-        this.paymentType = paymentType;
-    }
+  public void setSn(String sn) {
+    this.sn = sn;
+  }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    public EndUser getEndUser() {
-        return endUser;
-    }
+  @Column(scale = 2, precision = 10)
+  public BigDecimal getAmount() {
+    return amount;
+  }
 
 
-    public void setEndUser(EndUser endUser) {
-        this.endUser = endUser;
-    }
+  public void setAmount(BigDecimal amount) {
+    this.amount = amount;
+  }
+
+  @Column(length = 20)
+  public String getPaymentType() {
+    return paymentType;
+  }
 
 
-    @Column(length = 50)
-    public String getDeviceNo() {
-        return deviceNo;
-    }
+  public void setPaymentType(String paymentType) {
+    this.paymentType = paymentType;
+  }
 
-    public void setDeviceNo(String deviceNo) {
-        this.deviceNo = deviceNo;
-    }
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  public EndUser getEndUser() {
+    return endUser;
+  }
+
+
+  public void setEndUser(EndUser endUser) {
+    this.endUser = endUser;
+  }
+
+
+  @Column(length = 50)
+  public String getDeviceNo() {
+    return deviceNo;
+  }
+
+  public void setDeviceNo(String deviceNo) {
+    this.deviceNo = deviceNo;
+  }
 }

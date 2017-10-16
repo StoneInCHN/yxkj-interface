@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -344,20 +345,45 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     for (Filter filter : filters) {
       if (filter == null || StringUtils.isEmpty(filter.getProperty())) {
         continue;
-      }
+      }      
+	//    if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
+	//    if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
+	//        && filter.getValue() instanceof String) {
+      		//zhanglu:这里逻辑还有问题，如果eq的是字符串并且不传ignoreCase，其实是走不进这个if条件的，走的是else里面去比较eq对象
+	//      restrictions =
+	//          criteriaBuilder.and(restrictions, criteriaBuilder.equal(
+	//              criteriaBuilder.lower(root.<String>get(filter.getProperty())),
+	//              ((String) filter.getValue()).toLowerCase()));
+	//    } else {
+	//      restrictions =
+	//          criteriaBuilder.and(restrictions,
+	//              criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+	//    }
+	//  }
+      //zhanglu:2017-10-14 start
       if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
-        if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
-            && filter.getValue() instanceof String) {
-          restrictions =
-              criteriaBuilder.and(restrictions, criteriaBuilder.equal(
-                  criteriaBuilder.lower(root.<String>get(filter.getProperty())),
-                  ((String) filter.getValue()).toLowerCase()));
-        } else {
-          restrictions =
-              criteriaBuilder.and(restrictions,
-                  criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+          if (filter.getValue() instanceof String) {
+            Path<String> path = getPath(root,filter.getProperty());
+            if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
+              restrictions =
+                  criteriaBuilder.and(restrictions, criteriaBuilder.equal(
+                      criteriaBuilder.lower(path),
+                      ((String) filter.getValue()).toLowerCase()));
+            }else {
+              restrictions =
+                  criteriaBuilder.and(restrictions, criteriaBuilder.equal(path,
+                      ((String) filter.getValue())));
+            }
+          } else {
+            Path<Object> path = getPath(root,filter.getProperty());
+            restrictions =
+                criteriaBuilder.and(restrictions,
+                    criteriaBuilder.equal(path, filter.getValue()));
+          }
         }
-      } else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
+      //zhanglu:2017-10-14 end
+      
+      else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
         if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
             && filter.getValue() instanceof String) {
           restrictions =
@@ -407,15 +433,22 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
         }
       } else if (filter.getOperator() == Operator.like && filter.getValue() != null
           && filter.getValue() instanceof String) {
-        restrictions =
-            criteriaBuilder.and(
-                restrictions,
-                criteriaBuilder.like(root.<String>get(filter.getProperty()),
-                    (String) filter.getValue()));
+//          restrictions =
+//                  criteriaBuilder.and(
+//                      restrictions,
+//                      criteriaBuilder.like(root.<String>get(filter.getProperty()),
+//                          (String) filter.getValue()));
+          //zhanglu:2017-10-14 start
+          Path<String> path = getPath(root, filter.getProperty());
+          restrictions =
+              criteriaBuilder.and(restrictions,
+                  criteriaBuilder.like(path, (String) filter.getValue()));
+          //zhanglu:2017-10-14 end
+
       } else if (filter.getOperator() == Operator.in && filter.getValue() != null) {
 //        restrictions =
 //            criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(filter.getValue()));
-    	    //zhanglu:2017-10-13
+    	    //zhanglu:2017-10-13 start
   	    	if (filter.getValue() instanceof Object[]) {
 	          // 传递多个参数 Object... values
 	          Object[] objects = (Object[]) filter.getValue();
@@ -426,7 +459,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	              criteriaBuilder.and(restrictions, root.get(filter.getProperty())
 	                  .in(filter.getValue()));
 	        }
-    	    //zhanglu:2017-10-13
+    	    //zhanglu:2017-10-13 end
       } else if (filter.getOperator() == Operator.isNull) {
         restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
       } else if (filter.getOperator() == Operator.isNotNull) {
@@ -462,19 +495,43 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
         if (filter == null || StringUtils.isEmpty(filter.getProperty())) {
           continue;
         }
+//        if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
+//          if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
+//              && filter.getValue() instanceof String) {
+           //zhanglu:这里逻辑还有问题，如果eq的是字符串并且不传ignoreCase，其实是走不进这个if条件的，走的是else里面去比较eq对象
+//            restrictions =
+//                criteriaBuilder.and(restrictions, criteriaBuilder.equal(
+//                    criteriaBuilder.lower(root.<String>get(filter.getProperty())),
+//                    ((String) filter.getValue()).toLowerCase()));
+//          } else {
+//            restrictions =
+//                criteriaBuilder.and(restrictions,
+//                    criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+//          }
+//        }
+        //zhanglu:2017-10-14 start
         if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
-          if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
-              && filter.getValue() instanceof String) {
-            restrictions =
-                criteriaBuilder.and(restrictions, criteriaBuilder.equal(
-                    criteriaBuilder.lower(root.<String>get(filter.getProperty())),
-                    ((String) filter.getValue()).toLowerCase()));
-          } else {
-            restrictions =
-                criteriaBuilder.and(restrictions,
-                    criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+            if (filter.getValue() instanceof String) {
+              Path<String> path = getPath(root,filter.getProperty());
+              if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
+                restrictions =
+                    criteriaBuilder.and(restrictions, criteriaBuilder.equal(
+                        criteriaBuilder.lower(path),
+                        ((String) filter.getValue()).toLowerCase()));
+              }else {
+                restrictions =
+                    criteriaBuilder.and(restrictions, criteriaBuilder.equal(path,
+                        ((String) filter.getValue())));
+              }
+            } else {
+              Path<Object> path = getPath(root,filter.getProperty());
+              restrictions =
+                  criteriaBuilder.and(restrictions,
+                      criteriaBuilder.equal(path, filter.getValue()));
+            }
           }
-        } else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
+        //zhanglu:2017-10-14 end
+        else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
           if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
               && filter.getValue() instanceof String) {
             restrictions =
@@ -540,16 +597,22 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
           }
         } else if (filter.getOperator() == Operator.like && filter.getValue() != null
             && filter.getValue() instanceof String) {
-          restrictions =
-              criteriaBuilder.and(
-                  restrictions,
-                  criteriaBuilder.like(root.<String>get(filter.getProperty()),
-                      (String) filter.getValue()));
+//          restrictions =
+//              criteriaBuilder.and(
+//                  restrictions,
+//                  criteriaBuilder.like(root.<String>get(filter.getProperty()),
+//                      (String) filter.getValue()));
+            //zhanglu:2017-10-14 start
+            Path<String> path = getPath(root, filter.getProperty());
+            restrictions =
+                criteriaBuilder.and(restrictions,
+                    criteriaBuilder.like(path, (String) filter.getValue()));
+            //zhanglu:2017-10-14 end
         } else if (filter.getOperator() == Operator.in && filter.getValue() != null) {
 //          restrictions =
 //              criteriaBuilder.and(restrictions, root.get(filter.getProperty())
 //                  .in(filter.getValue()));
-    	    //zhanglu:2017-10-13
+    	    //zhanglu:2017-10-13 start
   	    	if (filter.getValue() instanceof Object[]) {
 	          // 传递多个参数 Object... values
 	          Object[] objects = (Object[]) filter.getValue();
@@ -560,7 +623,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	              criteriaBuilder.and(restrictions, root.get(filter.getProperty())
 	                  .in(filter.getValue()));
 	        }
-    	    //zhanglu:2017-10-13
+    	    //zhanglu:2017-10-13 end
         } else if (filter.getOperator() == Operator.isNull) {
           restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
         } else if (filter.getOperator() == Operator.isNotNull) {
@@ -745,5 +808,26 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     return new Page<T>(entityList, resultSize, pageable);
 
   }
-
+  /**
+   * 支持多级字段查询 用.隔开
+   * @param root
+   * @param property
+   * @author luzhang
+   */
+   private <Y> Path<Y> getPath(Root<T> root, String property){
+    Path<Y> path = null;
+    if (property.indexOf(".") != -1) {
+      String[] propertys = property.split("\\.");
+      for (int i = 0; i < propertys.length; i++) {
+        if (path != null) {
+          path = path.get(propertys[i]);
+        }else {
+          path = root.get(propertys[i]);
+        }
+      }
+    }else {
+      path = root.get(property);
+    }
+    return path;
+  }
 }

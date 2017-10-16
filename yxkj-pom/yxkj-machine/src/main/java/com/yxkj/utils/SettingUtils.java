@@ -1,10 +1,15 @@
 package com.yxkj.utils;
 
-import com.yxkj.beans.CommonAttributes;
-import com.yxkj.beans.EnumConverter;
-import com.yxkj.beans.Setting;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.List;
+
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
+
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
@@ -19,12 +24,9 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
+import com.yxkj.beans.CommonAttributes;
+import com.yxkj.beans.EnumConverter;
+import com.yxkj.beans.Setting;
 
 
 /**

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
 
-	<!-- <diskStore path="D:/temp/cache/service" /> -->
-	<diskStore path="/home/env/mnt/cache/service" />
+	<diskStore path="D:/temp/cache/service" />
+	<!-- <diskStore path="/home/env/mnt/cache/service" /> -->
 
 	<cache name="setting" maxElementsInMemory="100" eternal="true" overflowToDisk="true" />
 	

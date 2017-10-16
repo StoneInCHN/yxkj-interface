@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,12 +52,14 @@ import com.yxkj.shelf.service.FileService;
 import com.yxkj.shelf.service.GoodsService;
 import com.yxkj.shelf.utils.FieldFilterUtils;
 import com.yxkj.shelf.utils.GeneratePdf;
+import com.yxkj.shelf.utils.ImportExcel;
 import com.yxkj.shelf.utils.TimeUtils;
 import com.yxkj.shelf.utils.TokenUtil;
 
 
 /**
  * Controller - 公共
+ * @author luzhang
  * 
  */
 @Controller("commonController")
@@ -220,7 +223,7 @@ public class CommonController extends BaseController {
 
         OutputStream out = response.getOutputStream();// 获得输出流        
         GeneratePdf generatePdf = new GeneratePdf(
-        		company.getDisplayName(),company.getId().toString(),goodsList,out);        
+        		company.getDisplayName(),company.getId().toString(),goodsList,out,fileService.getQrCodePrefixUrl());        
         Object locker = new Object();// 当前主线程的一把锁
         synchronized (locker) {
           threadPoolExecutor.execute(// 加入到线程池中执行
@@ -242,5 +245,32 @@ public class CommonController extends BaseController {
         e.printStackTrace();
       }
     }
-    
+    /**
+     * Excel数据导入
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/dataImport", method = {RequestMethod.GET, RequestMethod.POST})
+    public @ResponseBody BaseResponse dataImport(HttpServletRequest request) {
+      BaseResponse response = new BaseResponse();
+      MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+      Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+      for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+          MultipartFile excelFile = entity.getValue();
+          ImportExcel importData = new ImportExcel();
+          try {
+        	  List<Map<String, Object>> rowMaps = importData.readExcelToMapList(excelFile);
+        	  for (Map<String, Object> rowMap : rowMaps) {
+        		  Goods goods = importData.constructGoods(rowMap);
+        		  goodsService.save(goods);
+			 }
+          } catch (IOException e) {
+        	  response.setCode(CommonAttributes.FAIL_COMMON);
+        	  return response;
+          }
+          break;
+      }
+      response.setCode(CommonAttributes.SUCCESS);            
+      return response;
+    }
 }

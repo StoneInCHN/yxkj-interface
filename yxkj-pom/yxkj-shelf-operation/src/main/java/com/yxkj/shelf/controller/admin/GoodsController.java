@@ -6,13 +6,16 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,10 +40,12 @@ import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.GoodsService;
 import com.yxkj.shelf.utils.ExportHelper;
 import com.yxkj.shelf.utils.FieldFilterUtils;
+import com.yxkj.shelf.utils.HttpServletRequestUtils;
 
 
 /**
  * Controller - 商品管理
+ * @author luzhang
  * 
  */
 @Controller("goodsController")
@@ -66,14 +71,13 @@ public class GoodsController extends BaseController {
       List<Filter> filters = pageable.getFilters();
       GoodsData goodsData = request.getGoodsData();
       if (goodsData != null) {
-          if (goodsData.getSn() != null) {
-              filters.add(Filter.eq("sn", goodsData.getSn()));
+          if (StringUtils.isNotBlank(goodsData.getSn())) {
+              filters.add(Filter.like("sn", "%"+goodsData.getSn()+"%"));
           }
-          if (goodsData.getName() != null) {
-              filters.add(Filter.eq("name", goodsData.getName()));
+          if (StringUtils.isNotBlank(goodsData.getName())) {
+              filters.add(Filter.like("name", "%"+goodsData.getName()+"%"));
           }		
 	  }
-
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
 
@@ -153,22 +157,23 @@ public class GoodsController extends BaseController {
         return response;
     }
     /**
-     * 商品数据导出Excel
+     * 导出Excel
+     * @throws IOException 
      */
-    @RequestMapping(value = "/goodsExport", method = {RequestMethod.GET, RequestMethod.POST})
-    public void dataExport(GoodsRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/dataExport", method = {RequestMethod.GET, RequestMethod.POST})
+    public void dataExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
       List<Ordering> orders = new ArrayList<Ordering>();
       orders.add(Ordering.desc("createDate"));
       List<Filter> filters = new ArrayList<Filter>();
-      GoodsData goodsData = request.getGoodsData();
-      if (goodsData != null) {
-          if (goodsData.getSn() != null) {
-              filters.add(Filter.like("sn", "%"+goodsData.getSn()+"%"));
-          }
-          if (goodsData.getName() != null) {
-              filters.add(Filter.like("name", "%"+goodsData.getName()+"%"));
-          }		
-	  }
+	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
+	  String sn = getReqPram(requestParam, "sn");
+	  String name = getReqPram(requestParam, "name");
+      if (sn != null) {
+          filters.add(Filter.like("sn", "%"+sn+"%"));
+      }
+      if (name != null) {
+          filters.add(Filter.like("name", "%"+name+"%"));
+      }		
       List<Goods> lists = goodsService.findList(null, filters, orders); 
       if (lists != null && lists.size() > 0) {
         String title = "Goods List"; // 工作簿标题，同时也是excel文件名前缀
