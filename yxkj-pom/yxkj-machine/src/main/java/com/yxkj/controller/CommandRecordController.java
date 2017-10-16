@@ -17,10 +17,10 @@ import javax.annotation.Resource;
 /**
  * 命令接口
  */
-@Controller("cmdController")
+@Controller("commandController")
 @RequestMapping("/cmd")
 @Api(value = "命令", description = "命令接口")
-public class CmdController extends MobileBaseController {
+public class CommandRecordController extends MobileBaseController {
 
     @Resource(name = "commandRecordServiceImpl")
     private CommandRecordService commandRecordService;
