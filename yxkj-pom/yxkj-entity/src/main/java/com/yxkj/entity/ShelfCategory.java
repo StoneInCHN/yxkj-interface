@@ -26,29 +26,44 @@ public class ShelfCategory extends BaseEntity {
 
   private static final long serialVersionUID = 9219458199580640954L;
 
+//  /**
+//   * 货架高度(单位:m)
+//   */
+//  private String height;
+  
   /**
-   * 货架高度(单位:m)
+   * 货架规格(大规格  普通规格 小规格)
    */
-  private String height;
+  private String spec;
 
   /**
    * 货架
    */
   private Set<CompanyShelf> goodsShelves = new HashSet<CompanyShelf>();
   
-  @JsonProperty
-  @Column(length = 10)
-  public String getHeight() {
-    return height;
-  }
-
-  public void setHeight(String height) {
-    this.height = height;
-  }
+//  @JsonProperty
+//  @Column(length = 10)
+//  public String getHeight() {
+//    return height;
+//  }
+//
+//  public void setHeight(String height) {
+//    this.height = height;
+//  }
 
   @OneToMany(mappedBy = "shelfCate")
   public Set<CompanyShelf> getGoodsShelves() {
     return goodsShelves;
+  }
+  
+  @JsonProperty
+  @Column(length = 10)
+  public String getSpec() {
+	return spec;
+  }
+
+  public void setSpec(String spec) {
+	this.spec = spec;
   }
 
   public void setGoodsShelves(Set<CompanyShelf> goodsShelves) {

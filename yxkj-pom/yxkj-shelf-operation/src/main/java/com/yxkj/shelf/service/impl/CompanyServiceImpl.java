@@ -137,7 +137,7 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
 
 	      List<ShelfCategory> list = shelfCategoryService.findAll();
 	      for (ShelfCategory shelfCategory : list) {
-	    	  rowList.add(new GoodsShelveRow(shelfCategory.getId(), shelfCategory.getHeight(), 0, false));
+	    	  rowList.add(new GoodsShelveRow(shelfCategory.getId(), shelfCategory.getSpec(), 0, false));
 		  }
 		return rowList;
 	}

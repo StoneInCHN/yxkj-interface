@@ -71,10 +71,10 @@ public class UserController extends BaseController {
       TouristData touristData = request.getTouristData();
       if (touristData != null) {
           if (StringUtils.isNotBlank(touristData.getNickName())) {
-              filters.add(Filter.like("nickName", "%"+touristData.getNickName()+"%"));
+              filters.add(Filter.like("nickName", "%"+touristData.getNickName().trim()+"%"));
           }
           if (StringUtils.isNotBlank(touristData.getCompanyName())) {
-              filters.add(Filter.like("companyName", "%"+touristData.getCompanyName()+"%"));
+              filters.add(Filter.like("companyName", "%"+touristData.getCompanyName().trim()+"%"));
           }		
 	  }    
       filters.add(Filter.eq("deviceType", DeviceType.SHELF));

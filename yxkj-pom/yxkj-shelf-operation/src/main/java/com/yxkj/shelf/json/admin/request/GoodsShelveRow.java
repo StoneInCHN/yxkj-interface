@@ -3,16 +3,16 @@ package com.yxkj.shelf.json.admin.request;
 public class GoodsShelveRow {
 	
 	private Long id;
-	private String height;
+	private String spec;
 	private Integer count;
 	private Boolean need;
 	
 	public GoodsShelveRow(){
 		
 	}	
-	public GoodsShelveRow(Long id,String height,Integer count,Boolean need ){
+	public GoodsShelveRow(Long id,String spec,Integer count,Boolean need ){
 		this.id = id;
-		this.height = height;
+		this.spec = spec;
 		this.count = count;
 		this.need = need;		
 	}
@@ -28,19 +28,18 @@ public class GoodsShelveRow {
 	public void setCount(Integer count) {
 		this.count = count;
 	}
-	public String getHeight() {
-		return height;
-	}
-	public void setHeight(String height) {
-		this.height = height;
-	}
+
 	public Boolean getNeed() {
 		return need;
 	}
 	public void setNeed(Boolean need) {
 		this.need = need;
 	}
+	public String getSpec() {
+		return spec;
+	}
+	public void setSpec(String spec) {
+		this.spec = spec;
+	}
 	
-	
-
 }

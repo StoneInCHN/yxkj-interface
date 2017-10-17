@@ -70,10 +70,10 @@ public class OrderController extends BaseController {
       ShelfOrderData shelfOrderData = request.getShelfOrderData();
       if (shelfOrderData != null) {
           if (StringUtils.isNotBlank(shelfOrderData.getCompanyName())) {
-              filters.add(Filter.like("comp.displayName", "%"+shelfOrderData.getCompanyName()+"%"));
+              filters.add(Filter.like("comp.displayName", "%"+shelfOrderData.getCompanyName().trim()+"%"));
           }
           if (StringUtils.isNotBlank(shelfOrderData.getCompanySn())) {
-              filters.add(Filter.like("comp.sn", "%"+shelfOrderData.getCompanySn()+"%"));
+              filters.add(Filter.like("comp.sn", "%"+shelfOrderData.getCompanySn().trim()+"%"));
           }
           if (StringUtils.isNotBlank(shelfOrderData.getPaymentType())) {
               filters.add(Filter.eq("paymentType", shelfOrderData.getPaymentType()));

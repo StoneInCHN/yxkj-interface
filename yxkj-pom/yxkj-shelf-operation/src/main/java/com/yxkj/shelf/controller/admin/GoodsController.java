@@ -72,10 +72,10 @@ public class GoodsController extends BaseController {
       GoodsData goodsData = request.getGoodsData();
       if (goodsData != null) {
           if (StringUtils.isNotBlank(goodsData.getSn())) {
-              filters.add(Filter.like("sn", "%"+goodsData.getSn()+"%"));
+              filters.add(Filter.like("sn", "%"+goodsData.getSn().trim()+"%"));
           }
           if (StringUtils.isNotBlank(goodsData.getName())) {
-              filters.add(Filter.like("name", "%"+goodsData.getName()+"%"));
+              filters.add(Filter.like("name", "%"+goodsData.getName().trim()+"%"));
           }		
 	  }
       List<Ordering> orderings = pageable.getOrderings();

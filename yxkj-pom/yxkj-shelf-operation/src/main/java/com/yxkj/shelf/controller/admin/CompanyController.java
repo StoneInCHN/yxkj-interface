@@ -85,10 +85,10 @@ public class CompanyController extends BaseController {
       CompanyData companyData = request.getCompanyData();
       if (companyData != null) {
           if (StringUtils.isNotBlank(companyData.getSn())) {
-              filters.add(Filter.like("sn", "%"+companyData.getSn()+"%"));
+              filters.add(Filter.like("sn", "%"+companyData.getSn().trim()+"%"));
           }
           if (StringUtils.isNotBlank(companyData.getFullName())) {
-              filters.add(Filter.like("fullName", "%"+companyData.getFullName()+"%"));
+              filters.add(Filter.like("fullName", "%"+companyData.getFullName().trim()+"%"));
           }
 	  }
       List<Ordering> orderings = pageable.getOrderings();
