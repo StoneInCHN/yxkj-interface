@@ -160,7 +160,7 @@ public class Goods extends BaseEntity {
     this.name = name;
   }
 
-  @Column(length = 50)
+  @Column(length = 50, unique = true)
   public String getSn() {
     return sn;
   }

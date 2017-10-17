@@ -66,7 +66,7 @@ public class ImportExcel {
 	goods.setSpec(rowMap.get("spec").toString());
 	goods.setCostPrice(new BigDecimal(rowMap.get("costPrice").toString()));
 	goods.setSalePrice(new BigDecimal(rowMap.get("salePrice").toString()));
-	goods.setFullName(rowMap.get("name").toString());
+	//goods.setFullName(rowMap.get("name").toString());
 	goods.setStatus(CommonStatus.ACITVE);
     return goods;
   }

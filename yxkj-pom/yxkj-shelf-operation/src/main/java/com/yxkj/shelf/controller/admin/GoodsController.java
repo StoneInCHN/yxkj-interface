@@ -185,4 +185,27 @@ public class GoodsController extends BaseController {
         }
       }
     }
+    @RequestMapping(value = "/isExistSn", method = RequestMethod.POST)
+    @ApiOperation(value = "查询商品编码是否存在", httpMethod = "POST", response = ResponseOne.class, notes = "查询商品编码是否存在")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody BaseResponse isExistSn(@ApiParam @RequestBody GoodsRequest request) {
+        BaseResponse response = new BaseResponse(); 
+        GoodsData goodsData = request.getGoodsData();
+        if (goodsData == null || StringUtils.isBlank(goodsData.getSn())) {
+            response.setCode(CommonAttributes.FAIL_LOGIN);
+            response.setDesc(message("yxkj.request.param.missing"));
+            return response;
+		}
+        if (goodsData != null && StringUtils.isNotBlank(goodsData.getSn())) {
+          boolean exist = goodsService.exists(Filter.eq("sn", goodsData.getSn()));
+          if (exist) {
+              response.setDesc("true");
+              response.setCode(CommonAttributes.SUCCESS);
+		  }else {
+              response.setDesc("false");
+              response.setCode(CommonAttributes.SUCCESS);
+		  }
+  	    }
+        return response;
+    }
 }
