@@ -25,7 +25,7 @@ public class TokenUtil {
 	    Date now = new Date(nowMillis);
 	
 	    // We will sign our JWT with our ApiKey secret
-	    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("secret");
+	    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(setting.getSecret());
 	    Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 	
 	    // Let's set the JWT Claims
