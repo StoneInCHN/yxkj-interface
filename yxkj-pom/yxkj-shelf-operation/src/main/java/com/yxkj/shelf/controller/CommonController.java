@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -255,22 +255,45 @@ public class CommonController extends BaseController {
       BaseResponse response = new BaseResponse();
       MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
       Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+      String desc = "商品导入结束。导入情况：";
+      String errorSn ="失败商品条码：";   
+      int errCount = 0;
       for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
           MultipartFile excelFile = entity.getValue();
           ImportExcel importData = new ImportExcel();
           try {
         	  List<Map<String, Object>> rowMaps = importData.readExcelToMapList(excelFile);
+        	  desc += "共计"+rowMaps.size()+"个";
         	  for (Map<String, Object> rowMap : rowMaps) {
-        		  Goods goods = importData.constructGoods(rowMap);
-        		  goodsService.save(goods);
-			 }
+        		  if (isValidGoodsRow(rowMap)) {
+        			  Goods goods = importData.constructGoods(rowMap);
+            		  goodsService.save(goods);
+				  }else{
+					  errCount++;
+					  errorSn += rowMap.get("sn") + " ";
+				  }
+			  }
+              if (errCount > 0) {
+            	  desc += "，成功"+(rowMaps.size()-errCount)+"个，失败"+errCount+"个。"+errorSn;
+        	  }else {
+        		  desc += "，成功"+rowMaps.size()+"个，失败0个。";
+        	  }
           } catch (IOException e) {
         	  response.setCode(CommonAttributes.FAIL_COMMON);
         	  return response;
           }
           break;
       }
-      response.setCode(CommonAttributes.SUCCESS);            
+      response.setCode(CommonAttributes.SUCCESS);       
+      response.setDesc(desc);
       return response;
+    }
+    private boolean isValidGoodsRow(Map<String, Object> rowMap){
+    	if (rowMap.get("sn") != null && rowMap.get("name") != null
+    			&& rowMap.get("spec") != null && rowMap.get("costPrice") != null
+    					&& rowMap.get("salePrice") != null) {
+			return true;
+		}
+    	return false;
     }
 }

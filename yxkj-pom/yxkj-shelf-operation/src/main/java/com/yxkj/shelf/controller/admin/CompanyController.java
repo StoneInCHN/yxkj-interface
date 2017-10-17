@@ -199,8 +199,9 @@ public class CompanyController extends BaseController {
       } else {// 查询areaId下的子级地区
         filters.add(Filter.eq("parent", request.getId()));
       }
-
-      List<Area> list = areaService.findList(null, filters, null);
+      List<Ordering> orderings = new ArrayList<Ordering>();
+      orderings.add(Ordering.asc("pyName"));
+      List<Area> list = areaService.findList(null, filters, orderings);
       response.setMsg(list);
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.request.success"));
