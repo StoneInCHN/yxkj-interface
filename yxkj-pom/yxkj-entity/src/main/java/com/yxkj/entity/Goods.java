@@ -13,6 +13,7 @@ import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 
 import org.hibernate.annotations.LazyCollection;
@@ -144,14 +145,11 @@ public class Goods extends BaseEntity {
     this.salePrice = salePrice;
   }
 
-  @Column(length = 100)
+  @Transient
   public String getFullName() {
-    return fullName;
+    return name + spec;
   }
 
-  public void setFullName(String fullName) {
-    this.fullName = fullName;
-  }
 
   @Column(length = 100)
   public String getName() {

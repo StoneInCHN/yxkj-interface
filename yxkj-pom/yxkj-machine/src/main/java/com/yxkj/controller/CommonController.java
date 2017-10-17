@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -85,6 +86,9 @@ public class CommonController extends MobileBaseController {
       return response;
     }
     resMap.put("userInfo", result);
+
+    List<Map<String, Object>> gMap = goodsService.getGforScanH5(req.getgList());
+    resMap.put("gInfo", gMap);
 
     response.setMsg(resMap);
     response.setCode(CommonAttributes.SUCCESS);

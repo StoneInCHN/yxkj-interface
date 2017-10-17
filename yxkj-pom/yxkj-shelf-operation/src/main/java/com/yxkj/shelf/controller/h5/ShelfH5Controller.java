@@ -113,7 +113,8 @@ public class ShelfH5Controller extends H5BaseController {
   @RequestMapping(value = "/authUserInfo", method = RequestMethod.POST)
   @ApiOperation(value = "获取授权用户信息", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取授权用户信息(微信及支付宝)")
-  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
+  @ApiResponses({@ApiResponse(code = 200,
+      message = "code:0000-request success|code:1000-auth fail,goods not exist")})
   public @ResponseBody ResponseOne<Map<String, Object>> authUserInfo(
       @ApiParam(name = "请求参数(json)",
           value = "authCode:授权码|gId:商品条码号|compId:公司ID|type:支付类型wx,alipay", required = true) @RequestBody UserInfoReq req) {
@@ -140,14 +141,24 @@ public class ShelfH5Controller extends H5BaseController {
     }
     resMap.put("userInfo", result);
     Company company = companyService.find(compId);
+    if (company == null) {
+      response.setCode(CommonAttributes.FAIL_COMMON);
+      response.setDesc(message("yxkj.company.noexist", compId));
+      return response;
+    }
     Map<String, Object> compMap = new HashMap<String, Object>();
     compMap.put("compId", compId);
     compMap.put("displayName", company.getDisplayName());
     resMap.put("compInfo", compMap);
     Goods goods = goodsService.getBySn(gId);
+    if (goods == null) {
+      response.setCode(CommonAttributes.FAIL_COMMON);
+      response.setDesc(message("yxkj.goods.noexist", gId));
+      return response;
+    }
     Map<String, Object> gMap = new HashMap<String, Object>();
     gMap.put("gId", gId);
-    gMap.put("gName", goods.getFullName());
+    gMap.put("gName", goods.getName());
     gMap.put("gSpec", goods.getSpec());
     gMap.put("gPrice", goods.getSalePrice());
     String gImg = "";
@@ -200,7 +211,7 @@ public class ShelfH5Controller extends H5BaseController {
     }
     Map<String, Object> gMap = new HashMap<String, Object>();
     gMap.put("gId", gId);
-    gMap.put("gName", goods.getFullName());
+    gMap.put("gName", goods.getName());
     gMap.put("gSpec", goods.getSpec());
     gMap.put("gPrice", goods.getSalePrice());
     String gImg = "";
