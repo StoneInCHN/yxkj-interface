@@ -32,7 +32,7 @@ public class SwaggerConfig {
 
   private ApiInfo apiInfo() {
     return new ApiInfoBuilder().title("售货机中控 API").description("API Document")
-        .termsOfServiceUrl("http://localhost:8080").version("1.0").build();
+        .termsOfServiceUrl("http://shelf.ybjcq.com:8080").version("1.0").build();
   }
 
   private List<Parameter> setHeaderToken() {

@@ -2,6 +2,7 @@ package com.yxkj.service;
 
 import java.util.List;
 
+import com.yxkj.entity.CmdMsg;
 import com.yxkj.entity.Order;
 import com.yxkj.framework.service.BaseService;
 import com.yxkj.json.beans.GoodsBean;
@@ -35,7 +36,7 @@ public interface OrderService extends BaseService<Order, Long> {
   Order getOrderBySn(String orderSn);
 
   /**
-   * 出货
+   * 根据orderID获取出货信息
    */
-  void salesOut(Long orderId);
+  List<CmdMsg> salesOut(Long orderId);
 }

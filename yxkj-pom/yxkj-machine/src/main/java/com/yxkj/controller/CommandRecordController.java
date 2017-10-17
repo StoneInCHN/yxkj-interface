@@ -5,7 +5,7 @@ import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.CommandRecord;
 import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.json.base.BaseResponse;
-import com.yxkj.json.base.ResponseOne;
+import com.yxkj.service.CmdService;
 import com.yxkj.service.CommandRecordService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
@@ -22,29 +22,56 @@ import javax.annotation.Resource;
 @Api(value = "命令", description = "命令接口")
 public class CommandRecordController extends MobileBaseController {
 
-    @Resource(name = "commandRecordServiceImpl")
-    private CommandRecordService commandRecordService;
+  @Resource(name = "commandRecordServiceImpl")
+  private CommandRecordService commandRecordService;
 
-    /**
-     * 更新命令状态
-     */
-    @RequestMapping("finishCmdStatus")
-    @ApiOperation(value = "更新命令状态", httpMethod = "POST", response = BaseResponse.class,
-            notes = "更新命令状态")
-    @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
-    @ResponseBody
-    @ApiImplicitParam(paramType = "query", name = "commandId", value = "命令记录ID号", required = true, dataType = "Long")
-    public BaseResponse finishCmdStatus(Long commandId) {
+  @Resource(name = "cmdServiceImpl")
+  private CmdService cmdService;
 
-        BaseResponse response = new BaseResponse();
-        CommandRecord record = commandRecordService.find(commandId);
-        record.setCmdStatus(CommonEnum.CmdStatus.Finished);
+  /**
+   * 更新命令状态
+   */
+  @RequestMapping("sendCMD")
+  @ApiOperation(value = "sendCMD", httpMethod = "POST", response = BaseResponse.class,
+      notes = "sendCMD")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
+  @ResponseBody
+  public BaseResponse sendCMD() {
+    BaseResponse response = new BaseResponse();
+    // Map<String, String> contentMap = new HashMap<>();
+    // contentMap.put("video_top",
+    // "https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo-transcode/13_2cb46cf895d9e1d80a69fbc028e19ded_2.mp4");
+    // cmdService.updateAdv("000000000000000", contentMap);
+    cmdService.updateAudioVolume("001", 20);
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
 
-        record = commandRecordService.update(record);
-        if (record.getCmdStatus().equals(CommonEnum.CmdStatus.Finished))
-            response.setCode(CommonAttributes.SUCCESS);
-        else
-            response.setCode(CommonAttributes.FAIL_COMMON);
-        return response;
-    }
+  /**
+   * 更新命令状态
+   */
+  @RequestMapping("finishCmdStatus")
+  @ApiOperation(value = "更新命令状态", httpMethod = "POST", response = BaseResponse.class,
+      notes = "更新命令状态")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
+  @ResponseBody
+  @ApiImplicitParam(paramType = "query", name = "commandId", value = "命令记录ID号", required = true,
+      dataType = "Long")
+  public BaseResponse finishCmdStatus(Long commandId) {
+
+    BaseResponse response = new BaseResponse();
+    CommandRecord record = commandRecordService.find(commandId);
+    record.setCmdStatus(CommonEnum.CmdStatus.Finished);
+
+    record = commandRecordService.update(record);
+    if (record.getCmdStatus().equals(CommonEnum.CmdStatus.Finished))
+      response.setCode(CommonAttributes.SUCCESS);
+    else
+      response.setCode(CommonAttributes.FAIL_COMMON);
+    return response;
+  }
+
+
 }

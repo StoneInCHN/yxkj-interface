@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.yxkj.client.ReceiverClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +51,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   @Resource(name = "cmdServiceImpl")
   private CmdService cmdService;
 
+
+  @Resource(name = "receiverClient")
+  private ReceiverClient receiverClient;
 
   @Resource(name = "orderDaoImpl")
   public void setBaseDao(OrderDao orderDao) {
@@ -125,7 +129,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     order.setStatus(OrderStatus.PAID);
     order.setPaymentTime(new Date());
     orderDao.merge(order);
-    salesOut(order.getId());
+    cmdService.salesOut(order.getId());
     LogUtil.debug(this.getClass(), "callbackAfterPay",
         "update cntr order info finished for pay callback. orderId: %s,sn: %s,orderStatus: %s,payTime: %s",
         order.getId(), order.getSn(), order.getStatus().toString(), order.getPaymentTime());
@@ -143,10 +147,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
    * @param orderId
    */
   @Override
-  public void salesOut(Long orderId) {
+  public List<CmdMsg> salesOut(Long orderId) {
 
-    List<CmdMsg> cmdMsgList = orderDao.salesOut(orderId);
-    cmdMsgList.forEach(cmdMsg -> cmdService.sendCmd(cmdMsg));
-
+    return orderDao.salesOut(orderId);
   }
 }

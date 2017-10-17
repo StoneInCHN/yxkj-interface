@@ -31,7 +31,7 @@ public class CommandRecord extends BaseEntity {
   private CommonEnum.CmdStatus cmdStatus;
 
 
-  @Column(length = 100)
+  @Column(length = 500)
   public String getCmdContent() {
     return cmdContent;
   }
