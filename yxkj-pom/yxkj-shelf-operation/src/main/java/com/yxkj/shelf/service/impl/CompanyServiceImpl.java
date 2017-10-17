@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.annotation.Resource; 
 
 import org.springframework.stereotype.Service; 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yxkj.entity.Area;
 import com.yxkj.entity.Company;
@@ -16,6 +18,7 @@ import com.yxkj.entity.ShelfCategory;
 import com.yxkj.shelf.dao.CompanyDao;
 import com.yxkj.shelf.service.AreaService;
 import com.yxkj.shelf.service.CompanyService;
+import com.yxkj.shelf.service.CompanyShelfService;
 import com.yxkj.shelf.service.ShelfCategoryService;
 import com.yxkj.shelf.framework.filter.Filter;
 import com.yxkj.shelf.framework.service.impl.BaseServiceImpl;
@@ -30,6 +33,9 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
 	
 	@Resource(name = "shelfCategoryServiceImpl")
 	private ShelfCategoryService shelfCategoryService;
+	
+	@Resource(name = "companyShelfServiceImpl")
+	private CompanyShelfService companyShelfService;
 	
     @Resource(name="companyDaoImpl")
     public void setBaseDao(CompanyDao companyDao) {
@@ -134,5 +140,32 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
 	    	  rowList.add(new GoodsShelveRow(shelfCategory.getId(), shelfCategory.getHeight(), 0, false));
 		  }
 		return rowList;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updateCompany(CompanyData companyData, Long id) {
+		Company company = find(id);
+		Set<CompanyShelf> goodsShelves = company.getGoodsShelves();
+		for (CompanyShelf companyShelf : goodsShelves) {
+			companyShelfService.delete(companyShelf);
+		}
+  	    Company newCompany = getCompnayEntity(companyData, id);  
+  	    update(newCompany);
+		
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void deleteCompany(Long[] ids) {
+  	  List<Company> companys = findList(ids);
+  	  for (Company company : companys) {
+		if (company.getGoodsShelves() != null && company.getGoodsShelves().size() > 0) {
+			for (CompanyShelf companyShelf : company.getGoodsShelves()) {
+				companyShelfService.delete(companyShelf);
+			}
+		}
+	  }
+  	  delete(ids);
 	}
 }

@@ -151,7 +151,7 @@ public class CompanyController extends BaseController {
     public @ResponseBody BaseResponse deleteCompany(@ApiParam @RequestBody AdminRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getIds() != null && request.getIds().length > 0) {
-    	  companyService.delete(request.getIds());
+    	  companyService.deleteCompany(request.getIds());
           response.setCode(CommonAttributes.SUCCESS);
           response.setDesc(message("yxkj.request.success"));
 	  }else {
@@ -181,8 +181,9 @@ public class CompanyController extends BaseController {
       BaseResponse response = new BaseResponse(); 
       if (request.getCompanyData() != null && request.getId() != null) {
     	  CompanyData companyData = request.getCompanyData();
-    	  Company company = companyService.getCompnayEntity(companyData, request.getId());
-    	  companyService.update(company);
+//    	  Company company = companyService.getCompnayEntity(companyData, request.getId());    	  
+//    	  companyService.update(company);
+    	  companyService.updateCompany(companyData, request.getId());  
           response.setCode(CommonAttributes.SUCCESS);
           response.setDesc(message("yxkj.request.success"));
 	  }

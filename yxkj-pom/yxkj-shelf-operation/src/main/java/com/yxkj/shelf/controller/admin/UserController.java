@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,13 +67,13 @@ public class UserController extends BaseController {
       Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
       List<Filter> filters = pageable.getFilters();
       List<Ordering> orderings = pageable.getOrderings();
-      orderings.add(Ordering.desc("createDate"));
+      orderings.add(Ordering.desc("id"));
       TouristData touristData = request.getTouristData();
       if (touristData != null) {
-          if (touristData.getNickName() != null) {
+          if (StringUtils.isNotBlank(touristData.getNickName())) {
               filters.add(Filter.like("nickName", "%"+touristData.getNickName()+"%"));
           }
-          if (touristData.getCompanyName() != null) {
+          if (StringUtils.isNotBlank(touristData.getCompanyName())) {
               filters.add(Filter.like("companyName", "%"+touristData.getCompanyName()+"%"));
           }		
 	  }    

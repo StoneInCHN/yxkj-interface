@@ -15,4 +15,8 @@ public interface CompanyService extends BaseService<Company,Long>{
 
 	List<GoodsShelveRow> getShelfList(Long id);
 
+	void updateCompany(CompanyData companyData, Long id);
+
+	void deleteCompany(Long[] ids);
+
 }
