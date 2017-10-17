@@ -31,7 +31,7 @@ public class SwaggerConfig {
   }
 
   private ApiInfo apiInfo() {
-    return new ApiInfoBuilder().title("售货机中控 API").description("API Document")
+    return new ApiInfoBuilder().title("管家app API").description("API Document")
         .termsOfServiceUrl("http://localhost:8080").version("1.0").build();
   }
 
