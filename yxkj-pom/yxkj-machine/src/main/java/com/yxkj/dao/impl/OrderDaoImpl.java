@@ -1,7 +1,9 @@
 package com.yxkj.dao.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
@@ -25,12 +27,12 @@ public class OrderDaoImpl extends BaseDaoImpl<Order, Long> implements OrderDao {
   @Override
   public List<CmdMsg> salesOut(Long orderId) {
     StringBuffer stringBuffer = new StringBuffer();
-    stringBuffer
-        .append("select orderItem.id, container.sn as csn, category.cntr_type,channel.sn as cn,tOrder.device_no   ");
-    stringBuffer
-        .append(" from t_order tOrder, t_order_item orderItem, t_cntr_channel channel,t_vending_container container ,t_cntr_category category");
-    stringBuffer
-        .append(" where orderItem.cntr_id = container.id and orderItem.channel_sn = channel.sn  and orderItem.user_order = tOrder.id and container.category =category.id ");
+    stringBuffer.append(
+        "select orderItem.id, container.sn as csn, category.cntr_type,channel.sn as cn,tOrder.device_no   ");
+    stringBuffer.append(
+        " from t_order tOrder, t_order_item orderItem, t_cntr_channel channel,t_vending_container container ,t_cntr_category category");
+    stringBuffer.append(
+        " where orderItem.cntr_id = container.id and orderItem.channel_sn = channel.sn  and orderItem.user_order = tOrder.id and container.category =category.id ");
     stringBuffer.append(" and tOrder.id = ");
     stringBuffer.append(orderId);
     Query query =
@@ -39,9 +41,10 @@ public class OrderDaoImpl extends BaseDaoImpl<Order, Long> implements OrderDao {
     List<Object[]> resultList = query.getResultList();
 
     resultList.forEach(array -> {
-
+      Map<String, String> contentMap = new HashMap<>();
+      contentMap.put("orderItemId", String.valueOf(array[0]));
       CmdMsg cmdMsg = new CmdMsg();
-      cmdMsg.setContent(String.valueOf(array[0]));
+      cmdMsg.setContent(contentMap);
       cmdMsg.setAddress(String.valueOf(array[1]));
       cmdMsg.setType((Integer) array[2]);
       String channelSn = String.valueOf(array[3]);

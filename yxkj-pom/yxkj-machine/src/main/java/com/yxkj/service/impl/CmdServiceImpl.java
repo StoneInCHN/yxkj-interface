@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.yxkj.beans.CommonAttributes.JEDIS_MESSAGE_KEY;
@@ -51,7 +52,7 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
     CommandRecord record = new CommandRecord();
 
     // 保存指令到数据库
-    record.setCmdContent(cmdMsg.getContent());
+    record.setCmdContent(cmdMsg.getContentString());
     record.setCmdType(CommonEnum.CmdType.values()[cmdMsg.getType()]);
     record.setDeviceNo(cmdMsg.getDeviceNo());
     record.setCmdStatus(CommonEnum.CmdStatus.SendOut);
@@ -71,7 +72,7 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
     LogUtil.debug(this.getClass(), "updateAdv", "deviceNo: %s;Content:%s", deviceNo,
         JsonUtils.toJson(map));
     CmdMsg cmdMsg = new CmdMsg();
-    cmdMsg.setContent(JsonUtils.toJson(map));
+    cmdMsg.setContent(map);
     cmdMsg.setType(CommonEnum.CmdType.AD_UPDATE.ordinal());
     cmdMsg.setDeviceNo(deviceNo);
     sendCmd(cmdMsg);
@@ -80,8 +81,10 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
   @Override
   public void updateAudioVolume(String deviceNo, float volume) {
     LogUtil.debug(this.getClass(), "updateAdv", "deviceNo: %s;volume:%f", deviceNo, volume);
+    Map<String, String> contentMap = new HashMap<>();
+    contentMap.put("volume", String.valueOf(volume));
     CmdMsg cmdMsg = new CmdMsg();
-    cmdMsg.setContent(String.valueOf(volume));
+    cmdMsg.setContent(contentMap);
     cmdMsg.setType(CommonEnum.CmdType.VOLUME.ordinal());
     cmdMsg.setDeviceNo(deviceNo);
     sendCmd(cmdMsg);

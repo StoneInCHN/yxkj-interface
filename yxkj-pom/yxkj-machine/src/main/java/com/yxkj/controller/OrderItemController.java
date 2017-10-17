@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import com.yxkj.common.log.LogUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
@@ -21,18 +22,18 @@ import io.swagger.annotations.*;
  */
 @Controller("OrderItemController")
 @RequestMapping("/orderItem")
-@Api(value = "订单项", description = "订单项")
+@Api(value = "orderItem", description = "订单项", tags = "OrderItemController")
 public class OrderItemController extends MobileBaseController {
 
   @Resource(name = "orderItemServiceImpl")
   private OrderItemService orderItemService;
 
   /**
-   * 更新命令状态
+   * 更新出货状态
    */
-  @RequestMapping("updateOrderItemShipmentStatus")
-  @ApiOperation(value = "更新出货状态", httpMethod = "POST", response = BaseResponse.class,
-      notes = "更新出货状态")
+  @RequestMapping(value = "updateOrderItemShipmentStatus", method = RequestMethod.POST)
+  @ApiOperation(value = "更新出货状态", httpMethod = "POST", response = BaseResponse.class, notes = "更新出货状态",
+      nickname = "updateOrderItemShipmentStatus")
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
@@ -40,7 +41,7 @@ public class OrderItemController extends MobileBaseController {
       @ApiImplicitParam(paramType = "query", name = "orderItemId", value = "命令记录ID号",
           required = true, dataType = "Long"),
       @ApiImplicitParam(paramType = "query", name = "shipmentStatus", value = "出货状态",
-          required = true, dataType = "CommonEnum.ShipmentStatus")})
+          required = true, dataType = "string")})
   public BaseResponse updateOrderItemShipmentStatus(Long orderItemId,
       CommonEnum.ShipmentStatus shipmentStatus) {
 
