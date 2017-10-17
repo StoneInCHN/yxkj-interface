@@ -118,19 +118,17 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     Order order = orderDao.getOrderBySn(orderSn);
     if (!OrderStatus.UNPAID.equals(order.getStatus())) {
       LogUtil.debug(this.getClass(), "callbackAfterPay",
-          "This order already deal with. orderSn: %s, orderStatus: %s", order.getSn(), order
-              .getStatus().toString());
+          "This order already deal with. orderSn: %s, orderStatus: %s", order.getSn(),
+          order.getStatus().toString());
       return order;
     }
     order.setStatus(OrderStatus.PAID);
     order.setPaymentTime(new Date());
     orderDao.merge(order);
-    LogUtil
-        .debug(
-            this.getClass(),
-            "callbackAfterPay",
-            "update cntr order info finished for pay callback. orderId: %s,sn: %s,orderStatus: %s,payTime: %s",
-            order.getId(), order.getSn(), order.getStatus().toString(), order.getPaymentTime());
+    salesOut(order.getId());
+    LogUtil.debug(this.getClass(), "callbackAfterPay",
+        "update cntr order info finished for pay callback. orderId: %s,sn: %s,orderStatus: %s,payTime: %s",
+        order.getId(), order.getSn(), order.getStatus().toString(), order.getPaymentTime());
     return order;
   }
 
@@ -139,16 +137,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     return orderDao.getOrderBySn(orderSn);
   }
 
+  /**
+   * 根据orderID发送出货请求
+   * 
+   * @param orderId
+   */
   @Override
   public void salesOut(Long orderId) {
 
-    // List<OrderItem> orderItemList = orderDao.salesOut(order);
-    //
     List<CmdMsg> cmdMsgList = orderDao.salesOut(orderId);
-    cmdMsgList.forEach(cmdMsg -> {
-      cmdService.sendCmd(cmdMsg);
-    });
-
+    cmdMsgList.forEach(cmdMsg -> cmdService.sendCmd(cmdMsg));
 
   }
 }
