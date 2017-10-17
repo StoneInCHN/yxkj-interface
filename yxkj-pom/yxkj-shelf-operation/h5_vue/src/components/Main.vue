@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div class="main">
     <div class="only-one-goods" v-if="isOnly">
         <div class="goods-header">
-         <h5>{{onlyItem.gName}}</h5>
+         <h5>{{onlyItem.fullName}}</h5>
+         <icon type="cancel" class="goods-header-icon"  @click.native="canaelOnlyItem"></icon>
         </div>
         <div class="goods-content">
           <img :src="onlyItem.gImg" :alt="onlyItem.gName" />
@@ -19,7 +20,7 @@
         <flexbox-item :span="1/2" v-for="dataItem in datas">
           <div class="goods-item">
             <div class="goods-header">
-             <h5>{{dataItem.gName}}</h5>
+             <h5>{{dataItem.fullName}}</h5>
              <icon type="cancel" class="goods-header-icon" :data-id="dataItem.gId" @click.native="removeGoods"></icon>
             </div>
             <div class="goods-content">
@@ -80,7 +81,6 @@ export default {
       gId: parseParams.goodsId,
       type: parseParams.type
     }
-    console.log(params)
     this.type = params.type
     if (params) {
       if (params.type === 'wx') {
@@ -99,11 +99,13 @@ export default {
             this.getConfig()
           }
           if (res.msg.compInfo) {
+            document.title = res.msg.compInfo.displayName
             this.$store.dispatch('setCompInfo', {compInfo: res.msg.compInfo})
           }
           if (res.msg.gInfo) {
             let item = res.msg.gInfo
             item.gCount = 1
+            item.fullName = item.gName + item.gSpec
             this.datas.push(item)
             this.$store.dispatch('setGoodItems', {goodItems: this.datas})
           }
@@ -148,16 +150,9 @@ export default {
   },
   methods: {
     canaelOnlyItem () {
-      this.$vux.confirm.show({
-        title: '移除商品',
-        content: '确定要从购物栏中移除该商品吗？',
-        onCancel () {
-          console.log('plugin cancel')
-        },
-        onConfirm () {
-          console.log('plugin confirm')
-        }
-      })
+      this.scanQR()
+      this.datas = []
+      this.$store.dispatch('setGoodItems', {goodItems: this.datas})
     },
     removeGoods (e) {
       let $el = e.target
@@ -244,6 +239,7 @@ export default {
           }
           if (!flag) {
             item.gCount = 1
+            item.fullName = item.gName + item.gSpec
             this.datas.push(item)
           }
           this.$store.dispatch('setGoodItems', {goodItems: this.datas})
@@ -276,7 +272,6 @@ export default {
           this.config.url = res.msg.url
           this.config.appId = res.msg.appId
         }
-        console.log(this.config)
         if (this.config) {
           this.$wechat.config({
             debug: false,
@@ -286,13 +281,15 @@ export default {
             signature: this.config.signature,
             jsApiList: [
               'scanQRCode',
-              'chooseWXPay'
+              'chooseWXPay',
+              'hideAllNonBaseMenuItem'
             ]
           })
-          this.$wechat.ready(function () {
+          this.$wechat.ready(() => {
+            this.$wechat.hideAllNonBaseMenuItem()
             console.log('wx loading success')
           })
-          this.$wechat.error(function (res) {
+          this.$wechat.error((res) => {
             console.log('wx loading error')
           })
         }
@@ -312,6 +309,9 @@ export default {
 </script>
 
 <style scoped>
+.main{
+  padding-bottom: 60px;
+}
 .only-one-goods{
   margin:20px;
   border: 1px solid #EAEAEA;
@@ -327,7 +327,7 @@ export default {
 .goods-header{
   text-align: center;
   position: relative;
-  height: 40px;
+  height: 50px;
   border-bottom:1px solid #EAEAEA;
 }
 .goods-header h5{
@@ -390,6 +390,12 @@ export default {
   margin:20px;
 }
 .goods-btns{
-  padding:0 20px 20px 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.goods-btns .vux-flexbox{
+  padding: 9px 20px;
+  width: initial !important;
 }
 </style>
