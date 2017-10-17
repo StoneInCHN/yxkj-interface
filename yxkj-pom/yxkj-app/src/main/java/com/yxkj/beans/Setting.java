@@ -30,9 +30,9 @@ public class Setting implements Serializable {
 
   /** 客户端公钥 */
   private String serverPrivateKey;
-  
-  /** 用户token secret*/
-  private String secret;
+
+  /** 用户token secret */
+  private String tokenSecret;
 
   /** 用户token过期时间 */
   private Integer tokenTimeOut;
@@ -1161,12 +1161,13 @@ public class Setting implements Serializable {
     this.juheKey = juheKey;
   }
 
-  public String getSecret() {
-    return secret;
+  public String getTokenSecret() {
+    return tokenSecret;
   }
 
-  public void setSecret(String secret) {
-    this.secret = secret;
+  public void setTokenSecret(String tokenSecret) {
+    this.tokenSecret = tokenSecret;
   }
+
 
 }
