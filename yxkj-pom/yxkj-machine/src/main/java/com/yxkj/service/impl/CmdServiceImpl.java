@@ -1,6 +1,7 @@
 package com.yxkj.service.impl;
 
 import com.yxkj.client.ReceiverClient;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.commonenum.CommonEnum;
 import com.yxkj.dao.CmdDao;
 import com.yxkj.entity.CmdMsg;
@@ -72,7 +73,10 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
       if (cmdMsgList != null && !cmdMsgList.isEmpty()) {
         saveCommandRecordList(cmdMsgList);
         receiverClient.sendCmdList(cmdMsgList);
+        LogUtil.debug(this.getClass(), "updateAdv", "CmdMsg size %d,OrderId:%d", cmdMsgList.size(),
+            orderId);
       }
+
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -91,6 +95,7 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
       Long recordId =
           saveCommandRecord(deviceNo, CommonEnum.CmdType.AD_UPDATE, stringBuffer.toString());
       CmdMsg cmdMsg = receiverClient.updateAdv(deviceNo, map, recordId);
+      LogUtil.debug(this.getClass(), "updateAdv", "CmdMsg = %s", cmdMsg.toString());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -102,6 +107,20 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
       Long recordId =
           saveCommandRecord(deviceNo, CommonEnum.CmdType.VOLUME, String.valueOf(volume));
       CmdMsg cmdMsg = receiverClient.updateAudioVolume(deviceNo, volume, recordId);
+      LogUtil.debug(this.getClass(), "updateAudioVolume", "CmdMsg = %s", cmdMsg.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void notificationCmd(String deviceNo, CommonEnum.CmdType cmdType) {
+    Long recordId = saveCommandRecord(deviceNo, cmdType, null);
+
+    try {
+      CmdMsg cmdMsg = receiverClient.notificationCmd(deviceNo, recordId, cmdType);
+
+      LogUtil.debug(this.getClass(), "notificationCmd", "CmdMsg = %s", cmdMsg.toString());
     } catch (IOException e) {
       e.printStackTrace();
     }

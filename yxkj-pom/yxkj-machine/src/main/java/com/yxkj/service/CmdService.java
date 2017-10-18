@@ -1,5 +1,6 @@
 package com.yxkj.service;
 
+import com.yxkj.commonenum.CommonEnum;
 import com.yxkj.entity.CommandRecord;
 import com.yxkj.framework.service.BaseService;
 
@@ -17,4 +18,5 @@ public interface CmdService extends BaseService<CommandRecord, Long> {
 
   void updateAudioVolume(String deviceNo, float volume);
 
+  void notificationCmd(String deviceNo, CommonEnum.CmdType cmdType);
 }

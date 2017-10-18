@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.yxkj.commonenum.CommonEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,6 +131,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     order.setStatus(OrderStatus.PAID);
     order.setPaymentTime(new Date());
     orderDao.merge(order);
+    cmdService.notificationCmd(order.getDeviceNo(), CommonEnum.CmdType.PAYMENT_SUCCESS);
     cmdService.salesOut(order.getId());
     LogUtil
         .debug(
