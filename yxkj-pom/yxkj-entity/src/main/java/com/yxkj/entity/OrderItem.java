@@ -42,6 +42,11 @@ public class OrderItem extends BaseEntity {
   private BigDecimal price;
 
   /**
+   * 商品成本价
+   */
+  private BigDecimal costPrice;
+
+  /**
    * 商品名称
    */
   private String gName;
@@ -86,6 +91,17 @@ public class OrderItem extends BaseEntity {
    * 退款状态
    */
   private RefundStatus refundStatus;
+
+
+  @Column(scale = 2, precision = 10)
+  public BigDecimal getCostPrice() {
+    return costPrice;
+  }
+
+
+  public void setCostPrice(BigDecimal costPrice) {
+    this.costPrice = costPrice;
+  }
 
 
   public String getSpec() {

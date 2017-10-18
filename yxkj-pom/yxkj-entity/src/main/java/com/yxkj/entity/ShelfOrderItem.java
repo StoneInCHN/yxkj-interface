@@ -37,6 +37,11 @@ public class ShelfOrderItem extends BaseEntity {
   private BigDecimal price;
 
   /**
+   * 商品成本单价
+   */
+  private BigDecimal costPrice;
+
+  /**
    * 商品实际总价
    */
   private BigDecimal totalPrice;
@@ -61,6 +66,17 @@ public class ShelfOrderItem extends BaseEntity {
    * 商品数量
    */
   private Integer count;
+
+
+  @Column(scale = 2, precision = 10)
+  public BigDecimal getCostPrice() {
+    return costPrice;
+  }
+
+
+  public void setCostPrice(BigDecimal costPrice) {
+    this.costPrice = costPrice;
+  }
 
 
   @JsonProperty
@@ -103,7 +119,7 @@ public class ShelfOrderItem extends BaseEntity {
   public void setgName(String gName) {
     this.gName = gName;
   }
-  
+
   @JsonProperty
   @Column(length = 50)
   public String getgSn() {
