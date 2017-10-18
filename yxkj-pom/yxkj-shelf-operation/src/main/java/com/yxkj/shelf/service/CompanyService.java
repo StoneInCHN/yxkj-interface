@@ -19,4 +19,6 @@ public interface CompanyService extends BaseService<Company,Long>{
 
 	void deleteCompany(Long[] ids);
 
+	String genComSn();
+
 }

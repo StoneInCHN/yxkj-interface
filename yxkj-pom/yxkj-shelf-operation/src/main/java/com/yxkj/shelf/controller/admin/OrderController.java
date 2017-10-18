@@ -134,20 +134,34 @@ public class OrderController extends BaseController {
       List<Ordering> orders = new ArrayList<Ordering>();
       orders.add(Ordering.desc("createDate"));
       List<Filter> filters = new ArrayList<Filter>();
-	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
-	  String sn = getReqPram(requestParam, "sn");
-      if (sn != null) {
-          filters.add(Filter.like("sn", "%"+sn+"%"));
-      }	
-      List<ShelfOrder> lists = shelfOrderService.findList(null, filters, orders); 
-      if (lists != null && lists.size() > 0) {
-        String title = "Order List"; // 工作簿标题，同时也是excel文件名前缀
-        String[] headers = {"sn", "company", "touristNickName", "touristUserName", "paymentType", "paymentTime", "amount",  "status", "goodsCount"}; // 需要导出的字段
-        String[] headersName = {"订单编号", "公司名", "用户昵称", "用户识别码", "支付方式", "支付时间", "订单金额", "交易状态", "商品数量"}; // 字段对应列的列名
-        List<Map<String, String>> mapList = exportHelper.prepareExportShelfOrder(lists);
-        if (mapList.size() > 0) {
-          exportListToExcel(response, mapList, title, headers, headersName);
-        }
+      String companyName = request.getParameter("companyName");
+	  String companySn = request.getParameter("companySn");	
+      String beginDate = request.getParameter("beginDate");
+	  String endDate = request.getParameter("endDate");	  
+      if (StringUtils.isNotBlank(companyName)) {
+          filters.add(Filter.like("comp.displayName", "%"+companyName.trim()+"%"));
       }
+      if (StringUtils.isNotBlank(companySn)) {
+          filters.add(Filter.like("comp.sn", "%"+companySn.trim()+"%"));
+      }
+      if (StringUtils.isNotBlank(beginDate)) {    	  
+          filters.add(Filter.ge("paymentTime", TimeUtils.formatDate2Day0(beginDate)));
+      }
+      if (StringUtils.isNotBlank(endDate)) {
+          filters.add(Filter.lt("paymentTime", TimeUtils.formatDate2Day59(endDate)));
+      }
+      List<ShelfOrder> lists = shelfOrderService.findList(null, filters, orders); 
+      
+      String title = "Order List"; // 工作簿标题，同时也是excel文件名前缀
+      String[] headers = {"sn", "company", "touristNickName", "touristUserName", "paymentType", "paymentTime", "amount",  "status", "goodsCount"}; // 需要导出的字段
+      String[] headersName = {"订单编号", "公司名", "用户昵称", "用户识别码", "支付方式", "支付时间", "订单金额", "交易状态", "商品数量"}; // 字段对应列的列名
+      List<Map<String, String>> mapList = null;
+      if (lists != null && lists.size() > 0) {
+    	  mapList = exportHelper.prepareExportShelfOrder(lists);
+          exportListToExcel(response, mapList, title, headers, headersName);
+      }else {
+    	  mapList = new ArrayList<Map<String, String>>();
+    	  exportListToExcel(response, mapList, title, headers, headersName);
+	  }
     }
 }

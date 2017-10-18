@@ -34,6 +34,8 @@ import com.yxkj.shelf.framework.paging.Pageable;
 import com.yxkj.shelf.json.admin.request.AdminRequest;
 import com.yxkj.shelf.json.admin.request.CompanyData;
 import com.yxkj.shelf.json.admin.request.CompanyRequest;
+import com.yxkj.shelf.json.admin.request.GoodsData;
+import com.yxkj.shelf.json.admin.request.GoodsRequest;
 import com.yxkj.shelf.json.admin.request.GoodsShelveRow;
 import com.yxkj.shelf.json.admin.response.GoodsProfile;
 import com.yxkj.shelf.json.base.BaseResponse;
@@ -87,8 +89,8 @@ public class CompanyController extends BaseController {
           if (StringUtils.isNotBlank(companyData.getSn())) {
               filters.add(Filter.like("sn", "%"+companyData.getSn().trim()+"%"));
           }
-          if (StringUtils.isNotBlank(companyData.getFullName())) {
-              filters.add(Filter.like("fullName", "%"+companyData.getFullName().trim()+"%"));
+          if (StringUtils.isNotBlank(companyData.getDisplayName())) {
+              filters.add(Filter.like("displayName", "%"+companyData.getDisplayName().trim()+"%"));
           }
 	  }
       List<Ordering> orderings = pageable.getOrderings();
@@ -168,6 +170,7 @@ public class CompanyController extends BaseController {
       CompanyData companyData = request.getCompanyData();
       if (companyData != null ) {
     	  Company company = companyService.getCompnayEntity(companyData, null);
+    	  company.setSn(companyService.genComSn());
     	  companyService.save(company);
           response.setCode(CommonAttributes.SUCCESS);
           response.setDesc(message("yxkj.request.success"));
@@ -239,25 +242,55 @@ public class CompanyController extends BaseController {
       List<Ordering> orders = new ArrayList<Ordering>();
       orders.add(Ordering.desc("createDate"));
       List<Filter> filters = new ArrayList<Filter>();
-	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
-	  String sn = getReqPram(requestParam, "sn");
-	  String displayName = getReqPram(requestParam, "displayName");
+//	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
+//	  String sn = getReqPram(requestParam, "sn");
+//	  String displayName = getReqPram(requestParam, "displayName");
+	  String sn = request.getParameter("sn");
+	  String displayName = request.getParameter("displayName");
       if (sn != null) {
-          filters.add(Filter.like("sn", "%"+sn+"%"));
+          filters.add(Filter.like("sn", "%"+sn.trim()+"%"));
       }
       if (displayName != null) {
-          filters.add(Filter.like("displayName", "%"+displayName+"%"));
+          filters.add(Filter.like("displayName", "%"+displayName.trim()+"%"));
       }		
       List<Company> lists = companyService.findList(null, filters, orders); 
-
+      
+      String title = "Company List"; // 工作簿标题，同时也是excel文件名前缀
+      String[] headers = {"sn", "fullName", "displayName", "contactPerson", "contactPhone", "area", "address", "remark"}; // 需要导出的字段
+      String[] headersName = {"公司编号", "公司全名", "公司展示名称", "联系人", "联系电话", "地区", "详细地址", "备注"}; // 字段对应列的列名
+      List<Map<String, String>> mapList = null;
       if (lists != null && lists.size() > 0) {
-        String title = "Company List"; // 工作簿标题，同时也是excel文件名前缀
-        String[] headers = {"sn", "fullName", "displayName", "contactPerson", "contactPhone", "area", "address", "remark"}; // 需要导出的字段
-        String[] headersName = {"公司编号", "公司全名", "公司展示名称", "联系人", "联系电话", "地区", "详细地址", "备注"}; // 字段对应列的列名
-        List<Map<String, String>> mapList = exportHelper.prepareExportCompany(lists);
-        if (mapList.size() > 0) {
+          mapList = exportHelper.prepareExportCompany(lists);
           exportListToExcel(response, mapList, title, headers, headersName);
-        }
-      }
+      }else {
+    	  mapList = new ArrayList<Map<String, String>>();
+    	  exportListToExcel(response, mapList, title, headers, headersName);
+	  }
     }
+    @RequestMapping(value = "/isExistCompany", method = RequestMethod.POST)
+    @ApiOperation(value = "查询公司名称是否存在", httpMethod = "POST", response = ResponseOne.class, notes = "查询公司名称是否存在")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody BaseResponse isExistCompany(@ApiParam @RequestBody CompanyRequest request) {
+        BaseResponse response = new BaseResponse(); 
+        CompanyData companyData = request.getCompanyData();
+        boolean existDispalyName = false;
+        boolean existFullName = false;
+        if (companyData != null) {
+        	if (StringUtils.isNotBlank(companyData.getDisplayName())) {
+        		existDispalyName = companyService.exists(Filter.eq("displayName", companyData.getDisplayName()));
+			}
+        	if (StringUtils.isNotBlank(companyData.getFullName())) {
+        		existFullName = companyService.exists(Filter.eq("fullName", companyData.getFullName()));
+			}       	
+  	    }
+        if (existDispalyName || existFullName) {
+            response.setDesc("true");
+            response.setCode(CommonAttributes.SUCCESS);
+		  }else {
+            response.setDesc("false");
+            response.setCode(CommonAttributes.SUCCESS);
+		  }
+        return response;
+    }
+    
 }

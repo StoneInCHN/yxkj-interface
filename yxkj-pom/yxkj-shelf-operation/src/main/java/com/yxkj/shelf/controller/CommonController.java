@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,11 +37,14 @@ import com.yxkj.entity.Company;
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.MenuAuthority;
 import com.yxkj.entity.Role;
+import com.yxkj.entity.Tourist;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.controller.base.BaseController;
+import com.yxkj.shelf.framework.filter.Filter;
+import com.yxkj.shelf.framework.ordering.Ordering;
 import com.yxkj.shelf.json.admin.request.AdminRequest;
 import com.yxkj.shelf.json.admin.request.CompanyGoods;
 import com.yxkj.shelf.json.base.BaseRequest;
@@ -50,8 +54,11 @@ import com.yxkj.shelf.service.AdminService;
 import com.yxkj.shelf.service.CompanyService;
 import com.yxkj.shelf.service.FileService;
 import com.yxkj.shelf.service.GoodsService;
+import com.yxkj.shelf.service.TouristService;
+import com.yxkj.shelf.utils.ExportHelper;
 import com.yxkj.shelf.utils.FieldFilterUtils;
 import com.yxkj.shelf.utils.GeneratePdf;
+import com.yxkj.shelf.utils.HttpServletRequestUtils;
 import com.yxkj.shelf.utils.ImportExcel;
 import com.yxkj.shelf.utils.TimeUtils;
 import com.yxkj.shelf.utils.TokenUtil;
@@ -81,6 +88,12 @@ public class CommonController extends BaseController {
 	
 	@Resource(name = "taskExecutor")
 	private Executor threadPoolExecutor;
+	
+	@Resource(name = "touristServiceImpl")
+	private TouristService touristService;
+	
+	@Autowired
+	private ExportHelper exportHelper;
 	
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "用户登录", httpMethod = "POST", response = BaseResponse.class, notes = "用户登录")
@@ -288,6 +301,37 @@ public class CommonController extends BaseController {
       response.setDesc(desc);
       return response;
     }
+//    /**
+//     * 导出Excel
+//     * @throws IOException 
+//     */
+//    @RequestMapping(value = "/dataExport", method = {RequestMethod.GET, RequestMethod.POST})
+//    public void dataExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//      List<Ordering> orders = new ArrayList<Ordering>();
+//      orders.add(Ordering.desc("createDate"));
+//      List<Filter> filters = new ArrayList<Filter>();
+////	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
+////	  String nickName = getReqPram(requestParam, "nickName");
+////	  String companyName = getReqPram(requestParam, "companyName");
+//	  String nickName = request.getParameter("nickName");
+//	  String companyName = request.getParameter("companyName");
+//      if (nickName != null && StringUtils.isNotBlank(nickName)) {
+//          filters.add(Filter.like("nickName", "%"+nickName.trim()+"%"));
+//      }
+//      if (companyName != null && StringUtils.isNotBlank(companyName)) {
+//          filters.add(Filter.like("companyName", "%"+companyName.trim()+"%"));
+//      }		
+//      List<Tourist> lists = touristService.findList(null, filters, orders); 
+//      if (lists != null && lists.size() > 0) {
+//        String title = "User List"; // 工作簿标题，同时也是excel文件名前缀
+//        String[] headers = {"id", "userName", "cellPhoneNum", "gender", "nickName", "userChannel", "regTime", "companyName"}; // 需要导出的字段
+//        String[] headersName = {"用户ID", "用户识别码", "手机号", "性别", "账号昵称", "用户获取渠道", "注册时间", "所属公司"}; // 字段对应列的列名
+//        List<Map<String, String>> mapList = exportHelper.prepareExportTourist(lists);
+//        if (mapList.size() > 0) {
+//          exportListToExcel(response, mapList, title, headers, headersName);
+//        }
+//      }
+//    }
     private boolean isValidGoodsRow(Map<String, Object> rowMap){
     	if (rowMap.get("sn") != null && rowMap.get("name") != null
     			&& rowMap.get("spec") != null && rowMap.get("costPrice") != null

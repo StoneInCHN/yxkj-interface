@@ -29,7 +29,10 @@ import com.yxkj.shelf.json.admin.request.GoodsShelveRow;
 public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements CompanyService {
 
 	@Resource(name = "areaServiceImpl")
-	private AreaService areaService;	
+	private AreaService areaService;		
+	
+	@Resource(name = "companyDaoImpl")
+	private CompanyDao companyDao;
 	
 	@Resource(name = "shelfCategoryServiceImpl")
 	private ShelfCategoryService shelfCategoryService;
@@ -97,7 +100,7 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
 	  }else {
 		  company = find(companyId);
 	  }  	  
-  	  company.setSn(companyData.getSn());
+  	  //company.setSn(companyData.getSn());
   	  company.setAddress(companyData.getAddress());
   	  company.setContactPerson(companyData.getContactPerson());
   	  company.setContactPhone(companyData.getContactPhone());
@@ -167,5 +170,14 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
 		}
 	  }
   	  delete(ids);
+	}
+
+	@Override
+	public String genComSn() {
+		String sn = companyDao.genComSn();
+		while (sn.length() <= 10) {
+			sn = "0"+sn;
+		}
+		return sn;
 	}
 }

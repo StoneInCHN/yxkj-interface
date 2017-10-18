@@ -99,7 +99,7 @@ public class Company extends BaseEntity {
   }
   
   @JsonProperty
-  @Column(length = 100)
+  @Column(length = 100, unique = true)
   public String getFullName() {
     return fullName;
   }
@@ -109,7 +109,7 @@ public class Company extends BaseEntity {
   }
   
   @JsonProperty
-  @Column(length = 50)
+  @Column(length = 50, unique = true)
   public String getDisplayName() {
     return displayName;
   }

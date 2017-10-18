@@ -165,25 +165,30 @@ public class GoodsController extends BaseController {
       List<Ordering> orders = new ArrayList<Ordering>();
       orders.add(Ordering.desc("createDate"));
       List<Filter> filters = new ArrayList<Filter>();
-	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
-	  String sn = getReqPram(requestParam, "sn");
-	  String name = getReqPram(requestParam, "name");
-      if (sn != null) {
-          filters.add(Filter.like("sn", "%"+sn+"%"));
+//	  String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
+//	  String sn = getReqPram(requestParam, "sn");
+//	  String name = getReqPram(requestParam, "name");
+	  String sn = request.getParameter("sn");
+	  String name = request.getParameter("name");
+      if (StringUtils.isNotBlank(sn)) {
+          filters.add(Filter.like("sn", "%"+sn.trim()+"%"));
       }
-      if (name != null) {
-          filters.add(Filter.like("name", "%"+name+"%"));
+      if (StringUtils.isNotBlank(name)) {
+          filters.add(Filter.like("name", "%"+name.trim()+"%"));
       }		
       List<Goods> lists = goodsService.findList(null, filters, orders); 
+      
+      String title = "Goods List"; // 工作簿标题，同时也是excel文件名前缀
+      String[] headers = {"sn", "name", "fullName", "spec", "costPrice", "salePrice", "status", "goodsUrl"}; // 需要导出的字段
+      String[] headersName = {"商品条码", "商品名称", "商品全名", "商品规格", "成本价", "销售价", "商品状态", "商品图片连接"}; // 字段对应列的列名
+      List<Map<String, String>> mapList = null;
       if (lists != null && lists.size() > 0) {
-        String title = "Goods List"; // 工作簿标题，同时也是excel文件名前缀
-        String[] headers = {"sn", "name", "fullName", "spec", "costPrice", "salePrice", "status", "goodsUrl"}; // 需要导出的字段
-        String[] headersName = {"商品条码", "商品名称", "商品全名", "商品规格", "成本价", "销售价", "商品状态", "商品图片连接"}; // 字段对应列的列名
-        List<Map<String, String>> mapList = exportHelper.prepareExportGoods(lists);
-        if (mapList.size() > 0) {
+    	  mapList = exportHelper.prepareExportGoods(lists);
           exportListToExcel(response, mapList, title, headers, headersName);
-        }
-      }
+      }else {
+    	  mapList = new ArrayList<Map<String, String>>();
+          exportListToExcel(response, mapList, title, headers, headersName);
+	  }
     }
     @RequestMapping(value = "/isExistSn", method = RequestMethod.POST)
     @ApiOperation(value = "查询商品编码是否存在", httpMethod = "POST", response = ResponseOne.class, notes = "查询商品编码是否存在")
@@ -196,16 +201,17 @@ public class GoodsController extends BaseController {
             response.setDesc(message("yxkj.request.param.missing"));
             return response;
 		}
+        boolean exist = false;
         if (goodsData != null && StringUtils.isNotBlank(goodsData.getSn())) {
-          boolean exist = goodsService.exists(Filter.eq("sn", goodsData.getSn()));
-          if (exist) {
-              response.setDesc("true");
-              response.setCode(CommonAttributes.SUCCESS);
-		  }else {
-              response.setDesc("false");
-              response.setCode(CommonAttributes.SUCCESS);
-		  }
+          exist = goodsService.exists(Filter.eq("sn", goodsData.getSn()));
   	    }
+        if (exist) {
+            response.setDesc("true");
+            response.setCode(CommonAttributes.SUCCESS);
+		  }else {
+            response.setDesc("false");
+            response.setCode(CommonAttributes.SUCCESS);
+		  }
         return response;
     }
 }
