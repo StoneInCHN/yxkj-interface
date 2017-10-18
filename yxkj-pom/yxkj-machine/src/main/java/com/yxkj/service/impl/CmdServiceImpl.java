@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,17 +35,34 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
     this.receiverClient = receiverClient;
   }
 
-  private void saveCommandRecord(CmdMsg cmdMsg) {
+  private void saveCommandRecordList(List<CmdMsg> cmdMsgList) {
+    cmdMsgList.forEach(cmdMsg -> {
+      CommandRecord record = new CommandRecord();
+
+      // 保存指令到数据库
+      record.setCmdContent(cmdMsg.getContent().get("orderItemId"));
+      record.setCmdType(CommonEnum.CmdType.values()[cmdMsg.getType()]);
+      record.setDeviceNo(cmdMsg.getDeviceNo());
+      record.setCmdStatus(CommonEnum.CmdStatus.SendOut);
+      cmdDao.persist(record);
+
+      cmdMsg.setId(record.getId());
+
+    });
+
+  }
+
+  private Long saveCommandRecord(String deviceNo, CommonEnum.CmdType cmdType, String content) {
     CommandRecord record = new CommandRecord();
 
     // 保存指令到数据库
-    record.setCmdContent(cmdMsg.getContentString());
-    record.setCmdType(CommonEnum.CmdType.values()[cmdMsg.getType()]);
-    record.setDeviceNo(cmdMsg.getDeviceNo());
+    record.setCmdContent(content);
+    record.setCmdType(cmdType);
+    record.setDeviceNo(deviceNo);
     record.setCmdStatus(CommonEnum.CmdStatus.SendOut);
     cmdDao.persist(record);
 
-    cmdMsg.setId(record.getId());
+    return record.getId();
   }
 
   @Override
@@ -54,8 +70,8 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
     try {
       List<CmdMsg> cmdMsgList = orderService.salesOut(orderId);
       if (cmdMsgList != null && !cmdMsgList.isEmpty()) {
-        List<CmdMsg> cmdMsgResults = receiverClient.salesOut(cmdMsgList);
-        cmdMsgResults.forEach(this::saveCommandRecord);
+        saveCommandRecordList(cmdMsgList);
+        receiverClient.sendCmdList(cmdMsgList);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -65,10 +81,16 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
 
   @Override
   public void updateAdv(String deviceNo, Map<String, String> map) {
-
+    StringBuffer stringBuffer = new StringBuffer();
+    map.forEach((k, v) -> {
+      stringBuffer.append(k);
+      stringBuffer.append("=");
+      stringBuffer.append(v);
+    });
     try {
-      CmdMsg cmdMsg = receiverClient.updateAdv(deviceNo, map);
-      saveCommandRecord(cmdMsg);
+      Long recordId =
+          saveCommandRecord(deviceNo, CommonEnum.CmdType.AD_UPDATE, stringBuffer.toString());
+      CmdMsg cmdMsg = receiverClient.updateAdv(deviceNo, map, recordId);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -77,8 +99,9 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
   @Override
   public void updateAudioVolume(String deviceNo, float volume) {
     try {
-      CmdMsg cmdMsg = receiverClient.updateAudioVolume(deviceNo, volume);
-      saveCommandRecord(cmdMsg);
+      Long recordId =
+          saveCommandRecord(deviceNo, CommonEnum.CmdType.VOLUME, String.valueOf(volume));
+      CmdMsg cmdMsg = receiverClient.updateAudioVolume(deviceNo, volume, recordId);
     } catch (IOException e) {
       e.printStackTrace();
     }

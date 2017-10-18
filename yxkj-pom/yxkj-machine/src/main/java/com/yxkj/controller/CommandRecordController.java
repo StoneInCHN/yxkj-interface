@@ -7,12 +7,15 @@ import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.service.CmdService;
 import com.yxkj.service.CommandRecordService;
+import com.yxkj.service.OrderService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 命令接口
@@ -28,6 +31,9 @@ public class CommandRecordController extends MobileBaseController {
   @Resource(name = "cmdServiceImpl")
   private CmdService cmdService;
 
+  @Resource(name = "orderServiceImpl")
+  private OrderService orderService;
+
   /**
    * 更新命令状态
    */
@@ -39,11 +45,12 @@ public class CommandRecordController extends MobileBaseController {
   @ResponseBody
   public BaseResponse sendCMD() {
     BaseResponse response = new BaseResponse();
-    // Map<String, String> contentMap = new HashMap<>();
-    // contentMap.put("video_top",
-    // "https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo-transcode/13_2cb46cf895d9e1d80a69fbc028e19ded_2.mp4");
-    // cmdService.updateAdv("000000000000000", contentMap);
-    cmdService.updateAudioVolume("001", 20);
+    Map<String, String> contentMap = new HashMap<>();
+    contentMap.put("video_bottom",
+        "https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo-transcode/115_1a22d4759be8239577563fafe92120bc_2.mp4");
+    // cmdService.updateAdv("863010031227460", contentMap);
+     cmdService.updateAudioVolume("863010031227460", 20);
+    cmdService.salesOut(1l);
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
@@ -57,15 +64,16 @@ public class CommandRecordController extends MobileBaseController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
-  @ApiImplicitParam(paramType = "query", name = "commandId", value = "命令记录ID号", required = true,
-      dataType = "Long")
-  public BaseResponse finishCmdStatus(Long commandId) {
+  @ApiImplicitParams({
+      @ApiImplicitParam(paramType = "query", name = "commandId", value = "命令记录ID号", required = true,
+          dataType = "Long"),
+      @ApiImplicitParam(paramType = "query", name = "isSuccess", value = "操作是否成功", required = true,
+          dataType = "Boolean")})
+  public BaseResponse finishCmdStatus(Long commandId, Boolean isSuccess) {
 
     BaseResponse response = new BaseResponse();
-    CommandRecord record = commandRecordService.find(commandId);
-    record.setCmdStatus(CommonEnum.CmdStatus.Finished);
 
-    record = commandRecordService.update(record);
+    CommandRecord record = commandRecordService.updateCmdStatus(commandId, isSuccess);
     if (record.getCmdStatus().equals(CommonEnum.CmdStatus.Finished))
       response.setCode(CommonAttributes.SUCCESS);
     else
