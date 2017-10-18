@@ -464,12 +464,12 @@
 	        </dependency>
 			<dependency>
 				<groupId>com.yxkj</groupId>
-				<version>0.0.7-SNAPSHOT</version>
+				<version>0.0.8-SNAPSHOT</version>
 				<artifactId>common-entity</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>com.yxkj</groupId>
-				<version>0.0.4-SNAPSHOT</version>
+				<version>0.0.5-SNAPSHOT</version>
 				<artifactId>receiver-sdk</artifactId>
 			</dependency>
 			<dependency>
