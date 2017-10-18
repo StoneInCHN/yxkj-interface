@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -19,11 +20,14 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,14 +49,17 @@ import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.entity.commonenum.CommonEnum.ShelfOrderStatus;
 import com.yxkj.shelf.beans.CommonAttributes;
+import com.yxkj.shelf.beans.Setting.CaptchaType;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.controller.base.BaseController;
 import com.yxkj.shelf.json.admin.request.AdminRequest;
 import com.yxkj.shelf.json.admin.request.CompanyGoods;
+import com.yxkj.shelf.json.admin.request.LoginRequest;
 import com.yxkj.shelf.json.base.BaseRequest;
 import com.yxkj.shelf.json.base.BaseResponse;
 import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.AdminService;
+import com.yxkj.shelf.service.CaptchaService;
 import com.yxkj.shelf.service.CompanyService;
 import com.yxkj.shelf.service.FileService;
 import com.yxkj.shelf.service.GoodsService;
@@ -97,23 +104,63 @@ public class CommonController extends BaseController {
 
   @Resource(name = "shelfOrderServiceImpl")
   private ShelfOrderService shelfOrderService;
+  
+  @Resource(name = "captchaServiceImpl")
+  private CaptchaService captchaService;
 
   @Autowired
   private ExportHelper exportHelper;
+  
+  /**
+   * 验证码
+   */
+  @RequestMapping(value = "/captcha", method = RequestMethod.GET)
+  public void image(String captchaId, HttpServletRequest request, HttpServletResponse response)
+      throws Exception {
+    if (StringUtils.isEmpty(captchaId)) {
+      captchaId = request.getSession().getId();
+    }
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Cache-Control", "no-cache");
+    response.setHeader("Cache-Control", "no-store");
+    response.setDateHeader("Expires", 0);
+    response.setContentType("image/jpeg");
+
+    ServletOutputStream servletOutputStream = null;
+    try {
+      servletOutputStream = response.getOutputStream();
+      BufferedImage bufferedImage = captchaService.buildImage(captchaId);
+      ImageIO.write(bufferedImage, "jpg", servletOutputStream);
+      servletOutputStream.flush();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      IOUtils.closeQuietly(servletOutputStream);
+    }
+  }
 
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   @ApiOperation(value = "用户登录", httpMethod = "POST", response = BaseResponse.class, notes = "用户登录")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-  public @ResponseBody ResponseOne<Admin> login(@ApiParam @RequestBody AdminRequest adminRequest,
+  public @ResponseBody ResponseOne<Admin> login(@ApiParam @RequestBody LoginRequest loginRequest,
       HttpServletRequest request) {
     ResponseOne<Admin> response = new ResponseOne<Admin>();
 
-    String userName = adminRequest.getUserName();
-    String password = adminRequest.getPassword();
-    if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)) {
+    String userName = loginRequest.getUserName();
+    String password = loginRequest.getPassword();
+    String captcha = loginRequest.getCaptcha();   
+    String captchaId = loginRequest.getCaptchaId();
+    if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password) 
+    		|| StringUtils.isEmpty(captcha) || StringUtils.isEmpty(captchaId)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
       response.setDesc(message("yxkj.request.param.missing"));
       return response;
+    }
+    if (!captchaService.isValid(CaptchaType.adminLogin, captchaId, captcha)) {
+        response.setCode(CommonAttributes.FAIL_LOGIN);
+        response.setDesc(message("yxkj.admin.userName.captcha.error"));
+        LogUtil.debug(this.getClass(), "login", "验证码错误");
+        return response;
     }
     LogUtil.debug(this.getClass(), "login", "登录名:%s", userName);
     Admin admin = adminService.findByUserName(userName);
@@ -136,6 +183,7 @@ public class CommonController extends BaseController {
       LogUtil.debug(this.getClass(), "login", "密码错误");
       return response;
     }
+    
     if (request.getRemoteAddr() != null) {
       admin.setLoginIp(request.getRemoteAddr());
       admin.setLoginDate(new Date());

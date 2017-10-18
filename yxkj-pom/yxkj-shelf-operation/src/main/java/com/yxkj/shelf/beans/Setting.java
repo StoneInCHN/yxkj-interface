@@ -2,6 +2,8 @@ package com.yxkj.shelf.beans;
 
 import java.io.Serializable;
 
+
+
 /**
  * 系统设置
  * 
@@ -10,8 +12,30 @@ public class Setting implements Serializable {
 
   private static final long serialVersionUID = -1478999889661796840L;
 
+  /**
+   * 验证码类型
+   */
+  public enum CaptchaType {
 
+    /** 后台登录 */
+    adminLogin,
 
+    /** 租户资料上传 */
+    adminApply,
+
+    /** 找回密码 */
+    findPassword,
+
+    /** 重置密码 */
+    resetPassword,
+
+    /** 其它 */
+    other
+  }
+  
+  /** 验证码类型 */
+  private CaptchaType[] captchaTypes;
+  
   /** 缓存名称 */
   public static final String CACHE_NAME = "setting";
 
@@ -904,5 +928,11 @@ public class Setting implements Serializable {
   public void setAuthRedirectUrl(String authRedirectUrl) {
     this.authRedirectUrl = authRedirectUrl;
   }
+  public CaptchaType[] getCaptchaTypes() {
+	 return captchaTypes;
+  }
 
+  public void setCaptchaTypes(CaptchaType[] captchaTypes) {
+	 this.captchaTypes = captchaTypes;
+  }
 }

@@ -110,7 +110,14 @@
 	<!-- declare Redis Cache Manager -->  
     <!-- <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"  
         c:template-ref="redisTemplate" /> -->
-        
+    <bean id="imageCaptchaService"
+		class="com.octo.captcha.service.image.DefaultManageableImageCaptchaService">
+		<property name="captchaEngine">
+			<bean class="com.yxkj.shelf.beans.CaptchaEngine" />
+		</property>
+		<property name="minGuarantedStorageDelayInSeconds" value="3600" />
+	</bean>
+	    
     <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 		<property name="corePoolSize" value="${task.core_pool_size}" />
 		<property name="maxPoolSize" value="${task.max_pool_size}" />

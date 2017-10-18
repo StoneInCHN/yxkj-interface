@@ -7,9 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +39,6 @@ import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.TouristService;
 import com.yxkj.shelf.utils.ExportHelper;
 import com.yxkj.shelf.utils.FieldFilterUtils;
-import com.yxkj.shelf.utils.HttpServletRequestUtils;
 
 /**
  * Controller - 用户管理

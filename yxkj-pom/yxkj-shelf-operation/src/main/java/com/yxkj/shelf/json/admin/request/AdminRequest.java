@@ -25,6 +25,7 @@ public class AdminRequest {
 	
 	private String token;
 	
+	
 	public String getUserName() {
 		return userName;
 	}
