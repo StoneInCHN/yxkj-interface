@@ -462,7 +462,22 @@
 				  <artifactId>commons-logging</artifactId>
 	              <version>1.1.1</version>
 	        </dependency>
-        
+			<dependency>
+				<groupId>com.yxkj</groupId>
+				<version>0.0.7-SNAPSHOT</version>
+				<artifactId>common-entity</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>com.yxkj</groupId>
+				<version>0.0.4-SNAPSHOT</version>
+				<artifactId>receiver-sdk</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>com.yxkj</groupId>
+				<artifactId>yxkj-receiver</artifactId>
+				<type>pom</type>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -470,9 +485,9 @@
 		<module>yxkj-entity</module>
 		<!-- <module>common-entity</module> -->
 		<module>yxkj-app</module>
-		<!-- <module>yxkj-operation</module>
+		<module>yxkj-operation</module>
 		<module>yxkj-machine</module>
 		<module>yxkj-shelf-operation</module>
-		<module>yxkj-service</module> -->
+		<module>yxkj-service</module>
 	</modules>
 </project>

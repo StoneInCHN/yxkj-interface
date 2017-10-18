@@ -9,6 +9,7 @@ import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.yxkj.commonenum.CommonEnum;
 import org.springframework.stereotype.Repository;
 
 import com.yxkj.dao.OrderDao;
@@ -46,7 +47,7 @@ public class OrderDaoImpl extends BaseDaoImpl<Order, Long> implements OrderDao {
       CmdMsg cmdMsg = new CmdMsg();
       cmdMsg.setContent(contentMap);
       cmdMsg.setAddress(String.valueOf(array[1]));
-      cmdMsg.setType((Integer) array[2]);
+      cmdMsg.setType(CommonEnum.CmdType.values()[(int) array[2]]);
       String channelSn = String.valueOf(array[3]);
       cmdMsg.setBox(Integer.parseInt(channelSn.substring(1, channelSn.length())));
       cmdMsg.setDeviceNo((String) array[4]);

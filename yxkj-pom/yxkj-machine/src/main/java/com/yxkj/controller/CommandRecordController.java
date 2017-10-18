@@ -1,9 +1,9 @@
 package com.yxkj.controller;
 
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.commonenum.CommonEnum;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.CommandRecord;
-import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.service.CmdService;
 import com.yxkj.service.CommandRecordService;

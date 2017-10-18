@@ -1,10 +1,10 @@
 package com.yxkj.service.impl;
 
 import com.yxkj.client.ReceiverClient;
+import com.yxkj.commonenum.CommonEnum;
 import com.yxkj.dao.CmdDao;
 import com.yxkj.entity.CmdMsg;
 import com.yxkj.entity.CommandRecord;
-import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
 import com.yxkj.service.CmdService;
 import com.yxkj.service.OrderService;
@@ -41,7 +41,7 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
 
       // 保存指令到数据库
       record.setCmdContent(cmdMsg.getContent().get("orderItemId"));
-      record.setCmdType(CommonEnum.CmdType.values()[cmdMsg.getType()]);
+      record.setCmdType(cmdMsg.getType());
       record.setDeviceNo(cmdMsg.getDeviceNo());
       record.setCmdStatus(CommonEnum.CmdStatus.SendOut);
       cmdDao.persist(record);
