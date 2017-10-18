@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiResponses;
 
 import java.security.PrivateKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -56,10 +58,12 @@ public class KeeperAcconutController extends MobileBaseController {
   @RequestMapping(value = "/getPublicKey", method = RequestMethod.GET)
   @ApiOperation(value = "获取公钥", httpMethod = "GET", response = ResponseOne.class, notes = "获取公钥")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-  public @ResponseBody ResponseOne<String> getPublicKey(HttpServletRequest request) {
-    ResponseOne<String> response = new ResponseOne<String>();
+  public @ResponseBody ResponseOne<Map<String, String>> getPublicKey(HttpServletRequest request) {
+    ResponseOne<Map<String, String>> response = new ResponseOne<Map<String, String>>();
+    Map<String, String> map = new HashMap<>();
     try {
-      response.setMsg(setting.getServerPublicKey());
+      map.put("publicKey", setting.getServerPublicKey());
+      response.setMsg(map);
     } catch (Exception e) {
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));
