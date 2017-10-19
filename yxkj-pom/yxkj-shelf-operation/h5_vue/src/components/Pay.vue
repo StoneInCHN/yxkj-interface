@@ -40,8 +40,18 @@ export default {
       payConfig: {},
       type: this.$store.getters.getType,
       showScrollBox: false,
-      pageInfo: ''
+      pageInfo: '',
+      resInfo: {}
     }
+  },
+  mounted () {
+    window.addEventListener('popstate', (e) => {
+      if (this.type === 'wx') {
+        this.$wechat.closeWindow()
+      } else if (this.type === 'alipay') {
+        window.AlipayJSBridge.call('closeWebview')
+      }
+    }, false)
   },
   computed: {
     goodsItems () {
@@ -84,48 +94,59 @@ export default {
   },
   methods: {
     pay () {
-      let gInfos = []
-      let items = this.goodsItems
-      for (let i = 0; i < items.length; i++) {
-        let str = items[i].gId + '_' + items[i].gCount
-        gInfos.push(str)
-      }
-      let params = {
-        type: this.$store.getters.getType,
-        userName: this.$store.getters.getUserInfo.userId,
-        compId: this.$store.getters.getCompInfo.compId,
-        gInfo: gInfos
-      }
-      this.$api.pay(params).then(res => {
-        if (res && res.code === '0000' && res.msg) {
-          if (this.type === 'wx') {
-            this.$wechat.chooseWXPay({
-              'timestamp': res.msg.timeStamp,
-              'nonceStr': res.msg.nonceStr,
-              'package': res.msg.package,
-              'signType': res.msg.signType, // 注意：新版支付接口使用 MD5 加密
-              'paySign': res.msg.paySign,
-              success: (res) => {
-                this.$router.push('payResult')
-              }
-            })
-          } else if (this.type === 'alipay') {
-            const div = document.createElement('div')
-            div.innerHTML = res.msg.a_page
-            document.body.appendChild(div)
-            document.forms[0].submit()
-          }
-        } else {
-          this.$vux.alert.show({
-            content: '操作失败'
-          })
-          setTimeout(() => {
-            this.$vux.alert.hide()
-          }, 3000)
+      if (this.resInfo) {
+        let gInfos = []
+        let items = this.goodsItems
+        for (let i = 0; i < items.length; i++) {
+          let str = items[i].gId + '_' + items[i].gCount
+          gInfos.push(str)
         }
-      }).catch(error => {
-        console.log(error)
-      })
+        let params = {
+          type: this.$store.getters.getType,
+          userName: this.$store.getters.getUserInfo.userId,
+          compId: this.$store.getters.getCompInfo.compId,
+          gInfo: gInfos
+        }
+        this.$api.pay(params).then(res => {
+          if (res && res.code === '0000' && res.msg) {
+            this.resInfo = res
+            this.goPay(res)
+          } else {
+            this.$vux.alert.show({
+              content: '操作失败'
+            })
+            setTimeout(() => {
+              this.$vux.alert.hide()
+            }, 3000)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      } else {
+        this.goPay(this.resInfo)
+      }
+    },
+    goPay (res) {
+      if (this.type === 'wx') {
+        this.$wechat.chooseWXPay({
+          'timestamp': res.msg.timeStamp,
+          'nonceStr': res.msg.nonceStr,
+          'package': res.msg.package,
+          'signType': res.msg.signType,
+          'paySign': res.msg.paySign,
+          success: (res) => {
+            this.$router.push('payResult')
+          },
+          cancel: (res) => {
+            this.$vux.toast.text('取消了支付')
+          }
+        })
+      } else if (this.type === 'alipay') {
+        const div = document.createElement('div')
+        div.innerHTML = res.msg.a_page
+        document.body.appendChild(div)
+        document.forms[0].submit()
+      }
     }
   }
 }
