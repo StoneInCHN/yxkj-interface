@@ -24,6 +24,9 @@ public class Setting implements Serializable {
 
   /** 密码最小长度 */
   private Integer passwordMinlength;
+  
+  /** maxPageSize */
+  private Integer maxPageSize;
 
   /** 服务器端公钥 */
   private String serverPublicKey;
@@ -413,7 +416,13 @@ public class Setting implements Serializable {
    */
   private String jiupaiNotifyUrl;
 
+  public Integer getMaxPageSize() {
+    return maxPageSize;
+  }
 
+  public void setMaxPageSize(Integer maxPageSize) {
+    this.maxPageSize = maxPageSize;
+  }
 
   public String getJiupaiNotifyUrl() {
     return jiupaiNotifyUrl;

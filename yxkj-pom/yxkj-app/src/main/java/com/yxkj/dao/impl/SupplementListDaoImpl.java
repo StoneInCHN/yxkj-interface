@@ -1,11 +1,115 @@
 package com.yxkj.dao.impl; 
 
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.springframework.stereotype.Repository; 
 
 import com.yxkj.entity.SupplementList;
 import com.yxkj.framework.dao.impl.BaseDaoImpl;
 import com.yxkj.dao.SupplementListDao;
+
 @Repository("supplementListDaoImpl")
 public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> implements SupplementListDao {
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> findWaitSupplyScene(Long suppId, int pageNo, int pageSize) {
+    String jpql = "SELECT s.sn, s.name FROM Scene s WHERE s.cntrKeeper.id = :suppId";
+    Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId)
+        .setFirstResult(pageNo == 1 ? 0 : (pageNo-1)*pageSize-1).setMaxResults(pageSize);
+    
+    return query.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> findCentralVendingContainer(String sceneSn) {
+    String jpql = "SELECT v.id, v.sn FROM VendingContainer v WHERE v.scene.sn = :sceneSn AND v.parent = null";
+    Query query = entityManager.createQuery(jpql).setParameter("sceneSn", sceneSn);
+    
+    return query.getResultList();
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> findChildrenVendingContainer(Long id){
+    String jpql = "SELECT v.id, v.sn FROM VendingContainer v WHERE v.parent.id = :id";
+    Query query = entityManager.createQuery(jpql).setParameter("id", id);
+    
+    return query.getResultList();
+  }
+
+  @Override
+  public Integer findWaitSupplyCount(Long cntrId) {
+    String jpql = "SELECT s.waitSupplyCount FROM SupplementList s WHERE s.cntrId = :cntrId";
+    Query query = entityManager.createQuery(jpql).setParameter("cntrId", cntrId);
+    
+    return (Integer) query.getSingleResult();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> findWaitSupplySceneList(Long suppId) {
+    String jpql = "SELECT DISTINCT s.sceneSn, s.sceneName FROM SupplementList s WHERE s.suppId = :suppId";
+    Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId);
+    return query.getResultList();
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object> findWaitSupplyGoodsCategoryList(Long suppId) {
+    String jpql = "SELECT DISTINCT g.category.cateName FROM Goods g WHERE g.sn IN "
+        + "(SELECT s.goodsSn FROM SupplementList s WHERE s.suppId = :suppId)";
+    Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId);
+    return query.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> findWaitSupplyGoodsList(Long suppId, String sceneSn, String cateName,
+      int pageNo, int pageSize) {
+    String jpql = "SELECT s.goodsSn, s.goodsName, s.waitSupplyCount FROM SupplementList s WHERE s.suppId = :suppId";
+    if(sceneSn!=null && !"".equals(sceneSn))
+      jpql += " AND s.sceneSn = :sceneSn";
+    if(cateName!=null && !"".equals(cateName))
+      jpql += " AND s.goodsSn IN (SELECT g.sn FROM Goods g WHERE g.category.cateName = :cateName)";
+    Query query = entityManager.createQuery(jpql);
+    query.setParameter("suppId", suppId);
+    if(sceneSn!=null && !"".equals(sceneSn))
+      query.setParameter("sceneSn", sceneSn);
+    if(cateName!=null && !"".equals(cateName))
+      query.setParameter("cateName", cateName);
+    query.setFirstResult(pageNo*pageSize-1).setMaxResults(pageSize)
+        .setFirstResult(pageNo == 1 ? 0 : (pageNo-1)*pageSize-1).setMaxResults(pageSize);
+    return query.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> findWaitSupplyGoodsDetails(Long suppId, String goodsSn) {
+    String jpql = "SELECT s.goodsName, s.sceneName, s.waitSupplyCount FROM SupplementList s WHERE s.suppId = :suppId AND s.goodsSn = :goodsSn";
+    Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId).setParameter("goodsSn", goodsSn);
+    return query.getResultList();
+  }
+
+  @Override
+  public Object findGoodsPicByGoodsSn(String goodsSn) {
+    String sql = "SELECT p.source FROM t_goods_image p WHERE p.orders = 0 AND p.goods = (SELECT g.id FROM t_goods g WHERE g.sn = :goodsSn)";
+    Query query = entityManager.createNativeQuery(sql).setParameter("goodsSn", goodsSn);
+    return query.getSingleResult();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> getWaitSupplyContainerGoods(Long suppId, Long cntrId, int pageNo,
+      int pageSize) {
+    String jqpl = "SELECT s.goodsSn, s.goodsName, s.channel.sn, s.waitSupplyCount FROM SupplementList s "
+        + "WHERE s.suppId = :suppId AND s.cntrId = :cntrId";
+    Query query =entityManager.createQuery(jqpl).setParameter("suppId", suppId).setParameter("cntrId", cntrId)
+        .setFirstResult(pageNo == 1 ? 0 : (pageNo-1)*pageSize-1).setMaxResults(pageSize);
+    return query.getResultList();
+  }
 
 }

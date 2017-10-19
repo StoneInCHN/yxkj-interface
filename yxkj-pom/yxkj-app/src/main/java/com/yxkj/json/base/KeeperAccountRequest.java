@@ -79,13 +79,5 @@ public class KeeperAccountRequest {
 	public void setNewPwd(String newPwd) {
 		this.newPwd = newPwd;
 	}
-
-	@Override
-	public String toString() {
-		return "KeeperAccountRequest [userName=" + userName + ", password=" + password + ", cellPhoneNum="
-				+ cellPhoneNum + ", verificationCode=" + verificationCode + ", oldPwd=" + oldPwd + ", newPwd=" + newPwd
-				+ "]";
-	}
-	
 	
 }

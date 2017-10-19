@@ -70,7 +70,8 @@ export default {
       type: '',
       config: {},
       token: '',
-      urlPre: 'http://test.ybjcq.com/h5/shelf'
+      urlPre: 'http://test.ybjcq.com/h5/shelf',
+      hasItems: true
     }
   },
   mounted () {
@@ -116,9 +117,6 @@ export default {
     }
   },
   computed: {
-    onlyOneItem () {
-      return true
-    },
     onlyItem () {
       let item = {}
       if (this.datas && this.datas.length === 1) {
@@ -192,6 +190,11 @@ export default {
               setTimeout(() => {
                 this.$vux.alert.hide()
               }, 3000)
+            }
+          },
+          cancel: (res) => {
+            if (!this.datas || this.datas.length === 0) {
+              this.$wechat.closeWindow()
             }
           }
         })
@@ -282,7 +285,8 @@ export default {
             jsApiList: [
               'scanQRCode',
               'chooseWXPay',
-              'hideAllNonBaseMenuItem'
+              'hideAllNonBaseMenuItem',
+              'closeWindow'
             ]
           })
           this.$wechat.ready(() => {

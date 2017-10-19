@@ -5,7 +5,7 @@ import FastClick from 'fastclick'
 import App from './App'
 import router from './router'
 import store from './store/index'
-import { ConfirmPlugin, WechatPlugin, AlertPlugin, querystring } from 'vux'
+import { ConfirmPlugin, WechatPlugin, AlertPlugin, ToastPlugin, querystring } from 'vux'
 import api from './fetch/api'
 
 Vue.prototype.$api = api
@@ -13,6 +13,7 @@ Vue.prototype.$querystring = querystring
 Vue.use(ConfirmPlugin)
 Vue.use(WechatPlugin)
 Vue.use(AlertPlugin)
+Vue.use(ToastPlugin)
 
 FastClick.attach(document.body)
 

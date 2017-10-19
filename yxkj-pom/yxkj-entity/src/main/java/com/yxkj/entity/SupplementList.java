@@ -3,6 +3,7 @@ package com.yxkj.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -131,11 +132,11 @@ public class SupplementList extends BaseEntity {
     this.suppId = suppId;
   }
 
-
+  @OneToOne
   public ContainerChannel getChannel() {
     return channel;
   }
-
+  
   public void setChannel(ContainerChannel channel) {
     this.channel = channel;
   }

@@ -13,8 +13,8 @@ public class ContainerKeeperDaoImpl extends  BaseDaoImpl<ContainerKeeper,Long> i
 
 	@Override
 	public void updatePassword(String cellPhoneNum, String password) {
-		String jpql = "update ContainerKeeper c set c.loginPwd = ? where c.cellPhoneNum = ?";
-		Query query = entityManager.createQuery(jpql).setParameter(1, password).setParameter(2, cellPhoneNum);
+		String jpql = "update ContainerKeeper c set c.loginPwd = :password where c.cellPhoneNum = :cellPhoneNum";
+		Query query = entityManager.createQuery(jpql).setParameter("password", password).setParameter("cellPhoneNum", cellPhoneNum);
 		query.executeUpdate();
 	}
 
