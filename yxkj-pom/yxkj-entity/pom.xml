@@ -87,6 +87,7 @@
         </dependency>
         <dependency>
             <groupId>com.yxkj</groupId>
+            <version>0.0.10-SNAPSHOT</version>
             <artifactId>common-entity</artifactId>
         </dependency>
         <dependency>
