@@ -1,6 +1,7 @@
 package com.yxkj.shelf.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import com.yxkj.shelf.dao.CompanyDao;
 import com.yxkj.shelf.dao.ShelfOrderDao;
 import com.yxkj.shelf.dao.SnDao;
 import com.yxkj.shelf.dao.TouristDao;
+import com.yxkj.shelf.framework.filter.Filter;
+import com.yxkj.shelf.framework.filter.Filter.Operator;
 import com.yxkj.shelf.framework.service.impl.BaseServiceImpl;
 import com.yxkj.shelf.json.beans.GoodsBean;
 import com.yxkj.shelf.service.ShelfOrderService;
@@ -71,6 +74,7 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
       item.setPrice(gs.getSalePrice());
       item.setCount(goodsBean.getCount());
       item.setgSn(gs.getSn());
+      item.setCostPrice(gs.getCostPrice());
 
       // 计算订单总价
       amount = amount.add(item.getTotalPrice());
@@ -114,5 +118,12 @@ public class ShelfOrderServiceImpl extends BaseServiceImpl<ShelfOrder, Long> imp
   @Override
   public ShelfOrder getShelfOrderBySn(String orderSn) {
     return shelfOrderDao.getShelfOrderBySn(orderSn);
+  }
+
+  @Override
+  public List<ShelfOrder> getShelfOrderByStatus(ShelfOrderStatus status) {
+    List<Filter> filters = new ArrayList<Filter>();
+    filters.add(new Filter("status", Operator.eq, status));
+    return findList(null, filters, null);
   }
 }

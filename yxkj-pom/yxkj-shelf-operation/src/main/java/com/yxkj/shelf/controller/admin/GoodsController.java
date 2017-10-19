@@ -40,7 +40,6 @@ import com.yxkj.shelf.json.base.ResponseOne;
 import com.yxkj.shelf.service.GoodsService;
 import com.yxkj.shelf.utils.ExportHelper;
 import com.yxkj.shelf.utils.FieldFilterUtils;
-import com.yxkj.shelf.utils.HttpServletRequestUtils;
 
 
 /**

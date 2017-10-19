@@ -341,12 +341,12 @@
 			<artifactId>shiro-all</artifactId>
 			
 		</dependency>
-		
+		 --> 
 		<dependency>
 			<groupId>com.octo.captcha</groupId>
 			<artifactId>jcaptcha</artifactId>
 			
-		</dependency> -->
+		</dependency>
 		
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -486,6 +486,7 @@
 			<artifactId>poi</artifactId>
 			<version>3.8</version>
 		</dependency>
+
   </dependencies>
   
     <properties> 
@@ -512,6 +513,7 @@
 				<directory>src/main/java</directory>
 				<includes>
 					<include>*.class</include>
+					<include>**/*.jpg</include>
 				</includes>
 			</resource>
 			<resource>

@@ -2,7 +2,7 @@ package com.yxkj.service;
 
 import java.util.List;
 
-import com.yxkj.entity.CmdMsg;
+import com.yxkj.common.entity.CmdMsg;
 import com.yxkj.entity.Order;
 import com.yxkj.framework.service.BaseService;
 import com.yxkj.json.beans.GoodsBean;

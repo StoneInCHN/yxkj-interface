@@ -34,8 +34,6 @@ import com.yxkj.shelf.framework.paging.Pageable;
 import com.yxkj.shelf.json.admin.request.AdminRequest;
 import com.yxkj.shelf.json.admin.request.CompanyData;
 import com.yxkj.shelf.json.admin.request.CompanyRequest;
-import com.yxkj.shelf.json.admin.request.GoodsData;
-import com.yxkj.shelf.json.admin.request.GoodsRequest;
 import com.yxkj.shelf.json.admin.request.GoodsShelveRow;
 import com.yxkj.shelf.json.admin.response.GoodsProfile;
 import com.yxkj.shelf.json.base.BaseResponse;
@@ -47,7 +45,6 @@ import com.yxkj.shelf.service.CompanyService;
 import com.yxkj.shelf.service.GoodsService;
 import com.yxkj.shelf.service.ShelfCategoryService;
 import com.yxkj.shelf.utils.ExportHelper;
-import com.yxkj.shelf.utils.HttpServletRequestUtils;
 
 
 /**
