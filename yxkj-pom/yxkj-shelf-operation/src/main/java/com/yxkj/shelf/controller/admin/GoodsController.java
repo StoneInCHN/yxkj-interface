@@ -133,12 +133,17 @@ public class GoodsController extends BaseController {
     public @ResponseBody BaseResponse addGoods(@ApiParam @RequestBody GoodsRequest request) {
         BaseResponse response = new BaseResponse(); 
         GoodsData goodsData = request.getGoodsData();
-        if (goodsData != null ) {      	  
+        if (goodsData != null ) {      
+        	if (goodsService.exists(Filter.eq("sn", goodsData.getSn()))) {
+                response.setCode(CommonAttributes.FAIL_COMMON);
+                response.setDesc("商品条码已存在");
+                return response;
+			}
       	    Goods goods = goodsService.getGoodsEntity(goodsData, null);
       	    goodsService.save(goods);
             response.setCode(CommonAttributes.SUCCESS);
             response.setDesc(message("yxkj.request.success"));
-  	  }
+  	  	}
         return response;
     }
     @RequestMapping(value = "/updateGoods", method = RequestMethod.POST)
@@ -148,6 +153,11 @@ public class GoodsController extends BaseController {
         BaseResponse response = new BaseResponse(); 
         GoodsData goodsData = request.getGoodsData();
         if (goodsData != null && request.getId() != null) {
+        	if (goodsService.exists(Filter.eq("sn", goodsData.getSn()),Filter.ne("id", request.getId()))) {
+                response.setCode(CommonAttributes.FAIL_COMMON);
+                response.setDesc("商品条码已存在");
+                return response;
+			}
       	  Goods goods = goodsService.getGoodsEntity(goodsData, request.getId());
       	  goodsService.update(goods);
           response.setCode(CommonAttributes.SUCCESS);
@@ -202,15 +212,14 @@ public class GoodsController extends BaseController {
 		}
         boolean exist = false;
         if (goodsData != null && StringUtils.isNotBlank(goodsData.getSn())) {
-          exist = goodsService.exists(Filter.eq("sn", goodsData.getSn()));
+        	if (request.getId() != null) {
+				exist = goodsService.exists(Filter.eq("sn", goodsData.getSn()),Filter.ne("id", request.getId()));
+			}else {
+				exist = goodsService.exists(Filter.eq("sn", goodsData.getSn()));
+			}
   	    }
-        if (exist) {
-            response.setDesc("true");
-            response.setCode(CommonAttributes.SUCCESS);
-		  }else {
-            response.setDesc("false");
-            response.setCode(CommonAttributes.SUCCESS);
-		  }
+        response.setDesc(exist +"");
+        response.setCode(CommonAttributes.SUCCESS);
         return response;
     }
 }

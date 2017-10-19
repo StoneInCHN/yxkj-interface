@@ -105,7 +105,7 @@ public class CompanyServiceImpl extends BaseServiceImpl<Company,Long> implements
   	  company.setContactPerson(companyData.getContactPerson());
   	  company.setContactPhone(companyData.getContactPhone());
   	  company.setDisplayName(companyData.getDisplayName());
-  	  company.setFullName(companyData.getFullName());
+  	  company.setFullName(companyData.getFullName()+"("+companyData.getDisplayName()+")");
   	  company.setRemark(companyData.getRemark());
   	  List<Long> areas = companyData.getArea();
   	  if (areas != null && areas.size() > 0) {

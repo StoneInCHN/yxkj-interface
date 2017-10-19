@@ -25,4 +25,6 @@ public interface GoodsService extends BaseService<Goods, Long> {
   Goods getGoodsEntity(GoodsData goodsData, Long goodsId);
   
   GoodsData getGoodsData(Goods goods);
+  
+  Goods findBySn(String sn);
 }

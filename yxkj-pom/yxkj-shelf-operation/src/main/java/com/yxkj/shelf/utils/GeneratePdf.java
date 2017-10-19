@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.bcel.generic.NEW;
+
+import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -52,11 +55,11 @@ public class GeneratePdf {
         	BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
           
             //设置字体样式
-            Font textFont = new Font(bfChinese,11,Font.NORMAL); //正常
-            Font boldFont = new Font(bfChinese,11,Font.BOLD); //加粗
+            Font textFont = new Font(bfChinese,9,Font.NORMAL); //正常
+            Font boldFont = new Font(bfChinese,9,Font.BOLD); //加粗
             Font firsetTitleFont = new Font(bfChinese,22,Font.BOLD); //一级标题
 
-            Document doc = new Document(PageSize.A4, 10, 10,10, 10);
+            Document doc = new Document(PageSize.A4, 0, 0,10, 10);
             
             //创建输出流        	
             PdfWriter.getInstance(doc, out);
@@ -64,28 +67,28 @@ public class GeneratePdf {
             doc.open();
             doc.newPage();
             
-            Paragraph p1 = new Paragraph("商品二维码列表", firsetTitleFont);
-            p1.setLeading(50);
-            p1.setAlignment(Element.ALIGN_CENTER);
-            doc.add(p1);
+//            Paragraph p1 = new Paragraph("商品二维码列表", firsetTitleFont);
+//            p1.setLeading(50);
+//            p1.setAlignment(Element.ALIGN_CENTER);
+//            doc.add(p1);
                 
-            p1 = new Paragraph();  
+//            p1 = new Paragraph();  
+//            p1.setLeading(20);
+//            p1.setAlignment(Element.ALIGN_CENTER);
+//            Phrase ph1 = new Phrase(); 
+//            Chunk c3 = new Chunk("公司名称：", textFont) ;
+//            Chunk c33 = new Chunk(companyName, boldFont) ;
+//            ph1.add(c3);
+//            ph1.add(c33);
+//            p1.add(ph1);
+//            doc.add(p1);
+            Paragraph p1 = new Paragraph("   ");
             p1.setLeading(20);
-            p1.setAlignment(Element.ALIGN_CENTER);
-            Phrase ph1 = new Phrase(); 
-            Chunk c3 = new Chunk("公司名称：", textFont) ;
-            Chunk c33 = new Chunk(companyName, boldFont) ;
-            ph1.add(c3);
-            ph1.add(c33);
-            p1.add(ph1);
-            doc.add(p1);
-            p1 = new Paragraph("   ");
-            p1.setLeading(30);
             doc.add(p1);
             
             // 创建一个有4列的表格  
             PdfPTable qrTable = new PdfPTable(4);
-            PdfPCell qrCell = null;
+            PdfPCell cell = null;
             Image img = null;
             for (int i = 0; i < goodsList.size()/4; i++) {
             	for (int j = 0; j < 4; j++) {
@@ -97,27 +100,32 @@ public class GeneratePdf {
         			if (goods.get("spec")!=null) {
         				desc += goods.get("spec").toString();
 					}
-                    qrCell = new PdfPCell(new Phrase(desc, textFont));
-                    qrCell.setMinimumHeight(18); //设置单元格高度
-                    qrCell.setUseAscender(true); //设置可以居中
-                    qrCell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER); //设置水平居中  
-                    qrCell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE); //设置垂直居中
-                    qrTable.addCell(qrCell); 
+                    cell = new PdfPCell(new Phrase(desc, textFont));
+                    qrTable.addCell(setCommonStyle(cell, 12)); 
+				}
+            	for (int j = 0; j < 4; j++) {  
+            		String shortName = getShortStr(companyName, 6);
+                    cell = new PdfPCell(new Phrase(shortName, textFont));
+                    qrTable.addCell(setCommonStyle(cell, 12)); 
 				}
             	for (int j = 0; j < 4; j++) {
             		Map<String,Object> goods = goodsList.get(i*4 + j);                    
                     String content = projectDeployUrl+"/h5/shelf/"+companyId+"/"+goods.get("sn");  
                     System.out.println(content);
                     QRCodeGenerator qr = new QRCodeGenerator();
-                    img = Image.getInstance(qr.generateQrImage(content));
-                    qrCell= new PdfPCell(img);
-                    qrCell.setMinimumHeight(120); //设置单元格高度
-                    qrCell.setUseAscender(true); //设置可以居中
-                    qrCell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER); //设置水平居中
-                    qrCell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE); //设置垂直居中
-                    qrTable.addCell(qrCell); 
+                    img = Image.getInstance(qr.generateQrImage(content));                    
+                    cell= new PdfPCell(img);
+                    qrTable.addCell(setCommonStyle(cell, 60)); 
 				}
-
+            	for (int j = 0; j < 4; j++) {  
+            		Map<String,Object> goods = goodsList.get(i*4 + j);
+        			String salePrice = "";
+        			if (goods.get("salePrice")!=null) {
+        				salePrice += "￥"+goods.get("salePrice").toString();
+					}
+                    cell = new PdfPCell(new Phrase(salePrice, textFont));
+                    qrTable.addCell(setCommonStyle(cell, 35)); 
+				}
 			}
             if (goodsList.size()%4 > 0) {
             	int left = goodsList.size()%4;
@@ -132,34 +140,47 @@ public class GeneratePdf {
             			if (goods.get("spec")!=null) {
             				desc += goods.get("spec").toString();
 						}
-            			//String desc = goods.get("name")!=null?goods.get("name").toString():""+goods.get("spec")!=null?goods.get("spec").toString():"";
-                        qrCell = new PdfPCell(new Phrase(desc, textFont));
+                        cell = new PdfPCell(new Phrase(desc, textFont));
 					}else {
-	                    qrCell = new PdfPCell(new Phrase(" ", textFont));
+	                    cell = new PdfPCell(new Phrase(" ", textFont));
 					}
-                    qrCell.setMinimumHeight(18); //设置单元格高度
-                    qrCell.setUseAscender(true); //设置可以居中
-                    qrCell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER); //设置水平居中  
-                    qrCell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE); //设置垂直居中
-                    qrTable.addCell(qrCell); 
+                    qrTable.addCell(setCommonStyle(cell, 12)); 
+				}
+            	for (int j = 0; j < 4; j++) {  
+            		if (j<left) {
+                		String shortName = getShortStr(companyName, 6);
+                        cell = new PdfPCell(new Phrase(shortName, textFont));
+					}else {
+	                    cell = new PdfPCell(new Phrase(" ", textFont));
+					}
+
+                    qrTable.addCell(setCommonStyle(cell, 12)); 
 				}
             	for (int j = 0; j < 4; j++) {
             		if (j<left) {
             			Map<String,Object> goods = goodsList.get(level*4 + j); 
-                        //String content = "{\"companySn\":\"" + companySn + "\",\"goodsSn\":\"" + goods.get("sn") + "\"}";//二维码格式  待定????
                         String content = projectDeployUrl+"/h5/shelf/"+companyId+"/"+goods.get("sn");  
                         System.out.println(content);
                         QRCodeGenerator qr = new QRCodeGenerator();
                         img = Image.getInstance(qr.generateQrImage(content));
-                        qrCell= new PdfPCell(img);
+                        cell= new PdfPCell(img);
 					}else {
-	                    qrCell = new PdfPCell(new Phrase(" ", textFont));
-					}                  
-                    qrCell.setMinimumHeight(120); //设置单元格高度
-                    qrCell.setUseAscender(true); //设置可以居中
-                    qrCell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER); //设置水平居中
-                    qrCell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE); //设置垂直居中
-                    qrTable.addCell(qrCell); 
+	                    cell = new PdfPCell(new Phrase(" ", textFont));
+					}      
+                    qrTable.addCell(setCommonStyle(cell, 60)); 
+				}
+            	for (int j = 0; j < 4; j++) {
+            		if (j<left) {
+            			Map<String,Object> goods = goodsList.get(level*4 + j); 
+            			String salePrice = "";
+            			if (goods.get("salePrice")!=null) {
+            				salePrice += "￥"+goods.get("salePrice").toString();
+    					}
+                        cell = new PdfPCell(new Phrase(salePrice, textFont)); 
+					}else {
+	                    cell = new PdfPCell(new Phrase(" ", textFont));
+					}
+                    qrTable.addCell(setCommonStyle(cell, 35)); 
 				}
 			}
             
@@ -176,21 +197,40 @@ public class GeneratePdf {
 
     }
 
+    private String getShortStr(String str, int length) {
+		if (str.length() > length) {
+			return "("+str.substring(0, 6)+ "...)";
+		}
+		return "("+str+")";
+	}
+
+	private PdfPCell setCommonStyle(PdfPCell cell, float height) {
+    	cell.disableBorderSide(1);
+    	cell.disableBorderSide(2);
+    	cell.disableBorderSide(4);
+    	cell.disableBorderSide(8);
+    	cell.setMinimumHeight(height); //设置单元格高度
+    	cell.setUseAscender(true); //设置可以居中
+    	cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER); //设置水平居中  
+    	//cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE); //设置垂直居中
+        return cell;
+	}
 
     public static void main(String[] args) {
 
         try {
         	List<Map<String,Object>> goodsList = new ArrayList<Map<String,Object>>();
         	Map<String,Object> map = new HashMap<String, Object>();
-        	for (int i = 0; i < 23; i++) {
+        	for (int i = 0; i < 53; i++) {
         		map.put("id", "1");
             	map.put("sn", "100001");
-            	map.put("name", "旺仔小馒头");
+            	map.put("name", "江中猴姑早餐米西 原味");
             	map.put("spec", "80g");
+            	map.put("salePrice", new BigDecimal("12.5"));
             	goodsList.add(map);
         	}
         	OutputStream out = new FileOutputStream(new File("E:\\商品二维码.pdf"));
-            GeneratePdf gp = new GeneratePdf("XXXX有限公司","1",goodsList,out,"http://test.ybjcq.com");
+            GeneratePdf gp = new GeneratePdf("全成首位科技有限公司","1",goodsList,out,"http://test.ybjcq.com");
             gp.generatePdf();
         } catch (Exception e) {
             e.printStackTrace();
