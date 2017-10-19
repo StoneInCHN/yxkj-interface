@@ -87,7 +87,7 @@ public class CompanyController extends BaseController {
               filters.add(Filter.like("sn", "%"+companyData.getSn().trim()+"%"));
           }
           if (StringUtils.isNotBlank(companyData.getDisplayName())) {
-              filters.add(Filter.like("displayName", "%"+companyData.getDisplayName().trim()+"%"));
+              filters.add(Filter.like("fullName", "%"+companyData.getDisplayName().trim()+"%"));
           }
 	  }
       List<Ordering> orderings = pageable.getOrderings();
@@ -248,7 +248,7 @@ public class CompanyController extends BaseController {
           filters.add(Filter.like("sn", "%"+sn.trim()+"%"));
       }
       if (displayName != null) {
-          filters.add(Filter.like("displayName", "%"+displayName.trim()+"%"));
+          filters.add(Filter.like("fullName", "%"+displayName.trim()+"%"));
       }		
       List<Company> lists = companyService.findList(null, filters, orders); 
       
