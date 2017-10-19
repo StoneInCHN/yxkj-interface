@@ -5,6 +5,8 @@ public class LoginRequest extends AdminRequest{
 	private String captcha;
 	
 	private String captchaId;
+	
+	private boolean autoLogin;
 
 	public String getCaptcha() {
 		return captcha;
@@ -21,7 +23,13 @@ public class LoginRequest extends AdminRequest{
 	public void setCaptchaId(String captchaId) {
 		this.captchaId = captchaId;
 	}
-	
-	
+
+	public boolean isAutoLogin() {
+		return autoLogin;
+	}
+
+	public void setAutoLogin(boolean autoLogin) {
+		this.autoLogin = autoLogin;
+	}
 	
 }

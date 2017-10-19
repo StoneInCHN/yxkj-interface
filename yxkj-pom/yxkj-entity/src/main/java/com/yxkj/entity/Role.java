@@ -1,7 +1,7 @@
 package com.yxkj.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +45,7 @@ public class Role extends BaseEntity {
 //  private List<String> authorities = new ArrayList<String>();
   
   /** 菜单权限列表 */
-  private Set<MenuAuthority> authorities = new HashSet<MenuAuthority>();
+  private List<MenuAuthority> authorities = new ArrayList<MenuAuthority>();
   
 
   /**
@@ -109,6 +109,8 @@ public class Role extends BaseEntity {
   public void setDescription(String description) {
     this.description = description;
   }
+
+
   
   /**
    * 获取菜单权限
@@ -117,14 +119,11 @@ public class Role extends BaseEntity {
   @JsonProperty
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "t_role_authority")  
-  public Set<MenuAuthority> getAuthorities() {
+  public List<MenuAuthority> getAuthorities() {
 	return authorities;
   }
-  /**
-   * 设置菜单权限
-   * @param authorities 菜单权限
-   */
-  public void setAuthorities(Set<MenuAuthority> authorities) {
+
+  public void setAuthorities(List<MenuAuthority> authorities) {
 	this.authorities = authorities;
   }
 

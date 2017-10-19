@@ -13,10 +13,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
@@ -52,7 +50,6 @@ import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.beans.Setting.CaptchaType;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.controller.base.BaseController;
-import com.yxkj.shelf.json.admin.request.AdminRequest;
 import com.yxkj.shelf.json.admin.request.CompanyGoods;
 import com.yxkj.shelf.json.admin.request.LoginRequest;
 import com.yxkj.shelf.json.base.BaseRequest;
@@ -150,13 +147,14 @@ public class CommonController extends BaseController {
     String password = loginRequest.getPassword();
     String captcha = loginRequest.getCaptcha();   
     String captchaId = loginRequest.getCaptchaId();
+    boolean autoLogin = loginRequest.isAutoLogin();
     if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password) 
     		|| StringUtils.isEmpty(captcha) || StringUtils.isEmpty(captchaId)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
       response.setDesc(message("yxkj.request.param.missing"));
       return response;
     }
-    if (!captchaService.isValid(CaptchaType.adminLogin, captchaId, captcha)) {
+    if (!autoLogin && !captchaService.isValid(CaptchaType.adminLogin, captchaId, captcha)) {
         response.setCode(CommonAttributes.FAIL_LOGIN);
         response.setDesc(message("yxkj.admin.userName.captcha.error"));
         LogUtil.debug(this.getClass(), "login", "验证码错误");
@@ -194,7 +192,7 @@ public class CommonController extends BaseController {
 
     // 因为货架后台没有管理角色权限的功能，暂时写死 start
     /** 菜单权限列表 */
-    Set<MenuAuthority> authorities = new HashSet<MenuAuthority>();
+    List<MenuAuthority> authorities = new ArrayList<MenuAuthority>();
     MenuAuthority home =
         new MenuAuthority("首页", "/dashboard", "speedometer", "Dashboard", null, null, null);
     MenuAuthority order =
