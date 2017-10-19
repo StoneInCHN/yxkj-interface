@@ -9,11 +9,11 @@ import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import com.yxkj.commonenum.CommonEnum;
+import com.yxkj.common.commonenum.CommonEnum;
+import com.yxkj.common.entity.CmdMsg;
 import org.springframework.stereotype.Repository;
 
 import com.yxkj.dao.OrderDao;
-import com.yxkj.entity.CmdMsg;
 import com.yxkj.entity.Order;
 import com.yxkj.framework.dao.impl.BaseDaoImpl;
 
@@ -34,6 +34,7 @@ public class OrderDaoImpl extends BaseDaoImpl<Order, Long> implements OrderDao {
         " from t_order tOrder, t_order_item orderItem, t_cntr_channel channel,t_vending_container container ,t_cntr_category category");
     stringBuffer.append(
         " where orderItem.cntr_id = container.id and orderItem.channel_sn = channel.sn  and orderItem.user_order = tOrder.id and container.category =category.id ");
+    // stringBuffer.append(" orderItem.shipment_status = 0");
     stringBuffer.append(" and tOrder.id = ");
     stringBuffer.append(orderId);
     Query query =
@@ -47,7 +48,8 @@ public class OrderDaoImpl extends BaseDaoImpl<Order, Long> implements OrderDao {
       CmdMsg cmdMsg = new CmdMsg();
       cmdMsg.setContent(contentMap);
       cmdMsg.setAddress(String.valueOf(array[1]));
-      cmdMsg.setType(CommonEnum.CmdType.values()[(int) array[2]]);
+      cmdMsg.setAddressType((Integer) array[2]);
+      cmdMsg.setType(CommonEnum.CmdType.SELL_OUT);
       String channelSn = String.valueOf(array[3]);
       cmdMsg.setBox(Integer.parseInt(channelSn.substring(1, channelSn.length())));
       cmdMsg.setDeviceNo((String) array[4]);

@@ -10,8 +10,6 @@
 	<description>yxkj-pom</description>
 
 	<url>http://maven.apache.org</url>
-
-	 
 	<repositories>
 		<repository>
 			<id>nexus</id>
@@ -464,12 +462,12 @@
 	        </dependency>
 			<dependency>
 				<groupId>com.yxkj</groupId>
-				<version>0.0.8-SNAPSHOT</version>
+				<version>0.0.9-SNAPSHOT</version>
 				<artifactId>common-entity</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>com.yxkj</groupId>
-				<version>0.0.5-SNAPSHOT</version>
+				<version>0.0.6-SNAPSHOT</version>
 				<artifactId>receiver-sdk</artifactId>
 			</dependency>
 			<dependency>
@@ -483,7 +481,6 @@
 
 	<modules>
 		<module>yxkj-entity</module>
-		<!-- <module>common-entity</module> -->
 		<module>yxkj-app</module>
 		<module>yxkj-operation</module>
 		<module>yxkj-machine</module>

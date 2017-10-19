@@ -6,18 +6,18 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.yxkj.commonenum.CommonEnum;
+import com.yxkj.common.client.ReceiverClient;
+import com.yxkj.common.commonenum.CommonEnum;
+import com.yxkj.common.entity.CmdMsg;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yxkj.client.ReceiverClient;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.dao.OrderDao;
 import com.yxkj.dao.SceneDao;
 import com.yxkj.dao.SnDao;
 import com.yxkj.dao.TouristDao;
-import com.yxkj.entity.CmdMsg;
 import com.yxkj.entity.ContainerChannel;
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.Order;

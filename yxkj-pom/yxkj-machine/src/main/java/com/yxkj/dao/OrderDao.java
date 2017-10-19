@@ -2,7 +2,7 @@ package com.yxkj.dao;
 
 import java.util.List;
 
-import com.yxkj.entity.CmdMsg;
+import com.yxkj.common.entity.CmdMsg;
 import com.yxkj.entity.Order;
 import com.yxkj.framework.dao.BaseDao;
 
@@ -18,7 +18,7 @@ public interface OrderDao extends BaseDao<Order, Long> {
   /**
    * 出货
    * 
-   * @param order
+   * @param orderId
    */
   List<CmdMsg> salesOut(Long orderId);
 }

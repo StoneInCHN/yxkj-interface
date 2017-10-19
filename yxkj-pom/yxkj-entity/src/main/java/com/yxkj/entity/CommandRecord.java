@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.yxkj.commonenum.CommonEnum;
+import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.entity.base.BaseEntity;
 
 /**

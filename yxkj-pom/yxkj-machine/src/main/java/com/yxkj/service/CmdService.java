@@ -1,6 +1,6 @@
 package com.yxkj.service;
 
-import com.yxkj.commonenum.CommonEnum;
+import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.entity.CommandRecord;
 import com.yxkj.framework.service.BaseService;
 

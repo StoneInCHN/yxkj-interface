@@ -2,7 +2,7 @@ package com.yxkj.service.impl;
 
 import javax.annotation.Resource;
 
-import com.yxkj.commonenum.CommonEnum;
+import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.service.OrderItemService;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import com.yxkj.dao.CommandRecordDao;
 import com.yxkj.service.CommandRecordService;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
 
-import static com.yxkj.commonenum.CommonEnum.CmdType.SELL_OUT;
+import static com.yxkj.common.commonenum.CommonEnum.CmdType.SELL_OUT;
 import static com.yxkj.entity.commonenum.CommonEnum.ShipmentStatus.SHIPMENT_FAIL;
 import static com.yxkj.entity.commonenum.CommonEnum.ShipmentStatus.SHIPMENT_SUCCESS;
 
