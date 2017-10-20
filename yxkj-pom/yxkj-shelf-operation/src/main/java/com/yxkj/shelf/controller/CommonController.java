@@ -421,29 +421,31 @@ public class CommonController extends BaseController {
   // }
   // }
   private boolean isValidGoodsRow(Map<String, Object> rowMap) {
-	if (rowMap.get("sn") != null) {
+	if (rowMap.get("sn") != null && StringUtils.isNotBlank(rowMap.get("sn").toString())) {
 		if (goodsService.exists(Filter.eq("sn", rowMap.get("sn").toString()))) {
 			rowMap.put("sn", rowMap.get("sn")+"(商品条码已存在)");
 			return false;
 		}
-		if (rowMap.get("name") == null) {
-			rowMap.put("sn", rowMap.get("sn")+"(商品名称)");
+		if (rowMap.get("name") == null || StringUtils.isBlank(rowMap.get("name").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(商品名称缺失)");
 			return false;
 		}
-		if (rowMap.get("spec") == null) {
+		if (rowMap.get("spec") == null || StringUtils.isBlank(rowMap.get("spec").toString())) {
 			rowMap.put("sn", rowMap.get("sn")+"(净含量缺失)");
 			return false;
 		}
-		if (rowMap.get("costPrice") == null) {
+		if (rowMap.get("costPrice") == null || StringUtils.isBlank(rowMap.get("costPrice").toString())) {
 			rowMap.put("sn", rowMap.get("sn")+"(成本价缺失)");
 			return false;
 		}
-		if (rowMap.get("salePrice") == null) {
+		if (rowMap.get("salePrice") == null || StringUtils.isBlank(rowMap.get("salePrice").toString())) {
 			rowMap.put("sn", rowMap.get("sn")+"(售价价缺失)");
 			return false;
 		}
 		if (rowMap.get("name") != null && rowMap.get("spec") != null
-		        && rowMap.get("costPrice") != null && rowMap.get("salePrice") != null) {
+		        && rowMap.get("costPrice") != null && rowMap.get("salePrice") != null 
+		        && StringUtils.isNotBlank(rowMap.get("name").toString()) && StringUtils.isNotBlank(rowMap.get("spec").toString())
+		        && StringUtils.isNotBlank(rowMap.get("costPrice").toString()) && StringUtils.isNotBlank(rowMap.get("salePrice").toString())) {
 			return true;
 		}
 	}

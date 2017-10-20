@@ -221,10 +221,10 @@ public class GeneratePdf {
         try {
         	List<Map<String,Object>> goodsList = new ArrayList<Map<String,Object>>();
         	Map<String,Object> map = new HashMap<String, Object>();
-        	for (int i = 0; i < 53; i++) {
+        	for (int i = 0; i < 16; i++) {
         		map.put("id", "1");
             	map.put("sn", "100001");
-            	map.put("name", "江中猴姑早餐米西 原味");
+            	map.put("name", "江中猴姑早餐米西 原味早餐米西 原味");
             	map.put("spec", "80g");
             	map.put("salePrice", new BigDecimal("12.5"));
             	goodsList.add(map);
