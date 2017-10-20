@@ -39,6 +39,8 @@ public class GeneratePdf {
 	private List<Map<String,Object>> goodsList;
 	private OutputStream out;
 	private String projectDeployUrl;	
+	private final int saleBottom = 30;
+	private final int descHeight = 22;
 	
 	public GeneratePdf(String companyName,String companyId,List<Map<String,Object>> goodsList,OutputStream out,String projectDeployUrl){
 		this.companyName = companyName;
@@ -82,9 +84,9 @@ public class GeneratePdf {
 //            ph1.add(c33);
 //            p1.add(ph1);
 //            doc.add(p1);
-            Paragraph p1 = new Paragraph("   ");
-            p1.setLeading(20);
-            doc.add(p1);
+//            Paragraph p1 = new Paragraph("   ");
+//            p1.setLeading(20);
+//            doc.add(p1);
             
             // 创建一个有4列的表格  
             PdfPTable qrTable = new PdfPTable(4);
@@ -94,17 +96,17 @@ public class GeneratePdf {
             	for (int j = 0; j < 4; j++) {
             		Map<String,Object> goods = goodsList.get(i*4 + j);   
         			String desc = "";
-        			if (goods.get("name")!=null) {
-        				desc += goods.get("name").toString();
+        			if (goods.get("name") != null) {
+        				desc += getShortStr(goods.get("name").toString(), 16, false);
 					}
-        			if (goods.get("spec")!=null) {
+        			if (goods.get("spec") != null) {
         				desc += goods.get("spec").toString();
 					}
                     cell = new PdfPCell(new Phrase(desc, textFont));
-                    qrTable.addCell(setCommonStyle(cell, 12)); 
+                    qrTable.addCell(setCommonStyle(cell, descHeight)); 
 				}
             	for (int j = 0; j < 4; j++) {  
-            		String shortName = getShortStr(companyName, 6);
+            		String shortName = getShortStr(companyName, 6, true);
                     cell = new PdfPCell(new Phrase(shortName, textFont));
                     qrTable.addCell(setCommonStyle(cell, 12)); 
 				}
@@ -124,7 +126,7 @@ public class GeneratePdf {
         				salePrice += "￥"+goods.get("salePrice").toString();
 					}
                     cell = new PdfPCell(new Phrase(salePrice, textFont));
-                    qrTable.addCell(setCommonStyle(cell, 35)); 
+                    qrTable.addCell(setCommonStyle(cell, saleBottom)); 
 				}
 			}
             if (goodsList.size()%4 > 0) {
@@ -135,7 +137,7 @@ public class GeneratePdf {
             			Map<String,Object> goods = goodsList.get(level*4 + j); 
             			String desc = "";
             			if (goods.get("name")!=null) {
-            				desc += goods.get("name").toString();
+            				desc += getShortStr(goods.get("name").toString(), 16, false);
 						}
             			if (goods.get("spec")!=null) {
             				desc += goods.get("spec").toString();
@@ -144,11 +146,11 @@ public class GeneratePdf {
 					}else {
 	                    cell = new PdfPCell(new Phrase(" ", textFont));
 					}
-                    qrTable.addCell(setCommonStyle(cell, 12)); 
+                    qrTable.addCell(setCommonStyle(cell, descHeight)); 
 				}
             	for (int j = 0; j < 4; j++) {  
             		if (j<left) {
-                		String shortName = getShortStr(companyName, 6);
+                		String shortName = getShortStr(companyName, 6, true);
                         cell = new PdfPCell(new Phrase(shortName, textFont));
 					}else {
 	                    cell = new PdfPCell(new Phrase(" ", textFont));
@@ -180,7 +182,7 @@ public class GeneratePdf {
 					}else {
 	                    cell = new PdfPCell(new Phrase(" ", textFont));
 					}
-                    qrTable.addCell(setCommonStyle(cell, 35)); 
+                    qrTable.addCell(setCommonStyle(cell, saleBottom)); 
 				}
 			}
             
@@ -197,11 +199,18 @@ public class GeneratePdf {
 
     }
 
-    private String getShortStr(String str, int length) {
-		if (str.length() > length) {
-			return "("+str.substring(0, 6)+ "...)";
+    private String getShortStr(String str, int length, boolean tag) {
+    	if (tag) {
+    		if (str.length() > length) {
+    			return "("+str.substring(0, length)+ "...)";
+    		}
+    		return "("+str+")";
+		}else {
+			if (str.length() > length) {
+				return str.substring(0, length)+ "...";
+			}
+			return str;
 		}
-		return "("+str+")";
 	}
 
 	private PdfPCell setCommonStyle(PdfPCell cell, float height) {
@@ -221,10 +230,10 @@ public class GeneratePdf {
         try {
         	List<Map<String,Object>> goodsList = new ArrayList<Map<String,Object>>();
         	Map<String,Object> map = new HashMap<String, Object>();
-        	for (int i = 0; i < 16; i++) {
+        	for (int i = 0; i < 134; i++) {
         		map.put("id", "1");
             	map.put("sn", "100001");
-            	map.put("name", "江中猴姑早餐米西 原味早餐米西 原味");
+            	map.put("name", "我喜欢出发我喜欢出发我喜欢出发我喜欢出发我喜欢出发我喜欢出发我喜欢出发");
             	map.put("spec", "80g");
             	map.put("salePrice", new BigDecimal("12.5"));
             	goodsList.add(map);
@@ -235,6 +244,8 @@ public class GeneratePdf {
         } catch (Exception e) {
             e.printStackTrace();
         }
+//    	String string = "　";
+//    	System.out.println(string.length());
 
     }
 
