@@ -90,6 +90,7 @@ public class BaseEntity implements Serializable {
    * 
    * @return 创建日期
    */
+  @JsonProperty
   @Column(nullable = false, updatable = false)
   @Field(index = Index.YES, store = Store.NO, analyze = Analyze.NO)
   @FieldBridge(impl = DateBridgeImpl.class)

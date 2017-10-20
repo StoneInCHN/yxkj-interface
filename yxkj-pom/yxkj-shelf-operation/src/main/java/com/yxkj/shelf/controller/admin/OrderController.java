@@ -80,12 +80,19 @@ public class OrderController extends BaseController {
           if (shelfOrderData.getStatus() != null && shelfOrderData.getStatus().length > 0) {
         	  filters.add(Filter.in("status", shelfOrderData.getStatus()));
 		  }
+//          if (shelfOrderData.getBeginDate() != null) {
+//              filters.add(Filter.ge("paymentTime", TimeUtils.formatDate2Day0(shelfOrderData.getBeginDate())));
+//          }
+//          if (shelfOrderData.getEndDate() != null) {
+//              filters.add(Filter.lt("paymentTime", TimeUtils.formatDate2Day59(shelfOrderData.getEndDate())));
+//          }
           if (shelfOrderData.getBeginDate() != null) {
-              filters.add(Filter.ge("paymentTime", TimeUtils.formatDate2Day0(shelfOrderData.getBeginDate())));
-            }
-            if (shelfOrderData.getEndDate() != null) {
-              filters.add(Filter.lt("paymentTime", TimeUtils.formatDate2Day59(shelfOrderData.getEndDate())));
-            }
+              filters.add(Filter.ge("createDate", TimeUtils.formatDate2Day0(shelfOrderData.getBeginDate())));
+          }
+          if (shelfOrderData.getEndDate() != null) {
+              filters.add(Filter.lt("createDate", TimeUtils.formatDate2Day59(shelfOrderData.getEndDate())));
+          }          
+          
 	  }
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
@@ -93,7 +100,7 @@ public class OrderController extends BaseController {
       Page<ShelfOrder> orderPage = shelfOrderService.findPage(pageable);      
       String[] propertys =
           {"id", "sn", "tourist.userName", "tourist.nickName", "paymentType", 
-    		  "paymentTime", "amount", "profit", "status", "goodsCount", "comp.sn", "comp.displayName"};
+    		  "paymentTime", "createDate", "amount", "profit", "status", "goodsCount", "comp.sn", "comp.displayName"};
       List<Map<String, Object>> result =
           FieldFilterUtils.filterCollection(propertys, orderPage.getContent());
       PageResponse pageInfo = new PageResponse(pageable.getPageNumber(), 
