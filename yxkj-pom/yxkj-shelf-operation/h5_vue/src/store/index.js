@@ -9,39 +9,21 @@ export default new Vuex.Store({
     init: true,
     goodItems: [],
     totalPrice: 0,
-    isWXBrowser: false,
-    isZFBBrowser: false,
     type: '',
     userInfo: {},
-    compInfo: {},
-    wxConfig: {
-      debug: false,
-      appId: 'wx3598eb401cb80f00',
-      timestamp: 1506690795,
-      nonceStr: 'H0pUJ8NF3yUTIuuR',
-      signature: '2fcc888479538bc8065edea20d600b4a26ae2582',
-      jsApiList: [
-        'checkJsApi',
-        'scanQRCode',
-        'chooseWXPay'
-      ]
-    }
+    compInfo: {}
   },
   mutations: {
     setTotalPrice (state, {totalPrice}) {
       state.totalPrice = totalPrice
     },
-    setIsWXBrowser (state, {isWXBrowser}) {
-      state.isWXBrowser = isWXBrowser
-    },
-    setIsZFBBrowser (state, {isZFBBrowser}) {
-      state.isZFBBrowser = isZFBBrowser
-    },
     setGoodItems (state, {goodItems}) {
+      console.log('--------------')
+      if (goodItems && goodItems.length > 1) {
+        let items = JSON.stringify(goodItems)
+        sessionStorage.items = items
+      }
       state.goodItems = goodItems
-    },
-    setAccessToken (state, {accessToken}) {
-      state.accessToken = accessToken
     },
     setUserInfo (state, {userInfo}) {
       state.userInfo = userInfo
@@ -63,15 +45,6 @@ export default new Vuex.Store({
     getGoodItems (state) {
       return state.goodItems
     },
-    getIsZFBBrowser (state) {
-      return state.isZFBBrowser
-    },
-    getIsWXBrowser (state) {
-      return state.isWXBrowser
-    },
-    getAccessToken (state) {
-      return state.accessToken
-    },
     getWxConfig (state) {
       return state.wxConfig
     },
@@ -92,16 +65,7 @@ export default new Vuex.Store({
     setTotalPrice (context, payload) {
       context.commit('setTotalPrice', payload)
     },
-    setIsWXBrowser (context, payload) {
-      context.commit('setIsWXBrowser', payload)
-    },
-    setIsZFBBrowser (context, payload) {
-      context.commit('setIsZFBBrowser', payload)
-    },
     setGoodItems (context, payload) {
-      context.commit('setGoodItems', payload)
-    },
-    setAccessToken (context, payload) {
       context.commit('setGoodItems', payload)
     },
     setUserInfo (context, payload) {
@@ -110,8 +74,8 @@ export default new Vuex.Store({
     setCompInfo (context, payload) {
       context.commit('setCompInfo', payload)
     },
-    setToken (context, payload) {
-      context.commit('setToken', payload)
+    setToken (context, {token}) {
+      context.commit('setToken', {token})
     },
     setType (context, payload) {
       context.commit('setType', payload)
