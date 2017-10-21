@@ -163,7 +163,11 @@ public class BaseController {
 		  RuntimeException runtimeException) {
 	  
     BaseResponse response = new BaseResponse();
-    response.setCode(CommonAttributes.FAIL_COMMON);
+    if (runtimeException.getMessage().indexOf("Token") >= 0) {
+    	response.setCode(CommonAttributes.FAIL_TOKEN_TIMEOUT);
+	}else {
+		response.setCode(CommonAttributes.FAIL_COMMON);
+	}    
     response.setDesc(runtimeException.getMessage());
     
     String responseResult = JSONObject.toJSONString(response);

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -150,9 +151,21 @@ public class CompanyController extends BaseController {
     public @ResponseBody BaseResponse deleteCompany(@ApiParam @RequestBody AdminRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getIds() != null && request.getIds().length > 0) {
-    	  companyService.deleteCompany(request.getIds());
+    	  try {
+    		  companyService.deleteCompany(request.getIds());
+    	  } catch (Exception e) {
+    		  if (e.getCause() instanceof ConstraintViolationException) {
+    			  response.setCode(CommonAttributes.FAIL_COMMON);
+    			  response.setDesc("不能删除有订单记录的公司！");
+			  }else {
+	    		  response.setCode(CommonAttributes.FAIL_COMMON);              
+	              response.setDesc(message("yxkj.request.failed"));
+			  }
+    		  return response;
+    	  }    	  
+    	  //companyService.delete(request.getIds());
           response.setCode(CommonAttributes.SUCCESS);
-          response.setDesc(message("yxkj.request.success"));
+          response.setDesc("删除成功！");
 	  }else {
           response.setCode(CommonAttributes.FAIL_COMMON);
           response.setDesc(message("yxkj.request.failed"));
