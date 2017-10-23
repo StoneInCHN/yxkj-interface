@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -47,10 +48,10 @@ import com.yxkj.framework.paging.Pageable;
 
 public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 
-  /** 实体类类型 */
+  /** 瀹炰綋绫荤被鍨?*/
   private Class<T> entityClass;
 
-  /** 别名数 */
+  /** 鍒悕鏁?*/
   private static volatile long aliasCount = 0;
 
   @PersistenceContext
@@ -231,7 +232,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     }
     long total = count(criteriaQuery, null);
     /**
-     * 注释，用于手机接口，如果传入的pageNumber大于总页数，不做处理
+     * 娉ㄩ噴锛岀敤浜庢墜鏈烘帴鍙ｏ紝濡傛灉浼犲叆鐨刾ageNumber澶т簬鎬婚〉鏁帮紝涓嶅仛澶勭悊
      * 
      * @author sujinxuan
      */
@@ -345,19 +346,44 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
       if (filter == null || StringUtils.isEmpty(filter.getProperty())) {
         continue;
       }
+	//    if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
+	//    if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
+	//        && filter.getValue() instanceof String) {
+      		//zhanglu:杩欓噷閫昏緫杩樻湁闂锛屽鏋渆q鐨勬槸瀛楃涓插苟涓斾笉浼爄gnoreCase锛屽叾瀹炴槸璧颁笉杩涜繖涓猧f鏉′欢鐨勶紝璧扮殑鏄痚lse閲岄潰鍘绘瘮杈僥q瀵硅薄
+	//      restrictions =
+	//          criteriaBuilder.and(restrictions, criteriaBuilder.equal(
+	//              criteriaBuilder.lower(root.<String>get(filter.getProperty())),
+	//              ((String) filter.getValue()).toLowerCase()));
+	//    } else {
+	//      restrictions =
+	//          criteriaBuilder.and(restrictions,
+	//              criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+	//    }
+	//  }
+      //zhanglu:2017-10-14 start
       if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
-        if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
-            && filter.getValue() instanceof String) {
+          if (filter.getValue() instanceof String) {
+            Path<String> path = getPath(root,filter.getProperty());
+            if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
           restrictions =
               criteriaBuilder.and(restrictions, criteriaBuilder.equal(
-                  criteriaBuilder.lower(root.<String>get(filter.getProperty())),
+                      criteriaBuilder.lower(path),
                   ((String) filter.getValue()).toLowerCase()));
         } else {
           restrictions =
+                  criteriaBuilder.and(restrictions, criteriaBuilder.equal(path,
+                      ((String) filter.getValue())));
+            }
+          } else {
+            Path<Object> path = getPath(root,filter.getProperty());
+            restrictions =
               criteriaBuilder.and(restrictions,
-                  criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+                    criteriaBuilder.equal(path, filter.getValue()));
         }
-      } else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
+        }
+      //zhanglu:2017-10-14 end
+      
+      else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
         if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
             && filter.getValue() instanceof String) {
           restrictions =
@@ -370,17 +396,19 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
                   criteriaBuilder.notEqual(root.get(filter.getProperty()), filter.getValue()));
         }
       } else if (filter.getOperator() == Operator.gt && filter.getValue() != null) {
+          if (filter.getValue() instanceof Number) {
         restrictions =
             criteriaBuilder.and(
                 restrictions,
                 criteriaBuilder.gt(root.<Number>get(filter.getProperty()),
                     (Number) filter.getValue()));
-      } else if (filter.getOperator() == Operator.lt && filter.getValue() != null) {
+            } else if (filter.getValue() instanceof Date) {
         restrictions =
             criteriaBuilder.and(
                 restrictions,
-                criteriaBuilder.lt(root.<Number>get(filter.getProperty()),
-                    (Number) filter.getValue()));
+                      criteriaBuilder.greaterThan(root.<Date>get(filter.getProperty()),
+                          (Date) filter.getValue()));
+            }
       } else if (filter.getOperator() == Operator.ge && filter.getValue() != null) {
         if (filter.getValue() instanceof Number) {
           restrictions =
@@ -405,16 +433,49 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
                   criteriaBuilder.le(root.<Number>get(filter.getProperty()),
                       (Number) filter.getValue()));
         }
+      } else if (filter.getOperator() == Operator.lt && filter.getValue() != null) {
+          if (filter.getValue() instanceof Number) {
+              restrictions =
+                  criteriaBuilder.and(
+                      restrictions,
+                      criteriaBuilder.lt(root.<Number>get(filter.getProperty()),
+                          (Number) filter.getValue()));
+            } else if (filter.getValue() instanceof Date) {
+              restrictions =
+                  criteriaBuilder.and(
+                      restrictions,
+                      criteriaBuilder.lessThan(root.<Date>get(filter.getProperty()),
+                          (Date) filter.getValue()));
+            }
       } else if (filter.getOperator() == Operator.like && filter.getValue() != null
           && filter.getValue() instanceof String) {
+//          restrictions =
+//                  criteriaBuilder.and(
+//                      restrictions,
+//                      criteriaBuilder.like(root.<String>get(filter.getProperty()),
+//                          (String) filter.getValue()));
+          //zhanglu:2017-10-14 start
+          Path<String> path = getPath(root, filter.getProperty());
         restrictions =
-            criteriaBuilder.and(
-                restrictions,
-                criteriaBuilder.like(root.<String>get(filter.getProperty()),
-                    (String) filter.getValue()));
+              criteriaBuilder.and(restrictions,
+                  criteriaBuilder.like(path, (String) filter.getValue()));
+          //zhanglu:2017-10-14 end
+
       } else if (filter.getOperator() == Operator.in && filter.getValue() != null) {
+//        restrictions =
+//            criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(filter.getValue()));
+    	    //zhanglu:2017-10-13 start
+  	    	if (filter.getValue() instanceof Object[]) {
+	          // 浼犻€掑涓弬鏁?Object... values
+	          Object[] objects = (Object[]) filter.getValue();
+	          restrictions =
+	              criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(objects));
+	        } else {
         restrictions =
-            criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(filter.getValue()));
+	              criteriaBuilder.and(restrictions, root.get(filter.getProperty())
+	                  .in(filter.getValue()));
+	        }
+    	    //zhanglu:2017-10-13 end
       } else if (filter.getOperator() == Operator.isNull) {
         restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
       } else if (filter.getOperator() == Operator.isNotNull) {
@@ -450,19 +511,43 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
         if (filter == null || StringUtils.isEmpty(filter.getProperty())) {
           continue;
         }
+//        if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
+//          if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
+//              && filter.getValue() instanceof String) {
+           //zhanglu:杩欓噷閫昏緫杩樻湁闂锛屽鏋渆q鐨勬槸瀛楃涓插苟涓斾笉浼爄gnoreCase锛屽叾瀹炴槸璧颁笉杩涜繖涓猧f鏉′欢鐨勶紝璧扮殑鏄痚lse閲岄潰鍘绘瘮杈僥q瀵硅薄
+//            restrictions =
+//                criteriaBuilder.and(restrictions, criteriaBuilder.equal(
+//                    criteriaBuilder.lower(root.<String>get(filter.getProperty())),
+//                    ((String) filter.getValue()).toLowerCase()));
+//          } else {
+//            restrictions =
+//                criteriaBuilder.and(restrictions,
+//                    criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+//          }
+//        }
+        //zhanglu:2017-10-14 start
         if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
-          if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
-              && filter.getValue() instanceof String) {
+            if (filter.getValue() instanceof String) {
+              Path<String> path = getPath(root,filter.getProperty());
+              if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
             restrictions =
                 criteriaBuilder.and(restrictions, criteriaBuilder.equal(
-                    criteriaBuilder.lower(root.<String>get(filter.getProperty())),
+                        criteriaBuilder.lower(path),
                     ((String) filter.getValue()).toLowerCase()));
           } else {
             restrictions =
+                    criteriaBuilder.and(restrictions, criteriaBuilder.equal(path,
+                        ((String) filter.getValue())));
+              }
+            } else {
+              Path<Object> path = getPath(root,filter.getProperty());
+              restrictions =
                 criteriaBuilder.and(restrictions,
-                    criteriaBuilder.equal(root.get(filter.getProperty()), filter.getValue()));
+                      criteriaBuilder.equal(path, filter.getValue()));
+            }
           }
-        } else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
+        //zhanglu:2017-10-14 end
+        else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
           if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
               && filter.getValue() instanceof String) {
             restrictions =
@@ -502,6 +587,20 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
                     criteriaBuilder.lessThan(root.<Date>get(filter.getProperty()),
                         (Date) filter.getValue()));
           }
+        } else if (filter.getOperator() == Operator.gt && filter.getValue() != null) {
+            if (filter.getValue() instanceof Number) {
+                restrictions =
+                    criteriaBuilder.and(
+                        restrictions,
+                        criteriaBuilder.gt(root.<Number>get(filter.getProperty()),
+                            (Number) filter.getValue()));
+              } else if (filter.getValue() instanceof Date) {
+                restrictions =
+                    criteriaBuilder.and(
+                        restrictions,
+                        criteriaBuilder.greaterThan(root.<Date>get(filter.getProperty()),
+                            (Date) filter.getValue()));
+              }
         } else if (filter.getOperator() == Operator.ge && filter.getValue() != null) {
           if (filter.getValue() instanceof Number) {
             restrictions =
@@ -528,15 +627,33 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
           }
         } else if (filter.getOperator() == Operator.like && filter.getValue() != null
             && filter.getValue() instanceof String) {
+//          restrictions =
+//              criteriaBuilder.and(
+//                  restrictions,
+//                  criteriaBuilder.like(root.<String>get(filter.getProperty()),
+//                      (String) filter.getValue()));
+            //zhanglu:2017-10-14 start
+            Path<String> path = getPath(root, filter.getProperty());
           restrictions =
-              criteriaBuilder.and(
-                  restrictions,
-                  criteriaBuilder.like(root.<String>get(filter.getProperty()),
-                      (String) filter.getValue()));
+                criteriaBuilder.and(restrictions,
+                    criteriaBuilder.like(path, (String) filter.getValue()));
+            //zhanglu:2017-10-14 end
         } else if (filter.getOperator() == Operator.in && filter.getValue() != null) {
+//          restrictions =
+//              criteriaBuilder.and(restrictions, root.get(filter.getProperty())
+//                  .in(filter.getValue()));
+    	    //zhanglu:2017-10-13 start
+  	    	if (filter.getValue() instanceof Object[]) {
+	          // 浼犻€掑涓弬鏁?Object... values
+	          Object[] objects = (Object[]) filter.getValue();
+	          restrictions =
+	              criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(objects));
+	        } else {
           restrictions =
               criteriaBuilder.and(restrictions, root.get(filter.getProperty())
                   .in(filter.getValue()));
+	        }
+    	    //zhanglu:2017-10-13 end
         } else if (filter.getOperator() == Operator.isNull) {
           restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
         } else if (filter.getOperator() == Operator.isNotNull) {
@@ -622,9 +739,8 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
    * 
    * @param pageable
    * @param jpql
-   * @param paramMap 用于设置SQL的参数 注意:paramMap.pub("distinct") 用于设置select 语句中有
-   *        distinct关键字，参数内容为distinct的内容
-   * 
+   * @param paramMap 鐢ㄤ簬璁剧疆SQL鐨勫弬鏁?娉ㄦ剰:paramMap.pub("distinct") 鐢ㄤ簬璁剧疆select 璇彞涓湁
+   *        distinct鍏抽敭瀛楋紝鍙傛暟鍐呭涓篸istinct鐨勫唴瀹?   * 
    * @return
    */
   public Page<T> findPageCustomized(Pageable pageable, String jpql,
@@ -643,7 +759,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 
     long total = countQuery.getSingleResult();
     /**
-     * 注释，用于手机接口，如果传入的pageNumber大于总页数，不做处理
+     * 娉ㄩ噴锛岀敤浜庢墜鏈烘帴鍙ｏ紝濡傛灉浼犲叆鐨刾ageNumber澶т簬鎬婚〉鏁帮紝涓嶅仛澶勭悊
      * 
      * @author sujinxuan
      */
@@ -674,7 +790,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
   }
 
   /**
-   * 从数据库初始化Index
+   * 浠庢暟鎹簱鍒濆鍖朓ndex
    */
   @Override
   public void refreshIndex() {
@@ -689,7 +805,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
   }
 
   /**
-   * lucene分页查询
+   * lucene鍒嗛〉鏌ヨ
    */
   @SuppressWarnings("unchecked")
   @Override
@@ -718,10 +834,32 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
       if (!entityList.contains((T) o)) {
         entityList.add((T) o);
       }
+
     }
     int resultSize = fullTextQuery.getResultSize();
     return new Page<T>(entityList, resultSize, pageable);
 
   }
-
+  /**
+   * 鏀寔澶氱骇瀛楁鏌ヨ 鐢?闅斿紑
+   * @param root
+   * @param property
+   * @author luzhang
+   */
+   private <Y> Path<Y> getPath(Root<T> root, String property){
+    Path<Y> path = null;
+    if (property.indexOf(".") != -1) {
+      String[] propertys = property.split("\\.");
+      for (int i = 0; i < propertys.length; i++) {
+        if (path != null) {
+          path = path.get(propertys[i]);
+        }else {
+          path = root.get(propertys[i]);
+        }
+      }
+    }else {
+      path = root.get(property);
+    }
+    return path;
+  }
 }

@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.yxkj.entity.Admin;
 import com.yxkj.entity.Company;
 import com.yxkj.entity.Goods;

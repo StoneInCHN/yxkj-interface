@@ -2,14 +2,16 @@
 	<yxkj>
 		<setting name="serverPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCBMPGboxzPh9SApXHBKMQHF31rgB6LQBZxg3VirK9Rbp0qvgIDw+2ygZxPQAkgiK24PTWuBbw2UTNy5NxglSCsCnY8+vJXd8cwZKrBpnwXEcO0Wuh5G8Z++X0AIisMCIoiDZZwWnvqJ7a3vUQIj62qTX259s0UqvjGA7uvoDM9tQIDAQAB" />
 		<setting name="serverPrivateKey" value="MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAIEw8ZujHM+H1IClccEoxAcXfWuAHotAFnGDdWKsr1FunSq+AgPD7bKBnE9ACSCIrbg9Na4FvDZRM3Lk3GCVIKwKdjz68ld3xzBkqsGmfBcRw7Ra6Hkbxn75fQAiKwwIiiINlnBae+ontre9RAiPrapNfbn2zRSq+MYDu6+gMz21AgMBAAECgYBLHYMNRCynOcnDtu5KKgK4QN8qlwarXmruO0oQQml5RoBZbrrLJ6tYA+Y3afskkHO5UNWaRjllt5bbcdf0zCB/M7nPYidAcu2bCOwQuri+0HBChA19FJ10T07RoiYFiXbaZIL8j/xrCqHhc3eP0JH+1hSAkdMfl24IbfJO+pvLIQJBAL1294TBF9edavieqeu6zO6Gr1zZpARRw+M57N6gz4zolLNwTKU6RbJ8h+j6t2t87mGNjaQ0HTnMXh3H7UNtaTkCQQCuj1ZdeLhirw/kAF1rbdvBTjY99Ji74ds3IjkntxbwHCX0lFozPpJs/Adc2wA9LUqk7HeNPlIdbsGrA7V76CRdAkAJSGnqNDfB1bGnCscSiK1/xlOTPgqeN49cc7saUVC5+69Fd2wZ8Ff33cge7yHLf2yClRfqgq8n5M57sQ777cFpAkACeBaRpeZ9xtojsHmhzmEAX/nWcIJEjhJKuloynJ1fchZ7WinYdbcegYYdIx/ivaRDpvCd99azgeCNabUEdqklAkBy0WoURX90YZ6aNTrNxNUogWyx2mS6RUckLNfCKbSACePlMSl2AbcYUyjdd345IOj2lEzXC2QkJZFbA6vJLylq" />
-		<setting name="tokenTimeOut" value="14400" />
+		<setting name="tokenTimeOut" value="1800000" /><!-- 毫秒  -->
+		<setting name="captchaTypes"
+		value="adminLogin,adminApply,findPassword,resetPassword,other" />
+		<setting name="tokenKey" value="OT5N@8$s" />
 		<setting name="smsCodeTimeOut" value="3" />
 		<setting name="passwordMinlength" value="6" />
 		<setting name="passwordMaxlength" value="20" />
 		<setting name="searchRadius" value="100000" />
 		<setting name="mobilePattern" value="^1[3|4|5|7|8][0-9]\d{8}$" />
 		<setting name="emailPattern" value="^[a-z0-9A-Z]+([-_.][a-z0-9A-Z]+)*@([a-z0-9A-Z]+[-.])+[a-zA-Z]{2,5}$" />
-		<setting name="sellerDiscountMin" value="9.5" />
 		
 		<!-- 短信平台-->
 		<!-- 发送短信URL -->
@@ -22,16 +24,16 @@
 		<setting name="smsPwd" value="552233" />
 		
 		<!-- 验证码消息内容 -->
-		<setting name="smsContentTemp" value="【享个购】您的验证码是" />
+		<setting name="smsContentTemp" value="【优比家】您的验证码是" />
 		
-		<!-- 验证码消息内容后缀 -->
+		<!-- 验证码消息内容后缀  -->
 		<setting name="smsPostfix" value="，如非本人操作请忽略。" />
 		
-		<setting name="siteName" value="享个购App" />
+		<setting name="siteName" value="优比家" />
 		<setting name="defaultPageSize" value="5" />
 		
-		<!-- recommend url -->
-		<setting name="recommendUrl" value="http://120.27.26.85:10001/rebate-interface/share/reg.html" />
+		<!-- auth Redirect url -->
+		<setting name="authRedirectUrl" value="http://test.ybjcq.com/shelfH5/item.jsp" />
 		<!-- download page -->
 		<setting name="downloadPage" value="http://120.27.26.85:10001/rebate-interface/share/down_app.html" />
 		<!-- download url -->
@@ -41,33 +43,43 @@
 		<setting name="appKey" value="185adad8b0cb08eb9a2e6354" />
 		<setting name="masterSecret" value="0d1228989af3072885a5cd47" />
 		
+		<!-- 微信公众平台 -->
+		<!-- 公众平台appid -->
+		<setting name="wxPublicAppId" value="wx3598eb401cb80f00" />
+		<!-- 公众平台appsecret -->
+		<setting name="wxPublicAppSecret" value="d61d05e5e7842d318a98fe5ff7596dfb" />
+		
 		<!-- 微信支付平台 -->
 		<!-- 秘钥 -->
-		<setting name="wechatKey" value="4301467162C78D73625BC196A2EA254E" />
+		<setting name="wechatKey" value="RlT05X9mxmZhzHWCm9V9GzDR25Adn5sa" />
 		<!-- 微信分配的公众账号ID(企业号corpid即为此appId) -->
-		<setting name="wechatAppid" value="wx8a45d94b37c548c7" />
+		<setting name="wechatAppid" value="wx3598eb401cb80f00" />
 		<!-- 商户ID -->
-		<setting name="wechatMchId" value="1481245182" />
-		<!-- 交易类型 -->
-		<setting name="wechatTradeType" value="APP" />
+		<setting name="wechatMchId" value="1483176522" />
 		<!-- 通知地址 -->
-		<setting name="wechatNotifyUrl" value="http://118.190.83.191:10001/rebate-interface/payNotify/notify_wechat.jhtml" />
+		<setting name="wechatNotifyUrl" value="http://shelf.ybjcq.com/yxkj-shelf/h5/shelf/pay/notify_wechat" />
 		<!-- 微信下订单接口 -->
 		<setting name="wechatAddOrderUrl" value="https://api.mch.weixin.qq.com/pay/unifiedorder" />
 		<!-- 微信Token接口 -->
 		<setting name="wechatTokenUrl" value="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=APPID&amp;secret=APPSECRET" />
 		
+		
+		
 		<!-- 支付宝平台 -->
+		<!-- 应用APPID -->
+		<setting name="alipayAppId" value="2017061707509713" />
 		<!-- 合作身份者ID，以2088开头由16位纯数字组成的字符串 -->
-		<setting name="alipayPartner" value="2088721012979165" />
+		<setting name="alipayPartner" value="2088721238041253" />
 		<!-- 签约卖家支付宝账号 -->
-		<setting name="alipaySellerId" value="market@5ixlg.com" />
-		<!-- 商户的私钥 -->
-		<setting name="alipayPrivateKey" value="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAOdaxkM2j3dZPd+J6g2bYQWmcRFnasKEq7AWmyzYZ6nCJpea1kxV9EjEWwGU72zs/WSXUSwUNd+GZpwartnuIzkVfQ3oGDmXz2RbZ6QWO0PtBSPsoqqmdJEV4MhBwBuYmnQ85OtbbQ53z4u7rGk2EMzZc+8+GLgOJAHD7XvClMWtAgMBAAECgYBriBCQ2wIxyePtS4/jBS5CTwtMuJGxmbKnJMq5PFhqWdhQLOKgFm91hvZ5tLzYFwrrvz02TKqBm1mEAw70MjBiDKWetEZXDXrkCyI92QmL8RdoWlKaJfUswqyrOAKIxbw4wF65Cx1+4DD3Dq+ti+XrymUCHFHDj5ySyaN2rDa0AQJBAPjz6Zaa9oHYcc1ZtAcxHYGqvqGYFsVxIQq6tqcabdxMuwbT/D2LMMGLgQyay34BdFkTJPVUSWfRHBCXUIawEwECQQDt51VD5BWlVzAXFRTZle/nh8y+GFTTdpGrg4qCa4PdFqFDP5LmH9awTv2Edjh+fMEJ3SjWRzGqbq2b9Dt07e6tAkEAqAyGHorGYcoIr/SgiMZHw7LNcelnXapLAqIdD9nQVQhaq3ZHbAfcRpnz591KBenXbxV0OkLGNlU6m5x42CJdAQJAGP41mfVLRNx9A9/GGfnDg1pj6xCZUMHjGdau5XawGrj25h62qxBrOIiD37efxcILcaLXWHOQRyxrdrfYyzb33QJAHDNRx0C2CCRgB6Hm9hGS/T3po1oyz/nekvpIpAxyup35QbyFU1lr1ocjqI4dIBZcF/okJ8bA27iQzjbwFKUzxg==" />
-		<!-- 支付宝的公钥，无需修改该值 -->
-		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB" />
-		<!-- 支付宝回调接口 -->
-		<setting name="alipayNotifyUrl" value="http://118.190.83.191:10001/rebate-interface/payNotify/notify_alipay.jhtml" />
+		<setting name="alipaySellerId" value="market@ybjstore.com" />
+		<!-- 开发者私钥(开放平台密钥用于授权和手机网页支付) -->
+		<setting name="alipayPrivateKey" value="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAOMxuS9UaqHXumI9ohwFdSNOvPvXbNmNInKOr9Kwrb6jAORJUXdvmkgzA3Xb9pyE5RFPCQgg/ItFSIVzSo+Z4TPLI6xrT58cu9NAXa2wFJLZH3csn75O+iwVcg34uAc5VphG0zg2+vMCvKJArZWObj1FrE57piFW3UtBFyW+09FvAgMBAAECgYBy1wR7VxlbW3dcBzl1HpEaWseOKVNdGEkMTPG09xer4CsoOaNTUvdSfW7HWXtrnIVJXYD8OehN4aSJyEAtHCRHnRxu5fFJgG1S4kiazkgWN2ldl8gVNNyqDzvwMODZ1f46eb5cSKG7rbqj9Sb5ErQOSoUEyTWfuKigGWHTLErtWQJBAPIJFHnhE0n/ITtQ6j1k9zVKQE1ilTrm7uTLVUZniyM7M8hcPwMPUoJ9pKSR37uI3mIFrRPF4nMRfxCVWAAPkHMCQQDwTW9UlhQPNXC+6ILx0zy3EhgdNf8xqIak1trY5i7NLc3q11bfOSR5LitqDjsthuvNSL4e4iWx5Q/Q0lLNWSgVAkEAo6U+AfYLS7HDr05TQjV867wLZAcurQetKGbOfm7N5YFGzsaIGDKI8A+xfU/f/PVant4FmuPl6zU+O2EugcQEPwJAH5pfeOVf7/wcPs8/YWRhiMYVa8oNLM+4HXewQnRLVWqfuTHm1+ag+FrtFL6YY81pt47IijE9ud6hLNpsT1tZXQJAB890lLxoTob81mnyl+KNMi/mNFQFU6NXfvjfmeq7Ic2d1+TzaCYeTbAD6ZULWRpJxYoZCZMAlOxWtqFDaNw8rw==" />
+		<!-- 支付宝的公钥(开放平台密钥用于授权和手机网页支付)-->
+		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB" />
+		<!-- 支付宝异步通知接口 -->
+		<setting name="alipayNotifyUrl" value="http://shelf.ybjcq.com/yxkj-shelf/h5/shelf/pay/notify_alipay" />
+		<!-- 支付宝同步通知接口 -->
+		<setting name="alipayReturnUrl" value="http://shelf.ybjcq.com/yxkj-shelf/shelfH5/index.html#/payResult" />
 		
 		
 		<!-- 百度API:GPS坐标转百度坐标 -->

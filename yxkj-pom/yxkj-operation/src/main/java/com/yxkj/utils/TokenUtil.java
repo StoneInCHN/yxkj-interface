@@ -11,8 +11,23 @@ import java.util.Date;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+import com.yxkj.beans.Setting;
+
 public class TokenUtil {
-  public static String getJWTString(String id, String subject, long ttlMillis) {
+
+
+
+  public static Setting setting = SettingUtils.get();
+
+  /**
+   * 生成jwt token
+   * 
+   * @param id
+   * @param subject
+   * @param ttlMillis
+   * @return
+   */
+  public static String getJWTString(String id, String subject) {
     // The JWT signature algorithm we will be using to sign the token
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -20,7 +35,7 @@ public class TokenUtil {
     Date now = new Date(nowMillis);
 
     // We will sign our JWT with our ApiKey secret
-    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("secret");
+    byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(setting.getTokenKey());
     Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
     // Let's set the JWT Claims
@@ -29,6 +44,7 @@ public class TokenUtil {
             .signWith(signatureAlgorithm, signingKey);
 
     // if it has been specified, let's add the expiration
+    long ttlMillis = setting.getTokenTimeOut();
     if (ttlMillis >= 0) {
       long expMillis = nowMillis + ttlMillis;
       Date exp = new Date(expMillis);
@@ -39,10 +55,16 @@ public class TokenUtil {
     return builder.compact();
   }
 
+  /**
+   * 验证jwt token
+   * 
+   * @param jwt
+   * @return
+   */
   public static Claims parseJWT(String jwt) {
     try {
       Claims claims =
-          Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary("secret"))
+          Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(setting.getTokenKey()))
               .parseClaimsJws(jwt).getBody();
       // This line will throw an exception if it is not a signed JWS (as expected)
 
