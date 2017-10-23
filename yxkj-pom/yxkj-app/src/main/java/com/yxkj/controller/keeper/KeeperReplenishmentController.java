@@ -1,6 +1,5 @@
 package com.yxkj.controller.keeper;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,14 +39,15 @@ public class KeeperReplenishmentController extends MobileBaseController {
 	@ApiOperation(value = "获取货柜待补情况", httpMethod = "POST", response = ResponseOne.class, notes = "获取货柜待补情况")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
 	public @ResponseBody ResponseOne<WaitSupplyList> getWaitSupplyList(
-	        @ApiParam(name = "请求参数(json)", value = "{suppId:管家ID,pageNo:页码}",required = true)
+	        @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,pageNo:页码,pageSize:页记录数}",required = true)
 	        @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
 	    ResponseOne<WaitSupplyList> response = new ResponseOne<>();
 	    WaitSupplyList waitSupplyList = null;
 	    try{
-	      waitSupplyList = supplementListService.getWaitSupplyListBySuppId(waitSupplyListRequest.getSuppId(),
-	          waitSupplyListRequest.getPageNo(), setting.getMaxPageSize());
+	      waitSupplyList = supplementListService.getWaitSupplyListBySuppId(waitSupplyListRequest.getUserId(),
+	          waitSupplyListRequest.getPageNo(), Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
 	    }catch (Exception e) {
+	      e.printStackTrace();
 	      response.setCode(CommonAttributes.FAIL_COMMON);
 	      response.setDesc(message("yxkj.request.fail"));
 	      return response;
@@ -61,21 +61,22 @@ public class KeeperReplenishmentController extends MobileBaseController {
 	@RequestMapping(value="/getWaitSupplySceneList", method=RequestMethod.POST)
 	@ApiOperation(value = "获取待补优享空间", httpMethod = "POST", response = ResponseOne.class, notes = "获取待补优享空间")
 	@ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-	public @ResponseBody ResponseOne<Map<String, String>> getWaitSupplySceneList(
-	    @ApiParam(name = "请求参数(json)", value = "{suppId:管家ID}",required = true)
+	public @ResponseBody ResponseOne<List<Map<String, String>>> getWaitSupplySceneList(
+	    @ApiParam(name = "请求参数(json)", value = "{userId:管家ID}",required = true)
 	    @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
-	  ResponseOne<Map<String, String>> response = new ResponseOne<>();
-	  Map<String, String> sceneMap = new HashMap<>();
+	  ResponseOne<List<Map<String, String>>> response = new ResponseOne<>();
+	  List<Map<String, String>> sceneList = new LinkedList<>();
 	  try{
-	    sceneMap = supplementListService.getWaitSupplySceneList(waitSupplyListRequest.getSuppId());
+	    sceneList = supplementListService.getWaitSupplySceneList(waitSupplyListRequest.getUserId());
 	  }catch (Exception e) {
+	    e.printStackTrace();
 	    response.setCode(CommonAttributes.FAIL_COMMON);
 	    response.setDesc(message("yxkj.request.fail"));
 	    return response;
 	  }
 	  response.setCode(CommonAttributes.SUCCESS);
 	  response.setDesc(message("yxkj.request.success"));
-	  response.setMsg(sceneMap);
+	  response.setMsg(sceneList);
 	  return response;
 	}
 	
@@ -83,13 +84,14 @@ public class KeeperReplenishmentController extends MobileBaseController {
 	@ApiOperation(value = "获取待补商品类别", httpMethod = "POST", response = ResponseOne.class, notes = "获取待补商品类别")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseOne<List<String>> getWaitSupplyGoodsCategory(
-        @ApiParam(name = "请求参数(json)", value = "{suppId:管家ID}",required = true)
+        @ApiParam(name = "请求参数(json)", value = "{userId:管家ID}",required = true)
         @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
       ResponseOne<List<String>> response = new ResponseOne<>();
       List<String> goodsCategoryList = new LinkedList<>();
       try{
-        goodsCategoryList = supplementListService.getWaitSupplyGoodsCategoryList(waitSupplyListRequest.getSuppId());
+        goodsCategoryList = supplementListService.getWaitSupplyGoodsCategoryList(waitSupplyListRequest.getUserId());
       }catch (Exception e) {
+        e.printStackTrace();
         response.setCode(CommonAttributes.FAIL_COMMON);
         response.setDesc(message("yxkj.request.fail"));
         return response;
@@ -104,14 +106,16 @@ public class KeeperReplenishmentController extends MobileBaseController {
     @ApiOperation(value = "获取待补商品清单", httpMethod = "POST", response = ResponseOne.class, notes = "获取待补商品清单")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseOne<List<WaitSupplyGoods>> getWaitSupplyGoodList(
-            @ApiParam(name = "请求参数(json)", value = "{suppId:管家ID,sceneSn:优享空间编号,cateName:商品类型名称,pageNo:页码}",required = true)
+            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneSn:优享空间编号,cateName:商品类型名称,pageNo:页码,pageSize:页记录数}",required = true)
             @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
         ResponseOne<List<WaitSupplyGoods>> response = new ResponseOne<>();
         List<WaitSupplyGoods> waitSupplyGoodsList = null;
         try{
-          waitSupplyGoodsList = supplementListService.getWaitSupplyGoodList(waitSupplyListRequest.getSuppId(),
-              waitSupplyListRequest.getSceneSn(), waitSupplyListRequest.getCateName(), waitSupplyListRequest.getPageNo(), setting.getMaxPageSize());
+          waitSupplyGoodsList = supplementListService.getWaitSupplyGoodList(waitSupplyListRequest.getUserId(),
+              waitSupplyListRequest.getSceneSn(), waitSupplyListRequest.getCateName(), waitSupplyListRequest.getPageNo(),
+              Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
         }catch (Exception e) {
+          e.printStackTrace();
           response.setCode(CommonAttributes.FAIL_COMMON);
           response.setDesc(message("yxkj.request.fail"));
           return response;
@@ -126,14 +130,15 @@ public class KeeperReplenishmentController extends MobileBaseController {
 	@ApiOperation(value = "获取待补商品详情", httpMethod = "POST", response = ResponseOne.class, notes = "获取待补商品详情")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseOne<WaitSupplyGoodsDetails> getWaitSupplyGoodsDetails(
-            @ApiParam(name = "请求参数(json)", value = "{suppId:管家ID,goodsSn:商品编号}",required = true)
+            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,goodsSn:商品编号}",required = true)
             @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
 	    ResponseOne<WaitSupplyGoodsDetails> response = new ResponseOne<>();
 	    WaitSupplyGoodsDetails waitSupplyGoodsDetails;
   	    try {
-  	      waitSupplyGoodsDetails = supplementListService.getWaitSupplyGoodsDetails(waitSupplyListRequest.getSuppId(),
+  	      waitSupplyGoodsDetails = supplementListService.getWaitSupplyGoodsDetails(waitSupplyListRequest.getUserId(),
   	          waitSupplyListRequest.getGoodsSn());
         } catch (Exception e) {
+          e.printStackTrace();
           response.setCode(CommonAttributes.FAIL_COMMON);
           response.setDesc(message("yxkj.request.fail"));
           return response;
@@ -148,14 +153,16 @@ public class KeeperReplenishmentController extends MobileBaseController {
     @ApiOperation(value = "获取货柜待补商品清单", httpMethod = "POST", response = ResponseOne.class, notes = "获取货柜待补商品清单")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseOne<List<WaitSupplyContainerGoods>> getWaitSupplyContainerGoodList(
-            @ApiParam(name = "请求参数(json)", value = "{suppId:管家ID,cntrId:货柜ID,pageNo:页码}",required = true)
+            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,cntrId:货柜ID,pageNo:页码,pageSize:页记录数}",required = true)
             @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
         ResponseOne<List<WaitSupplyContainerGoods>> response = new ResponseOne<>();
         List<WaitSupplyContainerGoods> waitSupplyContainerGoodsList = new LinkedList<>();
         try{
-          waitSupplyContainerGoodsList = supplementListService.getWaitSupplyContainerGoods(waitSupplyListRequest.getSuppId(),
-              waitSupplyListRequest.getCntrId(), waitSupplyListRequest.getPageNo(), setting.getMaxPageSize());
+          waitSupplyContainerGoodsList = supplementListService.getWaitSupplyContainerGoods(waitSupplyListRequest.getUserId(),
+              waitSupplyListRequest.getCntrId(), waitSupplyListRequest.getPageNo(),
+              Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
         }catch (Exception e) {
+          e.printStackTrace();
           response.setCode(CommonAttributes.FAIL_COMMON);
           response.setDesc(message("yxkj.request.fail"));
           return response;

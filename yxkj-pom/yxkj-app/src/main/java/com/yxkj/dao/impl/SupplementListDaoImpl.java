@@ -26,17 +26,17 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
   @SuppressWarnings("unchecked")
   @Override
   public List<Object[]> findCentralVendingContainer(String sceneSn) {
-    String jpql = "SELECT v.id, v.sn FROM VendingContainer v WHERE v.scene.sn = :sceneSn AND v.parent = null";
-    Query query = entityManager.createQuery(jpql).setParameter("sceneSn", sceneSn);
-    
+    String sql = "SELECT v.id, v.sn FROM t_vending_container v WHERE v.parent is null AND v.scene = "
+        + "(SELECT s.id FROM t_scene s WHERE s.sn = :sceneSn)";
+    Query query = entityManager.createNativeQuery(sql).setParameter("sceneSn", sceneSn);
     return query.getResultList();
   }
   
   @SuppressWarnings("unchecked")
   @Override
   public List<Object[]> findChildrenVendingContainer(Long id){
-    String jpql = "SELECT v.id, v.sn FROM VendingContainer v WHERE v.parent.id = :id";
-    Query query = entityManager.createQuery(jpql).setParameter("id", id);
+    String sql = "SELECT v.id, v.sn FROM t_vending_container v WHERE v.parent = :id";
+    Query query = entityManager.createNativeQuery(sql).setParameter("id", id);
     
     return query.getResultList();
   }
@@ -105,9 +105,9 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
   @Override
   public List<Object[]> getWaitSupplyContainerGoods(Long suppId, Long cntrId, int pageNo,
       int pageSize) {
-    String jqpl = "SELECT s.goodsSn, s.goodsName, s.channel.sn, s.waitSupplyCount FROM SupplementList s "
-        + "WHERE s.suppId = :suppId AND s.cntrId = :cntrId";
-    Query query =entityManager.createQuery(jqpl).setParameter("suppId", suppId).setParameter("cntrId", cntrId)
+    String sql = "SELECT s.goods_sn, s.goods_name, c.sn, s.wait_supply_count FROM t_supp_list s JOIN t_cntr_channel c"
+        + " ON s.channel = c.id WHERE s.supp_id = :suppId AND s.cntr_id = :cntrId";
+    Query query =entityManager.createNativeQuery(sql).setParameter("suppId", suppId).setParameter("cntrId", cntrId)
         .setFirstResult(pageNo == 1 ? 0 : (pageNo-1)*pageSize-1).setMaxResults(pageSize);
     return query.getResultList();
   }

@@ -23,6 +23,11 @@ public class KeeperAccountRequest {
 	private String verificationCode;
 	
 	/**
+	 * 验证码类型
+	 */
+	private String type;
+
+  /**
 	 * 旧密码
 	 */
 	private String oldPwd;
@@ -63,6 +68,14 @@ public class KeeperAccountRequest {
 	public void setVerificationCode(String verificationCode) {
 		this.verificationCode = verificationCode;
 	}
+	
+    public String getType() {
+      return type;
+    }
+
+    public void setType(String type) {
+      this.type = type;
+    }
 
 	public String getOldPwd() {
 		return oldPwd;

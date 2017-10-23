@@ -1,5 +1,6 @@
 package com.yxkj.service.impl; 
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,18 +51,18 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
             
             //获取中控柜
             WaitSupplyList.WaitSupplyScene.VendingContainerGroup.WaitSupplyVendingContainer central = group
-                .new WaitSupplyVendingContainer((Long)centralContainer[0], (String)centralContainer[1]);
+                .new WaitSupplyVendingContainer(((BigInteger)centralContainer[0]).longValue(), (String)centralContainer[1]);
             central.setCentral(true);
             containerList.add(central);
             
             //获取子货柜
-            List<Object[]> childContainerList = supplementListDao.findChildrenVendingContainer((Long)centralContainer[0]);
+            List<Object[]> childContainerList = supplementListDao.findChildrenVendingContainer(((BigInteger)centralContainer[0]).longValue());
             for(Object[] childContainer : childContainerList) {
               WaitSupplyList.WaitSupplyScene.VendingContainerGroup.WaitSupplyVendingContainer child = group
-                  .new WaitSupplyVendingContainer((Long)childContainer[0], (String)childContainer[1]);
+                  .new WaitSupplyVendingContainer(((BigInteger)childContainer[0]).longValue(), (String)childContainer[1]);
               int count = 0;
               try{
-                  count = supplementListDao.findWaitSupplyCount((Long)childContainer[0]);
+                  count = supplementListDao.findWaitSupplyCount(((BigInteger)childContainer[0]).longValue());
               }catch (Exception e) {}
               child.setWaitSupplyCount(count);
               waitSupplySumCount += count;
@@ -81,14 +82,17 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
       }
 
       @Override
-      public Map<String, String> getWaitSupplySceneList(Long suppId) {
-        Map<String, String> sceneMap = new HashMap<>();
+      public List<Map<String, String>> getWaitSupplySceneList(Long suppId) {
+        List<Map<String, String>> sceneList = new LinkedList<>();
         
         List<Object[]> waitSupplySceneList = supplementListDao.findWaitSupplySceneList(suppId);
         for(Object[] sceneObjs : waitSupplySceneList) {
-          sceneMap.put((String)sceneObjs[0], (String)sceneObjs[1]);
+          Map<String, String> sceneMap = new HashMap<>();
+          sceneMap.put("sceneSn", (String)sceneObjs[0]);
+          sceneMap.put("sceneName", (String)sceneObjs[1]);
+          sceneList.add(sceneMap);
         }
-        return sceneMap;
+        return sceneList;
       }
       
       @Override
@@ -105,6 +109,7 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         }
         return waitSupplyGoodList;
       }
+      
       @Override
       public List<String> getWaitSupplyGoodsCategoryList(Long  suppId) {
         List<String> waitSupplyGoodsCategoryList = new LinkedList<>();
@@ -126,6 +131,7 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
           Integer waitSupplyCount = (Integer)goodsDetails[2];
           sceneCountMap.put((String)goodsDetails[1], waitSupplyCount);
           sumCount += waitSupplyCount;
+          System.out.println(sumCount);
         }
         return new WaitSupplyGoodsDetails(goodsSn, goodsName, sceneCountMap, sumCount);
       }

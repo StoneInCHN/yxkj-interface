@@ -54,6 +54,13 @@ public final class CommonAttributes {
   public static final String FAIL_TOKEN_AUTH = "0008";// 账号在其它设备上登录
   /** 会员存在 */
   public static final String FAIL_USER_EXIST = "0009";// 用户已经存在
+  
+  public static final String ERROR_ACCOUNT = "1001";// 账号无效
+  
+  public static final String ERROR_PASS = "1002";// 密码错误
+  
+  public static final String ERROR_VFT = "1003";// 验证码错误
+  
   //
   // /** OBD设备未绑定车辆 */
   // public static final String FAIL_DEVICE_NOBIND = "0010";// OBD设备不存在

@@ -14,7 +14,7 @@ public interface SupplementListService extends BaseService<SupplementList,Long>{
 
   WaitSupplyList getWaitSupplyListBySuppId(Long suppId, String pageNo, int pageSize);
   
-  Map<String, String> getWaitSupplySceneList(Long suppId);
+  List<Map<String, String>> getWaitSupplySceneList(Long suppId);
   
   List<String> getWaitSupplyGoodsCategoryList(Long  suppId);
   

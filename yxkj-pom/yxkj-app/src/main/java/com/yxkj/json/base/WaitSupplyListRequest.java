@@ -5,7 +5,7 @@ public class WaitSupplyListRequest {
   /**
    * 补货人ID
    */
-  private Long suppId;
+  private Long userId;
   
   /**
    * 优享空间编号
@@ -23,6 +23,11 @@ public class WaitSupplyListRequest {
   private String pageNo;
   
   /**
+   * 
+   */
+  private String pageSize;
+
+  /**
    * 货柜编号
    */
   private Long cntrId;
@@ -32,12 +37,12 @@ public class WaitSupplyListRequest {
    */
   private String goodsSn;
 
-  public Long getSuppId() {
-    return suppId;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setSuppId(Long suppId) {
-    this.suppId = suppId;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
   public String getSceneSn() {
@@ -62,6 +67,14 @@ public class WaitSupplyListRequest {
 
   public void setPageNo(String pageNo) {
     this.pageNo = pageNo;
+  }
+  
+  public String getPageSize() {
+    return pageSize;
+  }
+
+  public void setPageSize(String pageSize) {
+    this.pageSize = pageSize;
   }
 
   public Long getCntrId() {
