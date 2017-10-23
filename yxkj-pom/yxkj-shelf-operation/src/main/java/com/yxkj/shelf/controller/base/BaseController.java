@@ -148,11 +148,6 @@ public class BaseController {
   }
   
   /**
-  * Controller运行时异常统一处理
-  * @param runtimeException
-  * 
-  */
-  /**
    * 
    * Controller运行时异常统一处理
    * @param runtimeException
