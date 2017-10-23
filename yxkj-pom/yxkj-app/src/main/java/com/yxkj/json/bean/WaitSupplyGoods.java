@@ -1,12 +1,7 @@
-package com.yxkj.json.base;
+package com.yxkj.json.bean;
 
-public class WaitSupplyContainerGoods {
-  
-  /**
-   * 货道编号
-   */
-  private String channelSn;
-  
+public class WaitSupplyGoods {
+    
   /**
    * 商品编号
    */
@@ -26,21 +21,13 @@ public class WaitSupplyContainerGoods {
    * 待补货数
    */
   private Integer waitSupplyCount;
+  
+  public WaitSupplyGoods(){}
 
-  public WaitSupplyContainerGoods(String goodsSn, String goodsName, String channelSn, 
-      Integer waitSupplyCount) {
-    this.channelSn = channelSn;
+  public WaitSupplyGoods(String goodsSn, String goodsName, Integer waitSupplyCount) {
     this.goodsSn = goodsSn;
     this.goodsName = goodsName;
     this.waitSupplyCount = waitSupplyCount;
-  }
-
-  public String getChannelSn() {
-    return channelSn;
-  }
-
-  public void setChannelSn(String channelSn) {
-    this.channelSn = channelSn;
   }
 
   public String getGoodsSn() {
@@ -76,3 +63,4 @@ public class WaitSupplyContainerGoods {
   }
   
 }
+

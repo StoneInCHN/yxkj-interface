@@ -1,4 +1,4 @@
-package com.yxkj.json.base;
+package com.yxkj.json.bean;
 
 import java.util.List;
 

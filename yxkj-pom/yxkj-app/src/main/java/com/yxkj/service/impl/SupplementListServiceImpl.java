@@ -14,10 +14,10 @@ import com.yxkj.entity.SupplementList;
 import com.yxkj.dao.SupplementListDao;
 import com.yxkj.service.SupplementListService;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
-import com.yxkj.json.base.WaitSupplyContainerGoods;
-import com.yxkj.json.base.WaitSupplyGoods;
-import com.yxkj.json.base.WaitSupplyGoodsDetails;
-import com.yxkj.json.base.WaitSupplyList;
+import com.yxkj.json.bean.WaitSupplyContainerGoods;
+import com.yxkj.json.bean.WaitSupplyGoods;
+import com.yxkj.json.bean.WaitSupplyGoodsDetails;
+import com.yxkj.json.bean.WaitSupplyList;
 
 @Service("supplementListServiceImpl")
 public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Long> implements SupplementListService {
@@ -96,11 +96,11 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
       }
       
       @Override
-      public List<WaitSupplyGoods> getWaitSupplyGoodList(Long suppId, String sceneSn, String cateName,
+      public List<WaitSupplyGoods> getWaitSupplyGoodList(Long suppId, String sceneSn, Long cateId,
           String pageNo, int pageSize) {
         List<WaitSupplyGoods> waitSupplyGoodList = new LinkedList<>();
         
-        List<Object[]> goodsList = supplementListDao.findWaitSupplyGoodsList(suppId, sceneSn, cateName,
+        List<Object[]> goodsList = supplementListDao.findWaitSupplyGoodsList(suppId, sceneSn, cateId,
             Integer.valueOf(pageNo), pageSize);
         for(Object[] goodsObj : goodsList) {
           WaitSupplyGoods waitSupplyGoods = new WaitSupplyGoods((String)goodsObj[0], (String)goodsObj[1], (Integer)goodsObj[2]);
@@ -111,12 +111,15 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
       }
       
       @Override
-      public List<String> getWaitSupplyGoodsCategoryList(Long  suppId) {
-        List<String> waitSupplyGoodsCategoryList = new LinkedList<>();
+      public List<Map<String,Object>> getWaitSupplyGoodsCategoryList(Long  suppId) {
+        List<Map<String,Object>> waitSupplyGoodsCategoryList = new LinkedList<>();
         
-        List<Object> categoryList = supplementListDao.findWaitSupplyGoodsCategoryList(suppId);
-        for (Object category : categoryList) {
-          waitSupplyGoodsCategoryList.add((String)category);
+        List<Object[]> categoryList = supplementListDao.findWaitSupplyGoodsCategoryList(suppId);
+        for (Object[] category : categoryList) {
+          Map<String, Object> cateMap = new HashMap<>();
+          cateMap.put("cateId", category[0]);
+          cateMap.put("cateName", category[1]);
+          waitSupplyGoodsCategoryList.add(cateMap);
         }
         return waitSupplyGoodsCategoryList;
       }
@@ -124,16 +127,18 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
       @Override
       public WaitSupplyGoodsDetails getWaitSupplyGoodsDetails(Long suppId, String goodsSn) {
         Integer sumCount = 0;
-        Map<String, Integer> sceneCountMap = new HashMap<>();
+        List<Map<String, Object>> sceneCountList = new LinkedList<>();
         List<Object[]> goodsDetailsList = supplementListDao.findWaitSupplyGoodsDetails(suppId, goodsSn);
         String goodsName = (String)goodsDetailsList.get(0)[0];
         for (Object[] goodsDetails : goodsDetailsList) {
+          Map<String, Object> sceneCountMap = new HashMap<>();
           Integer waitSupplyCount = (Integer)goodsDetails[2];
-          sceneCountMap.put((String)goodsDetails[1], waitSupplyCount);
+          sceneCountMap.put("sceneName", goodsDetails[1]);
+          sceneCountMap.put("waitSupplyCount", waitSupplyCount);
+          sceneCountList.add(sceneCountMap);
           sumCount += waitSupplyCount;
-          System.out.println(sumCount);
         }
-        return new WaitSupplyGoodsDetails(goodsSn, goodsName, sceneCountMap, sumCount);
+        return new WaitSupplyGoodsDetails(goodsSn, goodsName, sceneCountList, sumCount);
       }
 
       @Override

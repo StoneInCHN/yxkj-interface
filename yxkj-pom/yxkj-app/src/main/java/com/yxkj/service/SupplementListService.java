@@ -5,10 +5,10 @@ import java.util.Map;
 
 import com.yxkj.entity.SupplementList;
 import com.yxkj.framework.service.BaseService;
-import com.yxkj.json.base.WaitSupplyContainerGoods;
-import com.yxkj.json.base.WaitSupplyGoods;
-import com.yxkj.json.base.WaitSupplyGoodsDetails;
-import com.yxkj.json.base.WaitSupplyList;
+import com.yxkj.json.bean.WaitSupplyContainerGoods;
+import com.yxkj.json.bean.WaitSupplyGoods;
+import com.yxkj.json.bean.WaitSupplyGoodsDetails;
+import com.yxkj.json.bean.WaitSupplyList;
 
 public interface SupplementListService extends BaseService<SupplementList,Long>{
 
@@ -16,9 +16,9 @@ public interface SupplementListService extends BaseService<SupplementList,Long>{
   
   List<Map<String, String>> getWaitSupplySceneList(Long suppId);
   
-  List<String> getWaitSupplyGoodsCategoryList(Long  suppId);
+  List<Map<String,Object>> getWaitSupplyGoodsCategoryList(Long  suppId);
   
-  List<WaitSupplyGoods> getWaitSupplyGoodList(Long suppId, String sceneSn, String cateName, String pageNo, int pageSize);
+  List<WaitSupplyGoods> getWaitSupplyGoodList(Long suppId, String sceneSn, Long cateId, String pageNo, int pageSize);
   
   WaitSupplyGoodsDetails getWaitSupplyGoodsDetails(Long suppId, String goodsSn);
   

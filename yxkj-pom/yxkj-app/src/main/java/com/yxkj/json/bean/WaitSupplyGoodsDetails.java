@@ -1,5 +1,6 @@
-package com.yxkj.json.base;
+package com.yxkj.json.bean;
 
+import java.util.List;
 import java.util.Map;
 
 public class WaitSupplyGoodsDetails {
@@ -17,20 +18,19 @@ public class WaitSupplyGoodsDetails {
   /**
    * 优享空间对应待补数量
    */
-  private Map<String, Integer> sceneCountMap;
+  private List<Map<String, Object>> sceneCountList;
   
   /**
    * 待补总数
    */
   private Integer sumCount;
-  
-  public WaitSupplyGoodsDetails() {}
-  
-  public WaitSupplyGoodsDetails(String goodsSn, String goodsName, Map<String, Integer> sceneCountMap,
-      Integer sumCount) {
+
+  public WaitSupplyGoodsDetails(String goodsSn, String goodsName,
+      List<Map<String, Object>> sceneCountList, Integer sumCount) {
+    super();
     this.goodsSn = goodsSn;
     this.goodsName = goodsName;
-    this.sceneCountMap = sceneCountMap;
+    this.sceneCountList = sceneCountList;
     this.sumCount = sumCount;
   }
 
@@ -50,12 +50,12 @@ public class WaitSupplyGoodsDetails {
     this.goodsName = goodsName;
   }
 
-  public Map<String, Integer> getSceneCountMap() {
-    return sceneCountMap;
+  public List<Map<String, Object>> getSceneCountList() {
+    return sceneCountList;
   }
 
-  public void setSceneCountMap(Map<String, Integer> sceneCountMap) {
-    this.sceneCountMap = sceneCountMap;
+  public void setSceneCountList(List<Map<String, Object>> sceneCountList) {
+    this.sceneCountList = sceneCountList;
   }
 
   public Integer getSumCount() {
@@ -65,5 +65,6 @@ public class WaitSupplyGoodsDetails {
   public void setSumCount(Integer sumCount) {
     this.sumCount = sumCount;
   }
+  
   
 }

@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.json.base.ResponseOne;
-import com.yxkj.json.base.WaitSupplyContainerGoods;
-import com.yxkj.json.base.WaitSupplyGoods;
-import com.yxkj.json.base.WaitSupplyGoodsDetails;
-import com.yxkj.json.base.WaitSupplyList;
-import com.yxkj.json.base.WaitSupplyListRequest;
+import com.yxkj.json.bean.WaitSupplyContainerGoods;
+import com.yxkj.json.bean.WaitSupplyGoods;
+import com.yxkj.json.bean.WaitSupplyGoodsDetails;
+import com.yxkj.json.bean.WaitSupplyList;
+import com.yxkj.json.request.WaitSupplyListRequest;
 import com.yxkj.service.SupplementListService;
 
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiResponses;
 
 @Controller
 @RequestMapping("/keeper")
-public class KeeperReplenishmentController extends MobileBaseController {
+public class ReplenishmentController extends MobileBaseController {
 
 	@Resource(name="supplementListServiceImpl")
 	private SupplementListService supplementListService;
@@ -83,11 +83,11 @@ public class KeeperReplenishmentController extends MobileBaseController {
 	@RequestMapping(value="/getWaitSupplyGoodsCategoryList", method=RequestMethod.POST)
 	@ApiOperation(value = "获取待补商品类别", httpMethod = "POST", response = ResponseOne.class, notes = "获取待补商品类别")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-    public @ResponseBody ResponseOne<List<String>> getWaitSupplyGoodsCategory(
+    public @ResponseBody ResponseOne<List<Map<String, Object>>> getWaitSupplyGoodsCategory(
         @ApiParam(name = "请求参数(json)", value = "{userId:管家ID}",required = true)
         @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
-      ResponseOne<List<String>> response = new ResponseOne<>();
-      List<String> goodsCategoryList = new LinkedList<>();
+      ResponseOne<List<Map<String,Object>>> response = new ResponseOne<>();
+      List<Map<String,Object>> goodsCategoryList = new LinkedList<>();
       try{
         goodsCategoryList = supplementListService.getWaitSupplyGoodsCategoryList(waitSupplyListRequest.getUserId());
       }catch (Exception e) {
@@ -106,13 +106,13 @@ public class KeeperReplenishmentController extends MobileBaseController {
     @ApiOperation(value = "获取待补商品清单", httpMethod = "POST", response = ResponseOne.class, notes = "获取待补商品清单")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseOne<List<WaitSupplyGoods>> getWaitSupplyGoodList(
-            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneSn:优享空间编号,cateName:商品类型名称,pageNo:页码,pageSize:页记录数}",required = true)
+            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneSn:优享空间编号,cateId:商品类型Id,pageNo:页码,pageSize:页记录数}",required = true)
             @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
         ResponseOne<List<WaitSupplyGoods>> response = new ResponseOne<>();
         List<WaitSupplyGoods> waitSupplyGoodsList = null;
         try{
           waitSupplyGoodsList = supplementListService.getWaitSupplyGoodList(waitSupplyListRequest.getUserId(),
-              waitSupplyListRequest.getSceneSn(), waitSupplyListRequest.getCateName(), waitSupplyListRequest.getPageNo(),
+              waitSupplyListRequest.getSceneSn(), waitSupplyListRequest.getCateId(), waitSupplyListRequest.getPageNo(),
               Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
         }catch (Exception e) {
           e.printStackTrace();
@@ -172,5 +172,15 @@ public class KeeperReplenishmentController extends MobileBaseController {
         response.setMsg(waitSupplyContainerGoodsList);
         return response;
     }
+	
+	@RequestMapping(value="/commitSupplementRecord", method=RequestMethod.POST)
+    @ApiOperation(value = "提交补货记录", httpMethod = "POST", response = ResponseOne.class, notes = "提交补货记录")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseOne<String> commitSupplementRecord(
+            @ApiParam(name = "请求参数(json)", value = "",required = true)
+            @RequestBody String request) {
+	    
+	    return null;
+	}
     
 }

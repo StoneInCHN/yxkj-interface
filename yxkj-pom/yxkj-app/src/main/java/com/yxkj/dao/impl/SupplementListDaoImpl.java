@@ -18,7 +18,7 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
   public List<Object[]> findWaitSupplyScene(Long suppId, int pageNo, int pageSize) {
     String jpql = "SELECT s.sn, s.name FROM Scene s WHERE s.cntrKeeper.id = :suppId";
     Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId)
-        .setFirstResult(pageNo == 1 ? 0 : (pageNo-1)*pageSize-1).setMaxResults(pageSize);
+        .setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
     
     return query.getResultList();
   }
@@ -59,8 +59,8 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
   
   @SuppressWarnings("unchecked")
   @Override
-  public List<Object> findWaitSupplyGoodsCategoryList(Long suppId) {
-    String jpql = "SELECT DISTINCT g.category.cateName FROM Goods g WHERE g.sn IN "
+  public List<Object[]> findWaitSupplyGoodsCategoryList(Long suppId) {
+    String jpql = "SELECT DISTINCT g.category.id, g.category.cateName FROM Goods g WHERE g.sn IN "
         + "(SELECT s.goodsSn FROM SupplementList s WHERE s.suppId = :suppId)";
     Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId);
     return query.getResultList();
@@ -68,21 +68,20 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<Object[]> findWaitSupplyGoodsList(Long suppId, String sceneSn, String cateName,
+  public List<Object[]> findWaitSupplyGoodsList(Long suppId, String sceneSn, Long cateId,
       int pageNo, int pageSize) {
     String jpql = "SELECT s.goodsSn, s.goodsName, s.waitSupplyCount FROM SupplementList s WHERE s.suppId = :suppId";
     if(sceneSn!=null && !"".equals(sceneSn))
       jpql += " AND s.sceneSn = :sceneSn";
-    if(cateName!=null && !"".equals(cateName))
-      jpql += " AND s.goodsSn IN (SELECT g.sn FROM Goods g WHERE g.category.cateName = :cateName)";
+    if(cateId!=null)
+      jpql += " AND s.goodsSn IN (SELECT g.sn FROM Goods g WHERE g.category.id = :cateId)";
     Query query = entityManager.createQuery(jpql);
     query.setParameter("suppId", suppId);
     if(sceneSn!=null && !"".equals(sceneSn))
       query.setParameter("sceneSn", sceneSn);
-    if(cateName!=null && !"".equals(cateName))
-      query.setParameter("cateName", cateName);
-    query.setFirstResult(pageNo*pageSize-1).setMaxResults(pageSize)
-        .setFirstResult(pageNo == 1 ? 0 : (pageNo-1)*pageSize-1).setMaxResults(pageSize);
+    if(cateId!=null)
+      query.setParameter("cateId", cateId);
+    query.setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
     return query.getResultList();
   }
 
@@ -108,7 +107,7 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
     String sql = "SELECT s.goods_sn, s.goods_name, c.sn, s.wait_supply_count FROM t_supp_list s JOIN t_cntr_channel c"
         + " ON s.channel = c.id WHERE s.supp_id = :suppId AND s.cntr_id = :cntrId";
     Query query =entityManager.createNativeQuery(sql).setParameter("suppId", suppId).setParameter("cntrId", cntrId)
-        .setFirstResult(pageNo == 1 ? 0 : (pageNo-1)*pageSize-1).setMaxResults(pageSize);
+        .setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
     return query.getResultList();
   }
 
