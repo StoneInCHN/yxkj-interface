@@ -27,7 +27,9 @@ const goodItem = {
     gName: '统一冰火茶1000ml',
     gId: '100001',
     gImg: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png',
-    gPrice: 0.3
+    gPrice: 0.3,
+    gCount: 1,
+    fullName: '1111'
   }
 }
 

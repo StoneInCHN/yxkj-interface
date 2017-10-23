@@ -125,4 +125,15 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
       e.printStackTrace();
     }
   }
+
+  @Override
+  public void appUpdate(String deviceNo, String url) {
+    Long recordId = saveCommandRecord(deviceNo, CommonEnum.CmdType.APP_UPDATE, url);
+    try {
+      CmdMsg cmdMsg = receiverClient.appUpdateCmd(deviceNo, recordId, url);
+      LogUtil.debug(this.getClass(), "appUpdate", "CmdMsg = %s", cmdMsg.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

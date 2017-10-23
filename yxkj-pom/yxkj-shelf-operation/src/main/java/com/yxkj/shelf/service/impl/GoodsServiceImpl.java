@@ -1,5 +1,6 @@
 package com.yxkj.shelf.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,6 +11,7 @@ import com.yxkj.entity.Goods;
 import com.yxkj.entity.GoodsPic;
 import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 import com.yxkj.shelf.dao.GoodsDao;
+import com.yxkj.shelf.framework.filter.Filter;
 import com.yxkj.shelf.framework.service.impl.BaseServiceImpl;
 import com.yxkj.shelf.json.admin.request.GoodsData;
 import com.yxkj.shelf.json.admin.response.GoodsProfile;
@@ -80,5 +82,12 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods, Long> implements Go
 		  goodsData.setUrl(goods.getGoodsPics().get(0).getSource());
 	  }
 	  return goodsData;
+  }
+
+  @Override
+  public Goods findBySn(String sn) {
+	  List<Filter> filters = new ArrayList<Filter>();
+	  filters.add(Filter.eq("sn", sn));
+	  return findFirst(filters, null);
   }
 }

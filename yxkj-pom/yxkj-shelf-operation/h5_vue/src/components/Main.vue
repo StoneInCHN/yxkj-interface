@@ -16,34 +16,18 @@
         </div>
     </div>
     <div class="goods-list" v-else>
-      <flexbox :gutter="0" wrap="wrap">
-        <flexbox-item :span="1/2" v-for="dataItem in datas">
-          <div class="goods-item">
-            <div class="goods-header">
-             <h5>{{dataItem.fullName}}</h5>
-             <icon type="cancel" class="goods-header-icon" :data-id="dataItem.gId" @click.native="removeGoods"></icon>
-            </div>
-            <div class="goods-content">
-              <img :src=dataItem.gImg :alt=dataItem.gName />
-              <group>
-                <p><strong> ￥ {{dataItem.gPrice}}</strong></p>
-                <p>
-                  <span>数量:</span><inline-x-number v-model="dataItem.gCount" :min="1" button-style="round"></inline-x-number>
-                </p>
-              </group>
-            </div>
-          </div>
-        </flexbox-item>
+      <flexbox :gutter="0" wrap="wrap" >
+        <goods v-for="dataItem in datas" :dataItem="dataItem" @remove="removeGoods" @changeCount="changeCount"></goods>
       </flexbox>
     </div>
-    <p class="total-price">总共需要支付：￥ {{totalPrice}}</p>
     <div class="goods-btns">
+      <p class="total-price">总共需要支付：￥ {{totalPrice}}</p>
       <flexbox>
         <flexbox-item>
           <x-button type="default" @click.native="scanQR">继续扫</x-button>
         </flexbox-item>
         <flexbox-item>
-          <x-button type="default" link="pay">结算</x-button>
+          <x-button type="default" @click.native="goPay">结算</x-button>
         </flexbox-item>
       </flexbox>
     </div>
@@ -53,6 +37,7 @@
 <script>
 import { Group, Cell, Icon, InlineXNumber, Flexbox, FlexboxItem, XButton } from 'vux'
 import {numAdd, numMul} from '../utils/utils'
+import Goods from '@/components/Goods'
 export default {
   components: {
     Group,
@@ -61,7 +46,8 @@ export default {
     InlineXNumber,
     Flexbox,
     FlexboxItem,
-    XButton
+    XButton,
+    Goods
   },
   data () {
     return {
@@ -69,8 +55,8 @@ export default {
       userName: '',
       type: '',
       config: {},
-      token: '',
-      urlPre: 'http://test.ybjcq.com/h5/shelf',
+      token: sessionStorage.token,
+      urlPre: 'http://www.ybjstore.com/h5/shelf',
       hasItems: true
     }
   },
@@ -85,35 +71,29 @@ export default {
     this.type = params.type
     if (params) {
       if (params.type === 'wx') {
+        sessionStorage.type = 'wx'
         this.$store.dispatch('setType', {type: 'wx'})
       } else if (params.type === 'alipay') {
+        sessionStorage.type = 'alipay'
         this.$store.dispatch('setType', {type: 'alipay'})
       }
-      this.$api.authUserInfo(params).then(res => {
-        console.log(res)
-        if (res && res.code === '0000') {
-          this.token = res.token
+      if (sessionStorage && sessionStorage.items) {
+        let goodItems = JSON.parse(sessionStorage.items)
+        sessionStorage.items
+        if (sessionStorage && goodItems && goodItems.length > 0) { // 是否第一次加载 没有值说明是第一次
+          this.datas = goodItems
+          this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+          let userInfo = JSON.parse(sessionStorage.userInfo)
+          this.userName = userInfo.userId
+          this.token = sessionStorage.token
           this.$store.dispatch('setToken', {token: this.token})
-          if (res.msg.userInfo) {
-            this.userName = res.msg.userInfo.userId
-            this.$store.dispatch('setUserInfo', {userInfo: res.msg.userInfo})
-            this.getConfig()
-          }
-          if (res.msg.compInfo) {
-            document.title = res.msg.compInfo.displayName
-            this.$store.dispatch('setCompInfo', {compInfo: res.msg.compInfo})
-          }
-          if (res.msg.gInfo) {
-            let item = res.msg.gInfo
-            item.gCount = 1
-            item.fullName = item.gName + item.gSpec
-            this.datas.push(item)
-            this.$store.dispatch('setGoodItems', {goodItems: this.datas})
-          }
+          this.getConfig()
+        } else {
+          this.getAuthUserInfo(params)
         }
-      }).catch(error => {
-        console.log(error)
-      })
+      } else {
+        this.getAuthUserInfo(params)
+      }
     }
   },
   computed: {
@@ -143,6 +123,7 @@ export default {
         }
       }
       this.$store.dispatch('setTotalPrice', {totalPrice: total})
+      sessionStorage.total = total
       return total
     }
   },
@@ -151,22 +132,40 @@ export default {
       this.scanQR()
       this.datas = []
       this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+      this.setGoodsStorage(this.datas)
     },
-    removeGoods (e) {
-      let $el = e.target
-      let gId = $el.getAttribute('data-id')
-      let length = this.datas.length
-      let index
-      for (let i = 0; i < length; i++) {
-        let item = this.datas[i]
-        if (item && item.gId === gId) {
-          index = i
-          break
+    removeGoods (gId) {
+      if (gId) {
+        let length = this.datas.length
+        let index
+        for (let i = 0; i < length; i++) {
+          let item = this.datas[i]
+          if (item && item.gId === gId) {
+            index = i
+            break
+          }
+        }
+        if (index || index === 0) {
+          this.datas.splice(index, 1)
+          this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+          this.setGoodsStorage(this.datas)
         }
       }
-      if (index || index === 0) {
-        this.datas.splice(index, 1)
+    },
+    changeCount (gId, newVal) { // 重新计算gCount
+      if (this.datas && this.datas.length > 0) {
+        let length = this.datas.length
+        let items = []
+        for (let i = 0; i < length; i++) {
+          let item = this.datas[i]
+          if (item && item.gId === gId) {
+            item.gCount = newVal
+          }
+          items.push(item)
+        }
+        this.datas = items
         this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+        this.setGoodsStorage(this.datas)
       }
     },
     scanQR () {
@@ -203,21 +202,29 @@ export default {
           window.AlipayJSBridge.call('scan', {
             type: 'qr'
           }, (result) => {
-            let url = result.qrCode
-            if (url && url.indexOf(this.urlPre) !== -1) {
-              let gId = this.parseUrl(url)
-              let params = {
-                userName: this.userName,
-                gId: gId
+            if (result.errorCode && result.errorCode === '10') {
+              if (!this.datas || this.datas.length === 0) {
+                window.AlipayJSBridge.call('closeWebview')
               }
-              this.getGoodsInfo(params)
+            } else if (result.errorCode && result.errorCode === '11') {
+              console.log('scan fail')
             } else {
-              this.$vux.alert.show({
-                content: '请扫描正确的二维码'
-              })
-              setTimeout(() => {
-                this.$vux.alert.hide()
-              }, 3000)
+              let url = result.qrCode
+              if (url && url.indexOf(this.urlPre) !== -1) {
+                let gId = this.parseUrl(url)
+                let params = {
+                  userName: this.userName,
+                  gId: gId
+                }
+                this.getGoodsInfo(params)
+              } else {
+                this.$vux.alert.show({
+                  content: '请扫描正确的二维码'
+                })
+                setTimeout(() => {
+                  this.$vux.alert.hide()
+                }, 3000)
+              }
             }
           })
         })
@@ -225,27 +232,38 @@ export default {
     },
     getGoodsInfo (params) {
       this.$api.getGoodsBySn(params).then(res => {
-        let item = res.msg
-        if (item) {
-          let flag = false
-          if (this.datas.length > 0) {
-            let datasTemp = []
-            for (let i = 0; i < this.datas.length; i++) {
-              let data = this.datas[i]
-              if (data.gId === item.gId) {
-                flag = true
-                data.gCount += 1
+        if (res && res.code === '0000') {
+          let item = res.msg
+          if (item) {
+            let flag = false
+            if (this.datas.length > 0) {
+              let datasTemp = []
+              for (let i = 0; i < this.datas.length; i++) {
+                let data = this.datas[i]
+                if (data.gId === item.gId) {
+                  flag = true
+                  data.gCount += 1
+                }
+                datasTemp.push(data)
               }
-              datasTemp.push(data)
+              this.datas = datasTemp
             }
-            this.datas = datasTemp
+            if (!flag) {
+              item.gCount = 1
+              item.fullName = item.gName + item.gSpec
+              this.datas.unshift(item)
+            }
+            this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+            this.setGoodsStorage(this.datas)
           }
-          if (!flag) {
-            item.gCount = 1
-            item.fullName = item.gName + item.gSpec
-            this.datas.push(item)
-          }
-          this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+        } else {
+          let desc = res.desc
+          this.$vux.alert.show({
+            content: desc + ',请重新扫码!'
+          })
+          setTimeout(() => {
+            this.$vux.alert.hide()
+          }, 3000)
         }
       }).catch(error => {
         console.log(error)
@@ -301,11 +319,68 @@ export default {
         console.log(error)
       })
     },
+    getAuthUserInfo (params) {
+      this.$api.authUserInfo(params).then(res => {
+        if (res && res.code === '0000') {
+          this.token = res.token
+          sessionStorage.setItem('token', this.token)
+          this.$store.dispatch('setToken', {token: this.token})
+          if (res.msg.userInfo) {
+            this.userName = res.msg.userInfo.userId
+            this.setStorage('userInfo', res.msg.userInfo)
+            this.$store.dispatch('setUserInfo', {userInfo: res.msg.userInfo})
+            this.getConfig()
+          }
+          if (res.msg.compInfo) {
+            document.title = res.msg.compInfo.displayName
+            this.setStorage('compInfo', res.msg.compInfo)
+            this.$store.dispatch('setCompInfo', {compInfo: res.msg.compInfo})
+          }
+          if (res.msg.gInfo) {
+            let item = res.msg.gInfo
+            item.gCount = 1
+            item.fullName = item.gName + item.gSpec
+            this.datas.push(item)
+            this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+          }
+        } else {
+          let desc = res.desc
+          this.$vux.alert.show({
+            content: desc + ',请退出重新扫码！'
+          })
+          setTimeout(() => {
+            this.$vux.alert.hide()
+          }, 3000)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     alipayJSReady (callback) {
       if (window.AlipayJSBridge) {
         callback && callback()
       } else {
         document.addEventListener('AlipayJSBridgeReady', callback, false)
+      }
+    },
+    goPay () {
+      let goodItems = this.$store.getters.getGoodItems
+      this.setGoodsStorage(goodItems)
+      this.$router.push('pay')
+    },
+    setGoodsStorage (value) {
+      let items = JSON.stringify(value)
+      sessionStorage.items = items
+    },
+    setStorage (key, value) {
+      let items = JSON.stringify(value)
+      sessionStorage.setItem(key, items)
+    }
+  },
+  watch: {
+    'onlyItem.gCount' (curVal, oldVal) {
+      if (this.datas && this.datas.length === 1) {
+        this.changeCount(this.onlyItem.gId, curVal)
       }
     }
   }
@@ -314,7 +389,7 @@ export default {
 
 <style scoped>
 .main{
-  padding-bottom: 60px;
+  padding-bottom: 85px;
 }
 .only-one-goods{
   margin:20px;
@@ -390,13 +465,14 @@ export default {
     height: 16px !important;
     width: 15px !important;
 }
-.total-price{
-  margin:20px;
-}
 .goods-btns{
   position: fixed;
   bottom: 0;
   width: 100%;
+  background-color: #ffffff;
+}
+.total-price{
+  margin: 0 20px;
 }
 .goods-btns .vux-flexbox{
   padding: 9px 20px;

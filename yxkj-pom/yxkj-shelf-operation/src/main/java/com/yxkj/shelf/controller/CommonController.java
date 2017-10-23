@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.yxkj.entity.Admin;
 import com.yxkj.entity.Company;
 import com.yxkj.entity.Goods;
@@ -50,6 +51,7 @@ import com.yxkj.shelf.beans.CommonAttributes;
 import com.yxkj.shelf.beans.Setting.CaptchaType;
 import com.yxkj.shelf.common.log.LogUtil;
 import com.yxkj.shelf.controller.base.BaseController;
+import com.yxkj.shelf.framework.filter.Filter;
 import com.yxkj.shelf.json.admin.request.CompanyGoods;
 import com.yxkj.shelf.json.admin.request.LoginRequest;
 import com.yxkj.shelf.json.base.BaseRequest;
@@ -148,10 +150,19 @@ public class CommonController extends BaseController {
     String captcha = loginRequest.getCaptcha();   
     String captchaId = loginRequest.getCaptchaId();
     boolean autoLogin = loginRequest.isAutoLogin();
-    if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password) 
-    		|| StringUtils.isEmpty(captcha) || StringUtils.isEmpty(captchaId)) {
+    if (StringUtils.isEmpty(userName)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
-      response.setDesc(message("yxkj.request.param.missing"));
+      response.setDesc("请输入用户名");
+      return response;
+    }
+    if (StringUtils.isEmpty(password)) {
+      response.setCode(CommonAttributes.FAIL_LOGIN);
+      response.setDesc("请输入密码");
+      return response;
+    }
+    if (StringUtils.isEmpty(captcha) || StringUtils.isEmpty(captchaId)) {
+      response.setCode(CommonAttributes.FAIL_LOGIN);
+      response.setDesc("请输入验证码");
       return response;
     }
     if (!autoLogin && !captchaService.isValid(CaptchaType.adminLogin, captchaId, captcha)) {
@@ -296,7 +307,7 @@ public class CommonController extends BaseController {
     for (int i = 0; i < selectKeys.size(); i++) {
       goods.add(goodsService.find(selectKeys.get(i)));
     }
-    String[] propertys = {"id", "sn", "name", "spec"};
+    String[] propertys = {"id", "sn", "name", "spec", "salePrice"};
     List<Map<String, Object>> goodsList = FieldFilterUtils.filterCollection(propertys, goods);
 
     try {
@@ -410,10 +421,34 @@ public class CommonController extends BaseController {
   // }
   // }
   private boolean isValidGoodsRow(Map<String, Object> rowMap) {
-    if (rowMap.get("sn") != null && rowMap.get("name") != null && rowMap.get("spec") != null
-        && rowMap.get("costPrice") != null && rowMap.get("salePrice") != null) {
-      return true;
-    }
+	if (rowMap.get("sn") != null && StringUtils.isNotBlank(rowMap.get("sn").toString())) {
+		if (goodsService.exists(Filter.eq("sn", rowMap.get("sn").toString()))) {
+			rowMap.put("sn", rowMap.get("sn")+"(商品条码已存在)");
+			return false;
+		}
+		if (rowMap.get("name") == null || StringUtils.isBlank(rowMap.get("name").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(商品名称缺失)");
+			return false;
+		}
+		if (rowMap.get("spec") == null || StringUtils.isBlank(rowMap.get("spec").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(净含量缺失)");
+			return false;
+		}
+		if (rowMap.get("costPrice") == null || StringUtils.isBlank(rowMap.get("costPrice").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(成本价缺失)");
+			return false;
+		}
+		if (rowMap.get("salePrice") == null || StringUtils.isBlank(rowMap.get("salePrice").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(售价价缺失)");
+			return false;
+		}
+		if (rowMap.get("name") != null && rowMap.get("spec") != null
+		        && rowMap.get("costPrice") != null && rowMap.get("salePrice") != null 
+		        && StringUtils.isNotBlank(rowMap.get("name").toString()) && StringUtils.isNotBlank(rowMap.get("spec").toString())
+		        && StringUtils.isNotBlank(rowMap.get("costPrice").toString()) && StringUtils.isNotBlank(rowMap.get("salePrice").toString())) {
+			return true;
+		}
+	}
     return false;
   }
 

@@ -81,7 +81,7 @@ public class UserController extends BaseController {
       Page<Tourist> goodsPage = touristService.findPage(pageable);      
       String[] propertys =
           {"id", "userName", "cellPhoneNum", "gender", "nickName", 
-    		  "userChannel", "companyName","regTime"};
+    		  "userChannel", "companyName","createDate"};
       List<Map<String, Object>> result =
           FieldFilterUtils.filterCollection(propertys, goodsPage.getContent());
       PageResponse pageInfo = new PageResponse(pageable.getPageNumber(), 

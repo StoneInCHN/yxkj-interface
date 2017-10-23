@@ -38,10 +38,10 @@ export default {
   data () {
     return {
       payConfig: {},
-      type: this.$store.getters.getType,
       showScrollBox: false,
       pageInfo: '',
-      resInfo: {}
+      resInfo: {},
+      config: {}
     }
   },
   mounted () {
@@ -52,10 +52,31 @@ export default {
         window.AlipayJSBridge.call('closeWebview')
       }
     }, false)
+    if (sessionStorage && sessionStorage.token) {
+      let token = sessionStorage.token
+      this.$store.dispatch('setToken', {token: token})
+      this.type = sessionStorage.type
+      this.$store.dispatch('setType', {type: this.type})
+      let userInfo = JSON.parse(sessionStorage.userInfo)
+      this.$store.dispatch('setUserInfo', {userInfo: userInfo})
+      let compInfo = JSON.parse(sessionStorage.compInfo)
+      this.$store.dispatch('setCompInfo', {compInfo: compInfo})
+      this.getConfig()
+    }
   },
   computed: {
+    type () {
+      let type = sessionStorage.type
+      if (!type) {
+        type = this.$store.getters.getType
+      }
+      return type
+    },
     goodsItems () {
       let items = this.$store.getters.getGoodItems
+      if (!items || items.length < 1) {
+        items = JSON.parse(sessionStorage.items)
+      }
       let datas = []
       for (let i = 0; i < items.length; i++) {
         let item = items[i]
@@ -66,7 +87,12 @@ export default {
       return datas
     },
     totalPrice () {
-      return '￥' + this.$store.getters.getTotalPrice
+      let total = sessionStorage.total
+      if (total) {
+        return total
+      } else {
+        return '￥' + this.$store.getters.getTotalPrice
+      }
     },
     goodsCounts () {
       let count = 0
@@ -125,6 +151,46 @@ export default {
       } else {
         this.goPay(this.resInfo)
       }
+    },
+    getConfig () {
+      let params = {
+        userName: this.$store.getters.getUserInfo.userId,
+        curUrl: location.href
+      }
+      this.$api.jsApiConfig(params).then(res => {
+        if (res && res.code === '0000' && res.msg) {
+          this.config.jsapi_ticket = res.msg.jsapi_ticket
+          this.config.signature = res.msg.signature
+          this.config.nonceStr = res.msg.nonceStr
+          this.config.timestamp = res.msg.timestamp
+          this.config.url = res.msg.url
+          this.config.appId = res.msg.appId
+        }
+        if (this.config) {
+          this.$wechat.config({
+            debug: false,
+            appId: this.config.appId,
+            timestamp: this.config.timestamp,
+            nonceStr: this.config.nonceStr,
+            signature: this.config.signature,
+            jsApiList: [
+              'scanQRCode',
+              'chooseWXPay',
+              'hideAllNonBaseMenuItem',
+              'closeWindow'
+            ]
+          })
+          this.$wechat.ready(() => {
+            this.$wechat.hideAllNonBaseMenuItem()
+            console.log('wx loading success')
+          })
+          this.$wechat.error((res) => {
+            console.log('wx loading error')
+          })
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
     goPay (res) {
       if (this.type === 'wx') {

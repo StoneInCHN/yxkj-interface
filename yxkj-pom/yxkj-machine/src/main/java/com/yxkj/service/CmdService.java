@@ -19,4 +19,6 @@ public interface CmdService extends BaseService<CommandRecord, Long> {
   void updateAudioVolume(String deviceNo, float volume);
 
   void notificationCmd(String deviceNo, CommonEnum.CmdType cmdType);
+
+  void appUpdate(String deviceNo, String url);
 }
