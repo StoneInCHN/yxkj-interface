@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.yxkj.entity.ContainerChannel;
+import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.framework.service.BaseService;
 import com.yxkj.json.base.ResponseMultiple;
+import com.yxkj.json.beans.GoodsBean;
 
 public interface ContainerChannelService extends BaseService<ContainerChannel, Long> {
   /**
@@ -24,4 +26,13 @@ public interface ContainerChannelService extends BaseService<ContainerChannel, L
    * @return
    */
   ResponseMultiple<Map<String, Object>> verifyStock(List<String> gList);
+
+
+  /**
+   * 验证所选商品的所有商品都有库存
+   *
+   * @param gList
+   * @return
+   */
+  Boolean isVerifyStockSuccess(List<GoodsBean> gList, CommonEnum.PurMethod purMethod);
 }

@@ -9,15 +9,12 @@ import javax.annotation.Resource;
 import com.yxkj.common.client.ReceiverClient;
 import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.common.entity.CmdMsg;
+import com.yxkj.dao.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yxkj.common.log.LogUtil;
-import com.yxkj.dao.OrderDao;
-import com.yxkj.dao.SceneDao;
-import com.yxkj.dao.SnDao;
-import com.yxkj.dao.TouristDao;
 import com.yxkj.entity.ContainerChannel;
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.Order;
@@ -52,6 +49,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   @Resource(name = "cmdServiceImpl")
   private CmdService cmdService;
 
+  @Resource(name = "containerChannelDaoImpl")
+  private ContainerChannelDao containerChannelDao;
 
   @Resource(name = "receiverClient")
   private ReceiverClient receiverClient;
@@ -108,6 +107,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         BigDecimal itemProfit = cc.getPrice().subtract(gs.getCostPrice());
         profit = profit.add(itemProfit);
         order.getOrderItems().add(item);
+
+        // 库存锁定
+        cc.setOfflineLocalLock(cc.getOfflineLocalLock() + 1);
+        containerChannelDao.merge(cc);
       }
     }
     order.setAmount(amount);
@@ -124,8 +127,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     Order order = orderDao.getOrderBySn(orderSn);
     if (!OrderStatus.UNPAID.equals(order.getStatus())) {
       LogUtil.debug(this.getClass(), "callbackAfterPay",
-          "This order already deal with. orderSn: %s, orderStatus: %s", order.getSn(), order
-              .getStatus().toString());
+          "This order already deal with. orderSn: %s, orderStatus: %s", order.getSn(),
+          order.getStatus().toString());
       return order;
     }
     order.setStatus(OrderStatus.PAID);
@@ -133,12 +136,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     orderDao.merge(order);
     cmdService.notificationCmd(order.getDeviceNo(), CommonEnum.CmdType.PAYMENT_SUCCESS);
     cmdService.salesOut(order.getId());
-    LogUtil
-        .debug(
-            this.getClass(),
-            "callbackAfterPay",
-            "update cntr order info finished for pay callback. orderId: %s,sn: %s,orderStatus: %s,payTime: %s",
-            order.getId(), order.getSn(), order.getStatus().toString(), order.getPaymentTime());
+    LogUtil.debug(this.getClass(), "callbackAfterPay",
+        "update cntr order info finished for pay callback. orderId: %s,sn: %s,orderStatus: %s,payTime: %s",
+        order.getId(), order.getSn(), order.getStatus().toString(), order.getPaymentTime());
     return order;
   }
 

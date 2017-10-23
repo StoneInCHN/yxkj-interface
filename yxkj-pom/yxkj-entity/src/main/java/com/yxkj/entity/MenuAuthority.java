@@ -54,6 +54,9 @@ public class MenuAuthority extends OrderEntity {
   /** 下级菜单 */
   private Set<MenuAuthority> children = new HashSet<MenuAuthority>();
   
+  public MenuAuthority(){
+
+  }
   public MenuAuthority(String name, String path, String icon, String component, String redirect, Boolean hidden,  Set<MenuAuthority> children){
 	  this.name = name;
 	  this.path = path;

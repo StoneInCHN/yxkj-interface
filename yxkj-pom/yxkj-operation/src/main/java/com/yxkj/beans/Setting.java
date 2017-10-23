@@ -2,6 +2,8 @@ package com.yxkj.beans;
 
 import java.io.Serializable;
 
+
+
 /**
  * 系统设置
  * 
@@ -10,8 +12,30 @@ public class Setting implements Serializable {
 
   private static final long serialVersionUID = -1478999889661796840L;
 
+  /**
+   * 验证码类型
+   */
+  public enum CaptchaType {
 
+    /** 后台登录 */
+    adminLogin,
 
+    /** 租户资料上传 */
+    adminApply,
+
+    /** 找回密码 */
+    findPassword,
+
+    /** 重置密码 */
+    resetPassword,
+
+    /** 其它 */
+    other
+  }
+  
+  /** 验证码类型 */
+  private CaptchaType[] captchaTypes;
+  
   /** 缓存名称 */
   public static final String CACHE_NAME = "setting";
 
@@ -101,6 +125,16 @@ public class Setting implements Serializable {
   private Long insuranceId;
 
   /**
+   * 公众平台appid
+   */
+  private String wxPublicAppId;
+
+  /**
+   * 公众平台appsecret
+   */
+  private String wxPublicAppSecret;
+
+  /**
    * 秘钥
    */
   private String wechatKey;
@@ -114,11 +148,6 @@ public class Setting implements Serializable {
    * 商户ID
    */
   private String wechatMchId;
-
-  /**
-   * 交易类型
-   */
-  private String wechatTradeType;
 
   /**
    * 通知地址
@@ -197,20 +226,6 @@ public class Setting implements Serializable {
    */
   private String bdCarConvert;
 
-  /**
-   * 兑吧appkey
-   */
-  private String duibaAppKey;
-
-  /**
-   * 兑吧appsecret
-   */
-  private String duibaAppSecret;
-
-  /**
-   * 兑吧login url
-   */
-  private String duibaLoginUrl;
 
   /**
    * 对外接口APIKEY
@@ -238,9 +253,9 @@ public class Setting implements Serializable {
   private Integer orderCompleteTimeOut;
 
   /**
-   * 推荐url
+   * 授权跳转url
    */
-  private String recommendUrl;
+  private String authRedirectUrl;
 
   /**
    * 下载页面
@@ -258,9 +273,24 @@ public class Setting implements Serializable {
   private String smsPostfix;
 
   /**
+   * 应用APPID
+   */
+  private String alipayAppId;
+
+  /**
    * 支付宝合作身份者ID
    */
   private String alipayPartner;
+
+  // /**
+  // * 开发者私钥(合作伙伴密钥)
+  // */
+  // private String alipayPartnerPrivateKey;
+  //
+  // /**
+  // * 支付宝的公钥(合作伙伴密钥)
+  // */
+  // private String alipayPartnerPublicKey;
 
   /**
    * 支付宝商户的私钥
@@ -273,73 +303,22 @@ public class Setting implements Serializable {
   private String alipayPublicKey;
 
   /**
-   * 支付宝回调接口
+   * 支付宝异步通知接口
    */
   private String alipayNotifyUrl;
+
+  /**
+   * 支付宝同步通知接口
+   */
+  private String alipayReturnUrl;
+
 
   /**
    * 签约卖家支付宝账号
    */
   private String alipaySellerId;
 
-  /**
-   * 入住商家折扣最小值
-   */
-  private String sellerDiscountMin;
 
-  /**
-   * 通联平台商户Key
-   */
-  private String tlMerchantKey;
-
-  /**
-   * 通联微信支付宝扫码支付商户号
-   */
-  private String tlMerchantPayId;
-  /**
-   * 通联平台appid
-   */
-  private String tlAppId;
-
-  /**
-   * 通联平台下单url
-   */
-  private String tlPayOrder;
-
-  /**
-   * 通联订单回调url
-   */
-  private String tlPayNotifyUrl;
-
-  /**
-   * 通联支付用户注册url
-   */
-  private String tlRegUserUrl;
-
-  /**
-   * 通联商户的H5支付号
-   */
-  private String tlMerchantH5Id;
-
-  /**
-   * 通联支付支付后同步跳转url
-   */
-  private String tlPickupUrl;
-
-  /**
-   * H5页面提交订单接口url
-   */
-  private String tlH5OrderUrl;
-
-  /**
-   * 银行卡支付H5回调url
-   */
-  private String tlPayNotifyH5Url;
-
-  /**
-   * 商户H5 key
-   */
-  private String tlMerchantH5Key;
 
   /**
    * 聚合数据 银行卡四元素验证URL
@@ -359,129 +338,49 @@ public class Setting implements Serializable {
    */
   private String juheKeyCertificates;
 
-
-
   /**
-   * 九派支付商户编号
+   * jwt token key
    */
-  private String jiupaiMerchantId;
+  private String tokenKey;
 
-
-  /**
-   * 九派支付商户证书路径
-   */
-  private String jiupaiMerchantCertPath;
-
-
-  /**
-   * 九派支付商户证书秘钥
-   */
-  private String jiupaiMerchantCertPass;
-
-  /**
-   * 九派支付根证书路径
-   */
-  private String jiupaiRootCertPath;
-
-
-  /**
-   * 九派支付网关地址
-   */
-  private String jiupaiRequestUrl;
-
-
-  /**
-   * 九派支付请求字符集(默认00表示GB18030)
-   */
-  private String jiupaiCharset;
-
-  /**
-   * 九派支付请求接口版本号
-   */
-  private String jiupaiVersion;
-
-  /**
-   * 九派支付请求加密算法
-   */
-  private String jiupaiSignType;
-
-  /**
-   * 九派支付异步通知url
-   */
-  private String jiupaiNotifyUrl;
-
-
-
-  public String getJiupaiNotifyUrl() {
-    return jiupaiNotifyUrl;
+  public String getAlipayReturnUrl() {
+    return alipayReturnUrl;
   }
 
-  public void setJiupaiNotifyUrl(String jiupaiNotifyUrl) {
-    this.jiupaiNotifyUrl = jiupaiNotifyUrl;
+  public void setAlipayReturnUrl(String alipayReturnUrl) {
+    this.alipayReturnUrl = alipayReturnUrl;
   }
 
-  public String getJiupaiMerchantId() {
-    return jiupaiMerchantId;
+  public String getWxPublicAppId() {
+    return wxPublicAppId;
   }
 
-  public void setJiupaiMerchantId(String jiupaiMerchantId) {
-    this.jiupaiMerchantId = jiupaiMerchantId;
+  public void setWxPublicAppId(String wxPublicAppId) {
+    this.wxPublicAppId = wxPublicAppId;
   }
 
-  public String getJiupaiMerchantCertPath() {
-    return jiupaiMerchantCertPath;
+  public String getWxPublicAppSecret() {
+    return wxPublicAppSecret;
   }
 
-  public void setJiupaiMerchantCertPath(String jiupaiMerchantCertPath) {
-    this.jiupaiMerchantCertPath = jiupaiMerchantCertPath;
+  public void setWxPublicAppSecret(String wxPublicAppSecret) {
+    this.wxPublicAppSecret = wxPublicAppSecret;
   }
 
-  public String getJiupaiMerchantCertPass() {
-    return jiupaiMerchantCertPass;
+  public String getAlipayAppId() {
+    return alipayAppId;
   }
 
-  public void setJiupaiMerchantCertPass(String jiupaiMerchantCertPass) {
-    this.jiupaiMerchantCertPass = jiupaiMerchantCertPass;
+  public void setAlipayAppId(String alipayAppId) {
+    this.alipayAppId = alipayAppId;
   }
 
-  public String getJiupaiRootCertPath() {
-    return jiupaiRootCertPath;
+  public String getTokenKey() {
+    return tokenKey;
   }
 
-  public void setJiupaiRootCertPath(String jiupaiRootCertPath) {
-    this.jiupaiRootCertPath = jiupaiRootCertPath;
-  }
-
-  public String getJiupaiRequestUrl() {
-    return jiupaiRequestUrl;
-  }
-
-  public void setJiupaiRequestUrl(String jiupaiRequestUrl) {
-    this.jiupaiRequestUrl = jiupaiRequestUrl;
-  }
-
-  public String getJiupaiCharset() {
-    return jiupaiCharset;
-  }
-
-  public void setJiupaiCharset(String jiupaiCharset) {
-    this.jiupaiCharset = jiupaiCharset;
-  }
-
-  public String getJiupaiVersion() {
-    return jiupaiVersion;
-  }
-
-  public void setJiupaiVersion(String jiupaiVersion) {
-    this.jiupaiVersion = jiupaiVersion;
-  }
-
-  public String getJiupaiSignType() {
-    return jiupaiSignType;
-  }
-
-  public void setJiupaiSignType(String jiupaiSignType) {
-    this.jiupaiSignType = jiupaiSignType;
+  public void setTokenKey(String tokenKey) {
+    this.tokenKey = tokenKey;
   }
 
   public String getJuheVerifyCertificates() {
@@ -500,96 +399,6 @@ public class Setting implements Serializable {
     this.juheKeyCertificates = juheKeyCertificates;
   }
 
-  public String getTlMerchantH5Key() {
-    return tlMerchantH5Key;
-  }
-
-  public void setTlMerchantH5Key(String tlMerchantH5Key) {
-    this.tlMerchantH5Key = tlMerchantH5Key;
-  }
-
-  public String getTlPayNotifyH5Url() {
-    return tlPayNotifyH5Url;
-  }
-
-  public void setTlPayNotifyH5Url(String tlPayNotifyH5Url) {
-    this.tlPayNotifyH5Url = tlPayNotifyH5Url;
-  }
-
-  public String getTlH5OrderUrl() {
-    return tlH5OrderUrl;
-  }
-
-  public void setTlH5OrderUrl(String tlH5OrderUrl) {
-    this.tlH5OrderUrl = tlH5OrderUrl;
-  }
-
-  public String getTlPickupUrl() {
-    return tlPickupUrl;
-  }
-
-  public void setTlPickupUrl(String tlPickupUrl) {
-    this.tlPickupUrl = tlPickupUrl;
-  }
-
-  public String getTlRegUserUrl() {
-    return tlRegUserUrl;
-  }
-
-  public void setTlRegUserUrl(String tlRegUserUrl) {
-    this.tlRegUserUrl = tlRegUserUrl;
-  }
-
-
-  public String getTlMerchantH5Id() {
-    return tlMerchantH5Id;
-  }
-
-  public void setTlMerchantH5Id(String tlMerchantH5Id) {
-    this.tlMerchantH5Id = tlMerchantH5Id;
-  }
-
-  public String getTlMerchantKey() {
-    return tlMerchantKey;
-  }
-
-  public void setTlMerchantKey(String tlMerchantKey) {
-    this.tlMerchantKey = tlMerchantKey;
-  }
-
-
-  public String getTlMerchantPayId() {
-    return tlMerchantPayId;
-  }
-
-  public void setTlMerchantPayId(String tlMerchantPayId) {
-    this.tlMerchantPayId = tlMerchantPayId;
-  }
-
-  public String getTlAppId() {
-    return tlAppId;
-  }
-
-  public void setTlAppId(String tlAppId) {
-    this.tlAppId = tlAppId;
-  }
-
-  public String getTlPayOrder() {
-    return tlPayOrder;
-  }
-
-  public void setTlPayOrder(String tlPayOrder) {
-    this.tlPayOrder = tlPayOrder;
-  }
-
-  public String getTlPayNotifyUrl() {
-    return tlPayNotifyUrl;
-  }
-
-  public void setTlPayNotifyUrl(String tlPayNotifyUrl) {
-    this.tlPayNotifyUrl = tlPayNotifyUrl;
-  }
-
   public String getDownloadPage() {
     return downloadPage;
   }
@@ -606,13 +415,6 @@ public class Setting implements Serializable {
     this.downloadUrl = downloadUrl;
   }
 
-  public String getSellerDiscountMin() {
-    return sellerDiscountMin;
-  }
-
-  public void setSellerDiscountMin(String sellerDiscountMin) {
-    this.sellerDiscountMin = sellerDiscountMin;
-  }
 
   public String getAlipaySellerId() {
     return alipaySellerId;
@@ -702,13 +504,6 @@ public class Setting implements Serializable {
     this.smsPwd = smsPwd;
   }
 
-  public String getRecommendUrl() {
-    return recommendUrl;
-  }
-
-  public void setRecommendUrl(String recommendUrl) {
-    this.recommendUrl = recommendUrl;
-  }
 
   public Integer getOrderReceiveTimeOut() {
     return orderReceiveTimeOut;
@@ -772,30 +567,6 @@ public class Setting implements Serializable {
 
   public void setBdApiStoreWeatherUrl(String bdApiStoreWeatherUrl) {
     this.bdApiStoreWeatherUrl = bdApiStoreWeatherUrl;
-  }
-
-  public String getDuibaLoginUrl() {
-    return duibaLoginUrl;
-  }
-
-  public void setDuibaLoginUrl(String duibaLoginUrl) {
-    this.duibaLoginUrl = duibaLoginUrl;
-  }
-
-  public String getDuibaAppKey() {
-    return duibaAppKey;
-  }
-
-  public void setDuibaAppKey(String duibaAppKey) {
-    this.duibaAppKey = duibaAppKey;
-  }
-
-  public String getDuibaAppSecret() {
-    return duibaAppSecret;
-  }
-
-  public void setDuibaAppSecret(String duibaAppSecret) {
-    this.duibaAppSecret = duibaAppSecret;
   }
 
   public String getBdCarConvert() {
@@ -893,14 +664,6 @@ public class Setting implements Serializable {
 
   public void setWechatMchId(String wechatMchId) {
     this.wechatMchId = wechatMchId;
-  }
-
-  public String getWechatTradeType() {
-    return wechatTradeType;
-  }
-
-  public void setWechatTradeType(String wechatTradeType) {
-    this.wechatTradeType = wechatTradeType;
   }
 
   public String getWechatNotifyUrl() {
@@ -1158,4 +921,18 @@ public class Setting implements Serializable {
     this.juheKey = juheKey;
   }
 
+  public String getAuthRedirectUrl() {
+    return authRedirectUrl;
+  }
+
+  public void setAuthRedirectUrl(String authRedirectUrl) {
+    this.authRedirectUrl = authRedirectUrl;
+  }
+  public CaptchaType[] getCaptchaTypes() {
+	 return captchaTypes;
+  }
+
+  public void setCaptchaTypes(CaptchaType[] captchaTypes) {
+	 this.captchaTypes = captchaTypes;
+  }
 }

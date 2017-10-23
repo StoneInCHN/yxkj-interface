@@ -1,12 +1,11 @@
 package com.yxkj.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.yxkj.entity.commonenum.CommonEnum;
+import com.yxkj.json.beans.GoodsBean;
 import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,8 @@ import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.service.ContainerChannelService;
 
 @Service("containerChannelServiceImpl")
-public class ContainerChannelServiceImpl extends BaseServiceImpl<ContainerChannel, Long> implements
-    ContainerChannelService {
+public class ContainerChannelServiceImpl extends BaseServiceImpl<ContainerChannel, Long>
+    implements ContainerChannelService {
 
   @Resource(name = "containerChannelDaoImpl")
   private ContainerChannelDao containerChannelDao;
@@ -62,5 +61,35 @@ public class ContainerChannelServiceImpl extends BaseServiceImpl<ContainerChanne
     }
     response.setMsg(maps);
     return response;
+  }
+
+  @Override
+  public Boolean isVerifyStockSuccess(List<GoodsBean> gList, CommonEnum.PurMethod purMethod) {
+    Boolean flag = true;
+    for (GoodsBean goodsBean : gList) {
+      int count = goodsBean.getCount();
+      // 中控购买，优先级最高，
+      // 线下扫码，输码<中控
+      if (purMethod.equals(CommonEnum.PurMethod.CONTROLL_MACHINE)) {
+        // 缺货
+        if (count > goodsBean.getChannel().getSurplus()
+            - goodsBean.getChannel().getOfflineLocalLock()) {
+          goodsBean.setCount(
+              goodsBean.getChannel().getSurplus() - goodsBean.getChannel().getOfflineLocalLock());
+          flag = false;
+        }
+      } else if (purMethod.equals(CommonEnum.PurMethod.INPUT_CODE)
+          || purMethod.equals(CommonEnum.PurMethod.SCAN_CODE)) {
+        // 缺货
+        if (count > goodsBean.getChannel().getSurplus()
+            - goodsBean.getChannel().getOfflineLocalLock()) {
+          goodsBean.setCount(
+              goodsBean.getChannel().getSurplus() - goodsBean.getChannel().getOfflineLocalLock()
+                  - goodsBean.getChannel().getOfflineRemoteLock());
+          flag = false;
+        }
+      }
+    }
+    return flag;
   }
 }
