@@ -120,7 +120,7 @@ public class GoodsController extends BaseController {
     	  } catch (Exception e) {
     		  if (e.getCause() instanceof ConstraintViolationException) {
     			  response.setCode(CommonAttributes.FAIL_COMMON);
-    			  response.setDesc("商品分类已存在商品，不能删除！");
+    			  response.setDesc(message("yxkj.goodsCate.hasGoods.cannot.remove"));
 			  }else {
 	    		  response.setCode(CommonAttributes.FAIL_COMMON);              
 	              response.setDesc(message("yxkj.request.failed"));

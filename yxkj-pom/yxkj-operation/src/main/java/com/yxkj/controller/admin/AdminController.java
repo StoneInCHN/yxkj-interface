@@ -47,19 +47,19 @@ public class AdminController extends BaseController {
         Admin admin = adminService.findByUserName(userName);
         if (admin == null) {
           response.setCode(CommonAttributes.FAIL_COMMON);
-          response.setDesc("无法识别当前用户");
+          response.setDesc(message("yxkj.admin.null"));
           return response;
         }
         if (!oldEnPwd.equals(admin.getPassword())) {
             response.setCode(CommonAttributes.FAIL_COMMON);
-            response.setDesc("旧密码输入错误");
+            response.setDesc(message("yxkj.oldPwd.error"));
             return response;
         }    	
     	admin.setPassword(newEnPwd);
     	adminService.update(admin);
     	
     	response.setCode(CommonAttributes.SUCCESS);
-    	response.setDesc("密码修改成功");
+    	response.setDesc(message("yxkj.request.success"));
     	return response;
 	}
 }

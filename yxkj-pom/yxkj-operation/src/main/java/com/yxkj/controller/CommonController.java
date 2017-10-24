@@ -111,17 +111,17 @@ public class CommonController extends BaseController {
     boolean autoLogin = loginRequest.isAutoLogin();
     if (StringUtils.isEmpty(userName)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
-      response.setDesc("请输入用户名");
+      response.setDesc(message("yxkj.admin.userName.empty"));
       return response;
     }
     if (StringUtils.isEmpty(password)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
-      response.setDesc("请输入密码");
+      response.setDesc(message("yxkj.admin.password.empty"));
       return response;
     }
     if (StringUtils.isEmpty(captcha) || StringUtils.isEmpty(captchaId)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
-      response.setDesc("请输入验证码");
+      response.setDesc(message("yxkj.admin.captcha.empty"));
       return response;
     }
     if (!autoLogin && !captchaService.isValid(CaptchaType.adminLogin, captchaId, captcha)) {
