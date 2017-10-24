@@ -19,6 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+
+import com.yxkj.utils.KeyGenerator;
+import com.yxkj.utils.RSAHelper;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,6 +73,18 @@ public class CommonController extends BaseController {
   @Resource(name = "captchaServiceImpl")
   private CaptchaService captchaService;
   
+  
+  @RequestMapping(value = "/rsa", method = RequestMethod.POST)
+  @ApiOperation(value = "获取公匙", httpMethod = "POST", response = BaseResponse.class, notes = "获取公匙")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse rsa() {
+    BaseResponse response = new BaseResponse();
+    String key = setting.getServerPublicKey();
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(key);
+    return response;
+  }
+  
   /**
    * 验证码
    */
@@ -103,7 +119,8 @@ public class CommonController extends BaseController {
   public @ResponseBody ResponseOne<Admin> login(@ApiParam @RequestBody LoginRequest loginRequest,
       HttpServletRequest request) {
     ResponseOne<Admin> response = new ResponseOne<Admin>();
-
+    
+    String serverPrivateKey = setting.getServerPrivateKey();
     String userName = loginRequest.getUserName();
     String password = loginRequest.getPassword();
     String captcha = loginRequest.getCaptcha();   
@@ -113,6 +130,14 @@ public class CommonController extends BaseController {
       response.setCode(CommonAttributes.FAIL_LOGIN);
       response.setDesc(message("yxkj.admin.userName.empty"));
       return response;
+    }
+    try {
+        password = KeyGenerator.decrypt(password, RSAHelper.getPrivateKey(serverPrivateKey));
+    } catch (Exception e) {
+    	LogUtil.debug(this.getClass(), "login", "登录密码，RSA解密错误：%s", e.getMessage());
+        response.setCode(CommonAttributes.FAIL_LOGIN);
+        response.setDesc(message("yxkj.request.failed"));
+        return response;
     }
     if (StringUtils.isEmpty(password)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
@@ -145,6 +170,7 @@ public class CommonController extends BaseController {
       LogUtil.debug(this.getClass(), "login", "账号无效");
       return response;
     }
+
     if (!DigestUtils.md5Hex(password).equals(admin.getPassword())) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
       response.setDesc(message("yxkj.admin.userName.password.error"));
