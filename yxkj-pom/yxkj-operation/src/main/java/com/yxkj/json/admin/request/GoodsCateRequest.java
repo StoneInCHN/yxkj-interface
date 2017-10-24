@@ -1,12 +1,9 @@
 package com.yxkj.json.admin.request;
 
+import com.yxkj.json.base.BaseRequest;
 
 
-public class GoodsCateRequest {
-	/**
-	 * ID
-	 */
-	private Long id;
+public class GoodsCateRequest extends BaseRequest{
 		
 	/**
 	 * 商品类别名称
@@ -17,17 +14,6 @@ public class GoodsCateRequest {
 	 * 类别图片地址
 	 */
 	private String catePicUrl;
-	
-	/** 用户名 */
-	private String userName;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getCateName() {
 		return cateName;
@@ -35,14 +21,6 @@ public class GoodsCateRequest {
 
 	public void setCateName(String cateName) {
 		this.cateName = cateName;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public String getCatePicUrl() {

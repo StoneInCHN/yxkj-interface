@@ -9,7 +9,7 @@ public class ChangePwdRequest {
 	/** 旧密码（rsa密文） */
 	private String oldPwd;
 	
-	/** 新密码（rsa密文） */
+	/** 新密码 */
 	private String newPwd;
 
 	public String getUserName() {

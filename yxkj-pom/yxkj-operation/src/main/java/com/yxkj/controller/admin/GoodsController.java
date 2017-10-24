@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.BaseController;
+import com.yxkj.entity.Goods;
 import com.yxkj.entity.GoodsCategory;
 import com.yxkj.framework.filter.Filter;
 import com.yxkj.framework.ordering.Ordering;
@@ -34,6 +36,7 @@ import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.GoodsCategoryService;
 import com.yxkj.service.GoodsService;
+import com.yxkj.json.admin.request.GoodsRequest;
 import com.yxkj.utils.FieldFilterUtils;
 
 /**
@@ -52,6 +55,37 @@ public class GoodsController extends BaseController {
 	@Resource(name = "goodsCategoryServiceImpl")
 	private GoodsCategoryService goodsCategoryService;
 	
+    @RequestMapping(value = "/getGoodsList", method = RequestMethod.POST)
+    @ApiOperation(value = "商品列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取商品列表")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseMultiple<Map<String, Object>> getGoodsList(
+    		@ApiParam @RequestBody GoodsRequest request) {
+    	
+      ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>(); 
+      Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
+      List<Filter> filters = pageable.getFilters();
+      if (StringUtils.isNotBlank(request.getSn())) {
+          filters.add(Filter.like("sn", "%"+request.getSn().trim()+"%"));
+      }
+      if (StringUtils.isNotBlank(request.getName())) {
+          filters.add(Filter.like("name", "%"+request.getName().trim()+"%"));
+      }		
+      List<Ordering> orderings = pageable.getOrderings();
+      orderings.add(Ordering.desc("createDate"));
+
+      Page<Goods> goodsPage = goodsService.findPage(pageable);      
+      String[] propertys =
+          {"id", "name", "spec", "sn", "category.cateName", "costPrice", "salePrice", "goodsPics"};
+      List<Map<String, Object>> result =
+          FieldFilterUtils.filterCollection(propertys, goodsPage.getContent());
+      PageResponse pageInfo = new PageResponse(pageable.getPageNumber(), 
+    		  pageable.getPageSize(), (int)goodsPage.getTotal());
+      response.setPage(pageInfo);
+      response.setMsg(result);
+
+      response.setCode(CommonAttributes.SUCCESS);
+      return response;
+    }
     @RequestMapping(value = "/goodsCateList", method = RequestMethod.POST)
     @ApiOperation(value = "商品分类列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于商品分类列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})	
