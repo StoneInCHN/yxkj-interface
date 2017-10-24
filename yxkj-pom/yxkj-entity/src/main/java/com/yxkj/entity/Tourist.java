@@ -21,7 +21,7 @@ import com.yxkj.entity.commonenum.CommonEnum.UserChannel;
  * @version 2017年9月19日 上午9:40:06
  */
 @Entity
-@Table(name = "t_tourist", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
+@Table(name = "t_tourist", indexes = {@Index(name = "userNameIndex", columnList = "userName")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_tourist_sequence")
 public class Tourist extends BaseEntity {
 
@@ -141,7 +141,7 @@ public class Tourist extends BaseEntity {
   public void setUserChannel(UserChannel userChannel) {
     this.userChannel = userChannel;
   }
-  
+
   @JsonProperty
   public Gender getGender() {
     return gender;
@@ -150,7 +150,7 @@ public class Tourist extends BaseEntity {
   public void setGender(Gender gender) {
     this.gender = gender;
   }
-  
+
   @JsonProperty
   @Column(length = 50)
   public String getUserName() {
@@ -160,7 +160,7 @@ public class Tourist extends BaseEntity {
   public void setUserName(String userName) {
     this.userName = userName;
   }
-  
+
   @JsonProperty
   @Column(length = 20)
   public String getCellPhoneNum() {
@@ -170,7 +170,7 @@ public class Tourist extends BaseEntity {
   public void setCellPhoneNum(String cellPhoneNum) {
     this.cellPhoneNum = cellPhoneNum;
   }
-  
+
   @JsonProperty
   public String getNickName() {
     return nickName;
