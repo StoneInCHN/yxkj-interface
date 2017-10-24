@@ -1,5 +1,6 @@
 package com.yxkj.controller;
 
+import com.yxkj.aspect.UserValidCheck;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -65,10 +66,11 @@ public class GoodsController extends MobileBaseController {
   @RequestMapping(value = "/getSgByChannel", method = RequestMethod.POST)
   @ApiOperation(value = "根据货道编号查询商品", httpMethod = "POST", response = ResponseOne.class,
       notes = "根据货道编号查询商品")
-  @ApiResponses({@ApiResponse(code = 200,
-      message = "code:0000-request success|1000-goods not exist")})
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|1000-goods not exist")})
   public @ResponseBody ResponseOne<Map<String, Object>> getSgByChannel(
-      @ApiParam(name = "请求参数(json)", value = "cSn:商品货道编号 | cImei:中控imei号", required = true) @RequestBody GoodsInfoReq req) {
+      @ApiParam(name = "请求参数(json)", value = "cSn:商品货道编号 | cImei:中控imei号",
+          required = true) @RequestBody GoodsInfoReq req) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
     String cSn = req.getcSn();
     String cImei = req.getcImei();
@@ -81,6 +83,48 @@ public class GoodsController extends MobileBaseController {
     Goods g = cc.getGoods();
     Map<String, Object> gMap = new HashMap<String, Object>();
     gMap.put("cSn", cSn);
+    gMap.put("cId", cc.getId());
+    gMap.put("gName", g.getName());
+    gMap.put("gSpec", g.getSpec());
+    gMap.put("price", cc.getPrice());
+    gMap.put("count", cc.getSurplus());
+    String gImg = "";
+    for (GoodsPic goodsPic : g.getGoodsPics()) {
+      if (goodsPic.getOrder() != null && goodsPic.getOrder() == 1) {// 获取中控显示的大图
+        gImg = goodsPic.getSource();
+      }
+    }
+    gMap.put("gImg", gImg);
+
+    response.setMsg(gMap);
+    response.setCode(CommonAttributes.SUCCESS);
+
+    return response;
+  }
+
+  /**
+   * 根据货道编号查询单个商品
+   * 
+   * @param channelId 货道ID
+   * @return
+   */
+  @RequestMapping(value = "/getSgByChannelId", method = RequestMethod.POST)
+  @ApiOperation(value = "根据货道id查询商品", httpMethod = "POST", response = ResponseOne.class,
+      notes = "根据货道id查询商品")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|1000-goods not exist")})
+  @UserValidCheck
+  public @ResponseBody ResponseOne<Map<String, Object>> getSgByChannelId(Long channelId) {
+    ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
+    ContainerChannel cc = containerChannelService.find(channelId);
+    if (cc == null || cc.getGoods() == null) {
+      response.setCode(CommonAttributes.FAIL_COMMON);
+      response.setDesc(message("yxkj.goods.noexist", channelId));
+      return response;
+    }
+    Goods g = cc.getGoods();
+    Map<String, Object> gMap = new HashMap<String, Object>();
+    gMap.put("cSn", cc.getSn());
     gMap.put("cId", cc.getId());
     gMap.put("gName", g.getName());
     gMap.put("gSpec", g.getSpec());
@@ -126,6 +170,7 @@ public class GoodsController extends MobileBaseController {
     return response;
   }
 
+
   /**
    * 根据类别查询所有商品
    * 
@@ -137,7 +182,8 @@ public class GoodsController extends MobileBaseController {
       notes = "根据类别查询所有商品")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success")})
   public @ResponseBody ResponseMultiple<Map<String, Object>> getByCate(
-      @ApiParam(name = "请求参数(json)", value = "cateId:商品类别ID | cImei:中控imei号", required = true) @RequestBody GoodsInfoReq req) {
+      @ApiParam(name = "请求参数(json)", value = "cateId:商品类别ID | cImei:中控imei号",
+          required = true) @RequestBody GoodsInfoReq req) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     Long cateId = req.getCateId();
     String cImei = req.getcImei();
