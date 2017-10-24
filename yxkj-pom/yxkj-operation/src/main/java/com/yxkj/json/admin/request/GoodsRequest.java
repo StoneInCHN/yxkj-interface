@@ -1,27 +1,17 @@
 package com.yxkj.json.admin.request;
 
+import com.yxkj.json.admin.bean.GoodsData;
 import com.yxkj.json.base.BaseListRequest;
 
 public class GoodsRequest extends BaseListRequest{
 	
-	/** 商品编号 */
-	private String sn;
+	private GoodsData goodsData;
 	
-	/** 商品名称 */
-	private String name;	
-	
-	public String getSn() {
-		return sn;
+	public GoodsData getGoodsData() {
+		return goodsData;
 	}
-	public void setSn(String sn) {
-		this.sn = sn;
+	public void setGoodsData(GoodsData goodsData) {
+		this.goodsData = goodsData;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
+
 }

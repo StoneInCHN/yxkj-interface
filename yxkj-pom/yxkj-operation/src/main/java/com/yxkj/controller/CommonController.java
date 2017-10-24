@@ -116,8 +116,10 @@ public class CommonController extends BaseController {
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   @ApiOperation(value = "用户登录", httpMethod = "POST", response = BaseResponse.class, notes = "用户登录")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-  public @ResponseBody ResponseOne<Admin> login(@ApiParam @RequestBody LoginRequest loginRequest,
-      HttpServletRequest request) {
+  public @ResponseBody ResponseOne<Admin> login(
+		  @ApiParam(name = "请求参数(json)", value = "userName:用户名; password:密码(rsa密文)", required = true) 
+		  @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+	  
     ResponseOne<Admin> response = new ResponseOne<Admin>();
     
     String serverPrivateKey = setting.getServerPrivateKey();

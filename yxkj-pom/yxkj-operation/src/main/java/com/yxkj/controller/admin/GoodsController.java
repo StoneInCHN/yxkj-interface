@@ -27,6 +27,7 @@ import com.yxkj.framework.filter.Filter;
 import com.yxkj.framework.ordering.Ordering;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
+import com.yxkj.json.admin.bean.GoodsData;
 import com.yxkj.json.admin.request.GoodsCateRequest;
 import com.yxkj.json.base.BaseListRequest;
 import com.yxkj.json.base.BaseRequest;
@@ -59,17 +60,20 @@ public class GoodsController extends BaseController {
     @ApiOperation(value = "商品列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取商品列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseMultiple<Map<String, Object>> getGoodsList(
-    		@ApiParam @RequestBody GoodsRequest request) {
+    		@ApiParam(name = "请求参数(json)", value = "sn:商品编号; name:商品名称", required = false) 
+    		@RequestBody GoodsRequest request) {
     	
       ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>(); 
       Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
       List<Filter> filters = pageable.getFilters();
-      if (StringUtils.isNotBlank(request.getSn())) {
-          filters.add(Filter.like("sn", "%"+request.getSn().trim()+"%"));
-      }
-      if (StringUtils.isNotBlank(request.getName())) {
-          filters.add(Filter.like("name", "%"+request.getName().trim()+"%"));
-      }		
+      if (request.getGoodsData() != null) {
+          if (StringUtils.isNotBlank(request.getGoodsData().getSn())) {
+              filters.add(Filter.like("sn", "%"+request.getGoodsData().getSn().trim()+"%"));
+          }
+          if (StringUtils.isNotBlank(request.getGoodsData().getName())) {
+              filters.add(Filter.like("name", "%"+request.getGoodsData().getName().trim()+"%"));
+          }	
+	  }
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
 
@@ -86,6 +90,46 @@ public class GoodsController extends BaseController {
       response.setCode(CommonAttributes.SUCCESS);
       return response;
     }
+    
+    @RequestMapping(value = "/addGoods", method = RequestMethod.POST)
+    @ApiOperation(value = "添加商品", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加商品")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody BaseResponse addGoods(@ApiParam @RequestBody GoodsRequest request) {
+        BaseResponse response = new BaseResponse(); 
+        GoodsData goodsData = request.getGoodsData();
+        if (goodsData != null ) {      
+        	if (goodsService.exists(Filter.eq("sn", goodsData.getSn()))) {
+                response.setCode(CommonAttributes.FAIL_COMMON);
+                response.setDesc("商品条码已存在");
+                return response;
+			}
+      	    Goods goods = goodsService.getGoodsEntity(goodsData, null);
+      	    goodsService.save(goods);
+            response.setCode(CommonAttributes.SUCCESS);
+            response.setDesc(message("yxkj.request.success"));
+  	  	}
+        return response;
+    }
+    @RequestMapping(value = "/updateGoods", method = RequestMethod.POST)
+    @ApiOperation(value = "更新商品", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新商品")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody BaseResponse updateGoods(@ApiParam @RequestBody GoodsRequest request) {
+        BaseResponse response = new BaseResponse(); 
+        GoodsData goodsData = request.getGoodsData();
+        if (goodsData != null && request.getId() != null) {
+        	if (goodsService.exists(Filter.eq("sn", goodsData.getSn()),Filter.ne("id", request.getId()))) {
+                response.setCode(CommonAttributes.FAIL_COMMON);
+                response.setDesc("商品条码已存在");
+                return response;
+			}
+      	  Goods goods = goodsService.getGoodsEntity(goodsData, request.getId());
+      	  goodsService.update(goods);
+          response.setCode(CommonAttributes.SUCCESS);
+          response.setDesc(message("yxkj.request.success"));
+  	    }
+        return response;
+    }
+    
     @RequestMapping(value = "/goodsCateList", method = RequestMethod.POST)
     @ApiOperation(value = "商品分类列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于商品分类列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})	
@@ -116,7 +160,9 @@ public class GoodsController extends BaseController {
     @RequestMapping(value = "/goodsCate", method = RequestMethod.POST)
     @ApiOperation(value = "新增或编辑商品分类", httpMethod = "POST", response = ResponseOne.class, notes = "用于新增或编辑商品分类")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-    public @ResponseBody BaseResponse goodsCate(@ApiParam @RequestBody GoodsCateRequest request) {
+    public @ResponseBody BaseResponse goodsCate(
+    		@ApiParam(name = "请求参数(json)", value = "id:商品分类ID; cateName:商品分类名称", required = false)  
+    		@RequestBody GoodsCateRequest request) {
       BaseResponse response = new BaseResponse(); 
       GoodsCategory goodsCategory = null;
       if (request.getId() != null) {//编辑
@@ -124,7 +170,7 @@ public class GoodsController extends BaseController {
     	  if (goodsCategory != null) {
         	  goodsCategory.setIsActive(true);
         	  goodsCategory.setCateName(request.getCateName());
-        	  goodsCategory.setCategPicUrl(request.getCatePicUrl());
+        	  //goodsCategory.setCategPicUrl(request.getCatePicUrl());
         	  goodsCategoryService.update(goodsCategory);
 		  }else {
 		      response.setDesc(message("yxkj.request.failed"));
@@ -135,7 +181,7 @@ public class GoodsController extends BaseController {
 		  goodsCategory = new GoodsCategory();
 		  goodsCategory.setIsActive(true);
 		  goodsCategory.setCateName(request.getCateName());
-		  goodsCategory.setCategPicUrl(request.getCatePicUrl());
+		  //goodsCategory.setCategPicUrl(request.getCatePicUrl());
 		  goodsCategoryService.save(goodsCategory);
 	  }
       response.setDesc(message("yxkj.request.success"));
@@ -146,7 +192,9 @@ public class GoodsController extends BaseController {
     @RequestMapping(value = "/deleteGoodsCate", method = RequestMethod.POST)
     @ApiOperation(value = "删除商品分类", httpMethod = "POST", response = ResponseOne.class, notes = "用于删除商品分类")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-    public @ResponseBody BaseResponse deleteGoodsCate(@ApiParam @RequestBody BaseRequest request) {
+    public @ResponseBody BaseResponse deleteGoodsCate(
+    		@ApiParam(name = "请求参数(json)", value = "ids:商品分类ID数组", required = true) 
+    		@RequestBody BaseRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getIds() != null && request.getIds().length > 0) {
     	  try {

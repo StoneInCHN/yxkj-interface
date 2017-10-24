@@ -42,7 +42,9 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/changePwd", method = RequestMethod.POST)
     @ApiOperation(value = "修改密码", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于修改密码")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})	
-	public @ResponseBody BaseResponse update(@ApiParam @RequestBody ChangePwdRequest request) {
+	public @ResponseBody BaseResponse update(
+			@ApiParam(name = "请求参数(json)", value = "userName:用户名; oldEnPwd:旧密码(rsa密文); newEnPwd:新密码", required = true) 
+			@RequestBody ChangePwdRequest request) {
     	BaseResponse response = new BaseResponse();
     	String serverPrivateKey = setting.getServerPrivateKey();
         String userName = request.getUserName();
