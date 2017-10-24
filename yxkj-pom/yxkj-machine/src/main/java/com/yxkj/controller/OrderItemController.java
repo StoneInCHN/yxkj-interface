@@ -21,7 +21,6 @@ import com.yxkj.service.OrderItemService;
 
 import io.swagger.annotations.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -40,6 +39,9 @@ public class OrderItemController extends MobileBaseController {
 
   /**
    * 更新出货状态
+   * @param orderItemId 订单项ID
+   * @param shipmentStatus 出货状态
+   * @return
    */
   @RequestMapping(value = "updateOrderItemShipmentStatus", method = RequestMethod.POST)
   @ApiOperation(value = "更新出货状态", httpMethod = "POST", response = BaseResponse.class,
@@ -72,15 +74,12 @@ public class OrderItemController extends MobileBaseController {
 
   /**
    * - 商品出货状态查询
-   *
-   *
-   * @param
+   * @param orderId 订单ID
    * @return
-   * @throws UnsupportedEncodingException
    */
   @RequestMapping(value = "/getOrderItemOutStatus", method = RequestMethod.POST)
-  @ApiOperation(value = "商品出货状态", httpMethod = "POST", response = ResponseOne.class,
-      notes = "商品出货状态")
+  @ApiOperation(value = "商品出货状态查询", httpMethod = "POST", response = ResponseOne.class,
+      notes = "商品出货状态查询")
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
   // @UserValidCheck
@@ -95,7 +94,8 @@ public class OrderItemController extends MobileBaseController {
       boolean isContain = false;
       for (Map<String, Object> map : maps) {
         Long cid = (Long) map.get("cId");
-        if (cid.equals(orderItem.getCntrId())) {
+        if (cid.equals(orderItem.getCntrId())
+            && map.get("status").equals(orderItem.getShipmentStatus())) {
           isContain = true;
           map.put("count", (Integer) map.get("count") + 1);
         }
