@@ -6,10 +6,10 @@ public class ChangePwdRequest {
 	/** 用户名 */
 	private String userName;
 
-	/** 旧密码 */
+	/** 旧密码（rsa密文） */
 	private String oldPwd;
 	
-	/** 新密码 */
+	/** 新密码（rsa密文） */
 	private String newPwd;
 
 	public String getUserName() {

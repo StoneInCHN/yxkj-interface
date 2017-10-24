@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +25,9 @@ import com.yxkj.framework.filter.Filter;
 import com.yxkj.framework.ordering.Ordering;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
-import com.yxkj.json.admin.request.AdminRequest;
 import com.yxkj.json.admin.request.GoodsCateRequest;
+import com.yxkj.json.base.BaseListRequest;
+import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.PageResponse;
 import com.yxkj.json.base.ResponseMultiple;
@@ -55,7 +55,7 @@ public class GoodsController extends BaseController {
     @RequestMapping(value = "/goodsCateList", method = RequestMethod.POST)
     @ApiOperation(value = "商品分类列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于商品分类列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})	
-	public @ResponseBody ResponseMultiple<Map<String, Object>> goodsCateList(@ApiParam @RequestBody AdminRequest request) {
+	public @ResponseBody ResponseMultiple<Map<String, Object>> goodsCateList(@ApiParam @RequestBody BaseListRequest request) {
     	ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     	
         Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());   
@@ -112,7 +112,7 @@ public class GoodsController extends BaseController {
     @RequestMapping(value = "/deleteGoodsCate", method = RequestMethod.POST)
     @ApiOperation(value = "删除商品分类", httpMethod = "POST", response = ResponseOne.class, notes = "用于删除商品分类")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-    public @ResponseBody BaseResponse deleteGoodsCate(@ApiParam @RequestBody AdminRequest request) {
+    public @ResponseBody BaseResponse deleteGoodsCate(@ApiParam @RequestBody BaseRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getIds() != null && request.getIds().length > 0) {
     	  try {

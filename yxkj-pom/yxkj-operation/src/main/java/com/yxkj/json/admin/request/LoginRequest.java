@@ -1,12 +1,21 @@
 package com.yxkj.json.admin.request;
 
-public class LoginRequest extends AdminRequest{
+import com.yxkj.json.base.BaseRequest;
+
+public class LoginRequest extends BaseRequest{
 	
+	/** 验证码*/
 	private String captcha;
 	
+	/** 验证码ID*/
 	private String captchaId;
 	
-	private boolean autoLogin;
+	/** 自动登录*/
+	private boolean autoLogin;	
+	
+	/** 密码（rsa密文） */
+	private String password;
+	
 
 	public String getCaptcha() {
 		return captcha;
@@ -31,5 +40,15 @@ public class LoginRequest extends AdminRequest{
 	public void setAutoLogin(boolean autoLogin) {
 		this.autoLogin = autoLogin;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	
 	
 }
