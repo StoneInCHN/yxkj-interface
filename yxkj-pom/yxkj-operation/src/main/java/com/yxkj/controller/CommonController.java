@@ -178,7 +178,11 @@ public class CommonController extends BaseController {
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
-
+  /**
+   * 更新图片(单张)
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/uploadImg", method = {RequestMethod.GET, RequestMethod.POST})
   public @ResponseBody BaseResponse uploadImg(HttpServletRequest request) {
     BaseResponse response = new BaseResponse();

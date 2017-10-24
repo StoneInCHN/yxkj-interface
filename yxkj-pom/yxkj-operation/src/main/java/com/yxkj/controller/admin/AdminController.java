@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.BaseController;
 import com.yxkj.entity.Admin;
-import com.yxkj.json.admin.request.AdminRequest;
 import com.yxkj.json.admin.request.ChangePwdRequest;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.ResponseMultiple;
