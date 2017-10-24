@@ -131,7 +131,10 @@ public class CommonEnum {
     /** 出货成功 */
     SHIPMENT_SUCCESS,
     /** 出货失败 */
-    SHIPMENT_FAIL
+    SHIPMENT_FAIL, /**
+     * 正在出货
+     */
+    SHIPMENT_INPROCESS
   }
 
   /**

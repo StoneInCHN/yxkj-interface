@@ -47,7 +47,7 @@ public class ContainerChannelServiceImpl extends BaseServiceImpl<ContainerChanne
       Integer count = Integer.valueOf(g[1]);
       map.put("count", count);
       if (count > cc.getSurplus()) {
-        map.put("count", cc.getSurplus());
+        map.put("count", cc.getSurplus() - cc.getOfflineLocalLock());
         flag = true;
       }
       maps.add(map);
