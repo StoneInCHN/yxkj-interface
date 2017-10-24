@@ -1,7 +1,5 @@
 package com.yxkj.controller;
 
-import com.yxkj.beans.Message;
-import com.yxkj.entity.commonenum.CommonEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,11 +33,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alipay.api.internal.util.AlipaySignature;
+import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.beans.Message;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.ContainerChannel;
 import com.yxkj.entity.Order;
+import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.json.beans.GoodsBean;
 import com.yxkj.json.request.OrderInfoReq;
@@ -84,9 +85,8 @@ public class OrderController extends MobileBaseController {
    */
   @RequestMapping(value = "/pay", method = RequestMethod.POST)
   @ApiOperation(value = "商品支付", httpMethod = "POST", response = ResponseOne.class, notes = "商品支付")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
-  // @UserValidCheck
+  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
+  @UserValidCheck
   public @ResponseBody ResponseOne<Map<String, Object>> pay(@ApiParam(name = "请求参数(json)",
       value = "ip:客户端ip|gInfo:下单商品信息 |userName:用户标识|imei:中控标识imei|type:支付方式|header token",
       required = true) @RequestBody OrderInfoReq req, HttpServletResponse httpResponse) {
@@ -121,8 +121,9 @@ public class OrderController extends MobileBaseController {
       bean.setCount(count);
       goodsBeans.add(bean);
     }
-    boolean verifyResult = containerChannelService.isVerifyStockSuccess(goodsBeans,
-        CommonEnum.PurMethod.CONTROLL_MACHINE);
+    boolean verifyResult =
+        containerChannelService.isVerifyStockSuccess(goodsBeans,
+            CommonEnum.PurMethod.CONTROLL_MACHINE);
     if (!verifyResult) {
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(Message.warn("yxkj.goods.stock.insufficient").getContent());
@@ -134,12 +135,14 @@ public class OrderController extends MobileBaseController {
         order.getSn(), type, imei);
     if ("wx".equals(type)) {
       BigDecimal weChatPrice = order.getAmount().multiply(new BigDecimal(100));
-      response = PayUtil.wechat(order.getSn(), setting.getSiteName(), ip, userName,
-          weChatPrice.intValue() + "");
+      response =
+          PayUtil.wechat(order.getSn(), setting.getSiteName(), ip, userName, weChatPrice.intValue()
+              + "");
     } else if ("alipay".equals(type)) {
       BigDecimal alipayPrice = order.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP);
-      String form = PayUtil.alipay(order.getSn(),
-          AuthUtil.URLEncode(setting.getSiteName(), "UTF-8"), alipayPrice.toString());
+      String form =
+          PayUtil.alipay(order.getSn(), AuthUtil.URLEncode(setting.getSiteName(), "UTF-8"),
+              alipayPrice.toString());
       result.put("a_page", form);
       response.setMsg(result);
 
@@ -224,8 +227,8 @@ public class OrderController extends MobileBaseController {
           });
 
         } else {
-          LogUtil.debug(this.getClass(), "notify_wechat", "WeChat pay fail. orderSn: %s",
-              xmlMap.get("out_trade_no").toString());
+          LogUtil.debug(this.getClass(), "notify_wechat", "WeChat pay fail. orderSn: %s", xmlMap
+              .get("out_trade_no").toString());
         }
       }
       // 返回处理结果xml
@@ -291,9 +294,12 @@ public class OrderController extends MobileBaseController {
     if (signVerified) {
       if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
 
-        LogUtil.debug(this.getClass(), "notify_alipay",
-            "user pay order call back successfully with alipay. orderSn: %s, amount: %s, trade_status: %s",
-            out_trade_no, total_fee, trade_status);
+        LogUtil
+            .debug(
+                this.getClass(),
+                "notify_alipay",
+                "user pay order call back successfully with alipay. orderSn: %s, amount: %s, trade_status: %s",
+                out_trade_no, total_fee, trade_status);
         taskExecutor.execute(new Runnable() {
           public void run() {
             orderService.callbackAfterPay(out_trade_no);
