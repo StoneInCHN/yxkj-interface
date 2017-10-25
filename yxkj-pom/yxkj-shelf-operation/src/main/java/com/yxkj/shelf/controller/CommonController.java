@@ -68,6 +68,8 @@ import com.yxkj.shelf.utils.ExportHelper;
 import com.yxkj.shelf.utils.FieldFilterUtils;
 import com.yxkj.shelf.utils.GeneratePdf;
 import com.yxkj.shelf.utils.ImportExcel;
+import com.yxkj.shelf.utils.KeyGenerator;
+import com.yxkj.shelf.utils.RSAHelper;
 import com.yxkj.shelf.utils.TimeUtils;
 import com.yxkj.shelf.utils.TokenUtil;
 
@@ -110,6 +112,17 @@ public class CommonController extends BaseController {
   @Autowired
   private ExportHelper exportHelper;
   
+  @RequestMapping(value = "/getRsa", method = RequestMethod.POST)
+  @ApiOperation(value = "获取rsa密文，只供测试用", httpMethod = "POST", response = BaseResponse.class, notes = "获取rsa密文，只供测试用")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse getRsa(String str) throws Exception {
+    BaseResponse response = new BaseResponse();
+    String key = setting.getServerPublicKey();
+    String rsaStr = KeyGenerator.encrypt(str, RSAHelper.getPublicKey(key));
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(rsaStr);
+    return response;
+  }
   /**
    * 验证码
    */
@@ -206,6 +219,8 @@ public class CommonController extends BaseController {
     List<MenuAuthority> authorities = new ArrayList<MenuAuthority>();
     MenuAuthority home =
         new MenuAuthority("首页", "/dashboard", "speedometer", "Dashboard", null, null, null);
+    MenuAuthority changePwd =
+            new MenuAuthority("修改密码", "/changePwd", null, "login/ChangePwd", null, true, null);
     MenuAuthority order =
         new MenuAuthority("订单管理", "/orderList", "clipboard", "order/OrderList", null, null, null);
     MenuAuthority orderDetail =
@@ -231,6 +246,7 @@ public class CommonController extends BaseController {
         new MenuAuthority("用户管理", "/touristList", "android-contacts", "user/TouristList", null,
             null, null);
     authorities.add(home);
+    authorities.add(changePwd);
     authorities.add(order);
     authorities.add(orderDetail);
     authorities.add(company);
