@@ -92,7 +92,7 @@ public class OrderItemController extends MobileBaseController {
   @ApiOperation(value = "商品出货状态查询", httpMethod = "POST", response = ResponseOne.class,
       notes = "商品出货状态查询")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
-  @UserValidCheck
+//  @UserValidCheck
   public @ResponseBody ResponseMultiple<Map<String, Object>> getOrderItemOutStatus(Long orderId) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<>();
 

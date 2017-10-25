@@ -43,14 +43,15 @@ public class CommandRecordController extends MobileBaseController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
-  public BaseResponse sendCMD() {
+  public BaseResponse sendCMD(Long orderId) {
     BaseResponse response = new BaseResponse();
     Map<String, String> contentMap = new HashMap<>();
     contentMap.put("video_bottom",
         "https://gss3.baidu.com/6LZ0ej3k1Qd3ote6lo7D0j9wehsv/tieba-smallvideo-transcode/115_1a22d4759be8239577563fafe92120bc_2.mp4");
     // cmdService.updateAdv("863010031227460", contentMap);
-     cmdService.updateAudioVolume("863010031227460", 20);
-    cmdService.salesOut(1l);
+    // cmdService.updateAudioVolume("863010031227460", 20);
+    cmdService.salesOut(orderId);
+    // cmdService.appUpdate("863010031227460","http://192.167.1.242:8082/yxkj/app-debug.apk");
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
