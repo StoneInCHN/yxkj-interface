@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.alipay.api.domain.AlipayTradeRefundModel;
+import com.alipay.api.request.AlipayTradeRefundRequest;
+import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.yxkj.common.log.LogUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -58,9 +62,8 @@ public class PayUtil {
    * @throws Exception
    */
   public static String alipay(String order_sn, String subject, String total_fee) {
-    AlipayClient alipayClient =
-        new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", alipay_appId,
-            alipay_privateKey, "json", "UTF-8", alipay_publicKey, "RSA"); // 获得初始化的AlipayClient
+    AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do",
+        alipay_appId, alipay_privateKey, "json", "UTF-8", alipay_publicKey, "RSA"); // 获得初始化的AlipayClient
     // AlipayClient alipayClient =
     // new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", alipay_appId,
     // setting.getAlipayPartnerPrivateKey(), "json", "UTF-8",
@@ -68,9 +71,9 @@ public class PayUtil {
     AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();// 创建API对应的request
     alipayRequest.setReturnUrl(alipay_return_url);
     alipayRequest.setNotifyUrl(alipay_notify_url);// 在公共参数中设置回跳和通知地址
-    alipayRequest.setBizContent("{" + " \"out_trade_no\":\"" + order_sn + "\","
-        + " \"total_amount\":" + total_fee + "," + " \"subject\":\"" + subject + "\","
-        + " \"product_code\":\"QUICK_WAP_PAY\"" + " }");// 填充业务参数
+    alipayRequest.setBizContent(
+        "{" + " \"out_trade_no\":\"" + order_sn + "\"," + " \"total_amount\":" + total_fee + ","
+            + " \"subject\":\"" + subject + "\"," + " \"product_code\":\"QUICK_WAP_PAY\"" + " }");// 填充业务参数
     String form = "";
     try {
       form = alipayClient.pageExecute(alipayRequest).getBody(); // 调用SDK生成表单
@@ -108,22 +111,19 @@ public class PayUtil {
     try {
       // 随机字符串，不长于32位。推荐随机数生成算法
       String nonce_str = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
-      String stringSignTemp =
-          "appid=" + wechat_appid + "&body=" + body + "&mch_id=" + wechat_mch_id + "&nonce_str="
-              + nonce_str + "&notify_url=" + wechat_notify_url + "&openid=" + openId
-              + "&out_trade_no=" + order_sn + "&spbill_create_ip=" + ip + "&total_fee=" + total_fee
-              + "&trade_type=JSAPI&key=" + wechat_Key;
+      String stringSignTemp = "appid=" + wechat_appid + "&body=" + body + "&mch_id=" + wechat_mch_id
+          + "&nonce_str=" + nonce_str + "&notify_url=" + wechat_notify_url + "&openid=" + openId
+          + "&out_trade_no=" + order_sn + "&spbill_create_ip=" + ip + "&total_fee=" + total_fee
+          + "&trade_type=JSAPI&key=" + wechat_Key;
       // System.out.println(stringSignTemp);
       String sign = WeixinUtil.MD5(stringSignTemp);
       // System.out.println(sign);
-      String xml =
-          "<xml>" + "<appid>" + wechat_appid + "</appid>" + "<body>" + body + "</body>"
-              + "<mch_id>" + wechat_mch_id + "</mch_id>" + "<nonce_str>" + nonce_str
-              + "</nonce_str>" + "<notify_url>" + wechat_notify_url + "</notify_url>" + "<openid>"
-              + openId + "</openid>" + "<out_trade_no>" + order_sn + "</out_trade_no>"
-              + "<spbill_create_ip>" + ip + "</spbill_create_ip>" + "<total_fee>" + total_fee
-              + "</total_fee>" + "<trade_type>JSAPI</trade_type>" + "<sign>" + sign + "</sign>"
-              + "</xml>";
+      String xml = "<xml>" + "<appid>" + wechat_appid + "</appid>" + "<body>" + body + "</body>"
+          + "<mch_id>" + wechat_mch_id + "</mch_id>" + "<nonce_str>" + nonce_str + "</nonce_str>"
+          + "<notify_url>" + wechat_notify_url + "</notify_url>" + "<openid>" + openId + "</openid>"
+          + "<out_trade_no>" + order_sn + "</out_trade_no>" + "<spbill_create_ip>" + ip
+          + "</spbill_create_ip>" + "<total_fee>" + total_fee + "</total_fee>"
+          + "<trade_type>JSAPI</trade_type>" + "<sign>" + sign + "</sign>" + "</xml>";
       // 调接口
       System.out.println(xml);
       String xmlString = WeixinUtil.httpsRequest(wechat_AddOrderUrl, "POST", xml);
@@ -165,6 +165,82 @@ public class PayUtil {
     return null;
   }
 
+  /**
+   * 支付宝退款接口
+   *
+   * @return
+   * @throws Exception
+   */
+  public static Boolean aliRefund(String order_sn, String refundAmount) {
+    AlipayTradeRefundModel model = new AlipayTradeRefundModel();
+    model.setOutRequestNo(UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
+    model.setRefundAmount(refundAmount);
+    model.setOutTradeNo(order_sn);
+    AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
+    request.setBizModel(model);
+
+    AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do",
+        alipay_appId, alipay_privateKey, "json", "UTF-8", alipay_publicKey, "RSA");
+    Boolean resposne = false;
+    try {
+      AlipayTradeRefundResponse alipayTradeRefundResponse = alipayClient.execute(request);
+      if ("10000".equals(alipayTradeRefundResponse.getCode())) {
+        // success
+        resposne = true;
+      } else {
+        resposne = false;
+        LogUtil.error(PayUtil.class, "aliRefund",
+            "aliRefund failed:" + alipayTradeRefundResponse.getMsg());
+      }
+    } catch (AlipayApiException e) {
+      e.printStackTrace();
+    }
+    return resposne;
+  }
 
 
+  /**
+   * 微信退款接口
+   * 
+   * @param order_sn 商户订单号
+   * @param total_fee 订单总金额
+   * @param refund_fee 退款金额
+   * @return 退款成功或者失败
+   */
+  public static Boolean weRefund(String order_sn, String total_fee, String refund_fee) {
+
+    // 随机字符串，不长于32位。推荐随机数生成算法
+    String nonce_str = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+    String stringSignTemp = "appid=" + wechat_appid + "&mch_id=" + wechat_mch_id + "&nonce_str="
+        + nonce_str + "&notify_url=" + wechat_notify_url + "&out_trade_no=" + order_sn
+        + "&total_fee=" + total_fee + "&refund_fee=" + refund_fee + "&key=" + wechat_Key;
+    // System.out.println(stringSignTemp);
+    String sign = WeixinUtil.MD5(stringSignTemp);
+    // System.out.println(sign);
+    String xml = "<xml>" + "<appid>" + wechat_appid + "</appid>" + "<mch_id>" + wechat_mch_id
+        + "</mch_id>" + "<nonce_str>" + nonce_str + "</nonce_str>" + "<sign>" + sign + "</sign>"
+        + "<notify_url>" + wechat_notify_url + "</notify_url>" + "<out_trade_no>" + order_sn
+        + "</out_trade_no>" + "<total_fee>" + total_fee + "</total_fee>" + "<refund_fee>"
+        + refund_fee + "</refund_fee>" + "</xml>";
+    // 调接口
+    System.out.println(xml);
+    String xmlString = WeixinUtil.httpsRequest(wechat_AddOrderUrl, "POST", xml);
+    // 解析xml
+    boolean response = false;
+    try {
+      Document dom = DocumentHelper.parseText(xmlString);
+      Element root = dom.getRootElement();
+      String return_code = root.elementText("return_code");
+      if (return_code.equals("SUCCESS")) {
+        response = true;
+      } else {
+        response = false;
+        LogUtil.debug(PayUtil.class, "weRefund", "Refund Failed:" + root.elementText("return_msg"));
+      }
+    } catch (DocumentException e) {
+      e.printStackTrace();
+    }
+
+    return response;
+  }
 }

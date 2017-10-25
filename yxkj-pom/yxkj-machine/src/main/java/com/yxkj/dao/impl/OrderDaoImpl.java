@@ -35,6 +35,7 @@ public class OrderDaoImpl extends BaseDaoImpl<Order, Long> implements OrderDao {
     stringBuffer.append(
         " where orderItem.cntr_id = container.id and orderItem.channel_sn = channel.sn  and orderItem.user_order = tOrder.id and container.category =category.id ");
     // stringBuffer.append(" orderItem.shipment_status = 0");
+    stringBuffer.append(" orderItem.pickupStatus != 0");
     stringBuffer.append(" and tOrder.id = ");
     stringBuffer.append(orderId);
     Query query =

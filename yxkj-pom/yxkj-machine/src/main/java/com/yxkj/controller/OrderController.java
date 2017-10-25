@@ -33,11 +33,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alipay.api.internal.util.AlipaySignature;
+import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.beans.Message;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.ContainerChannel;
 import com.yxkj.entity.Order;
+import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.json.beans.GoodsBean;
 import com.yxkj.json.request.OrderInfoReq;
@@ -76,18 +79,19 @@ public class OrderController extends MobileBaseController {
   /**
    * 商品支付
    * 
-   * @param request
+   * @param
    * @return
    * @throws UnsupportedEncodingException
    */
   @RequestMapping(value = "/pay", method = RequestMethod.POST)
   @ApiOperation(value = "商品支付", httpMethod = "POST", response = ResponseOne.class, notes = "商品支付")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
-  // @UserValidCheck
+  @UserValidCheck
   public @ResponseBody ResponseOne<Map<String, Object>> pay(@ApiParam(name = "请求参数(json)",
       value = "ip:客户端ip|gInfo:下单商品信息 |userName:用户标识|imei:中控标识imei|type:支付方式|header token",
       required = true) @RequestBody OrderInfoReq req, HttpServletResponse httpResponse) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
+    Map<String, Object> result = new HashMap<String, Object>();
     String userName = req.getUserName();
     String type = req.getType();
     String ip = req.getIp();
@@ -117,6 +121,15 @@ public class OrderController extends MobileBaseController {
       bean.setCount(count);
       goodsBeans.add(bean);
     }
+    boolean verifyResult =
+        containerChannelService.isVerifyStockSuccess(goodsBeans,
+            CommonEnum.PurMethod.CONTROLL_MACHINE);
+    if (!verifyResult) {
+      response.setCode(CommonAttributes.FAIL_COMMON);
+      response.setDesc(Message.warn("yxkj.goods.stock.insufficient").getContent());
+      result.put("verifyResult", verifyResult);
+      response.setMsg(result);
+    }
     Order order = orderService.createCntrOrder(type, userName, imei, goodsBeans);
     LogUtil.debug(this.getClass(), "pay", "create cntr order: orderSn:%s,payType: %s, imei: %s",
         order.getSn(), type, imei);
@@ -130,7 +143,6 @@ public class OrderController extends MobileBaseController {
       String form =
           PayUtil.alipay(order.getSn(), AuthUtil.URLEncode(setting.getSiteName(), "UTF-8"),
               alipayPrice.toString());
-      Map<String, Object> result = new HashMap<String, Object>();
       result.put("a_page", form);
       response.setMsg(result);
 
@@ -301,5 +313,4 @@ public class OrderController extends MobileBaseController {
     }
 
   }
-
 }

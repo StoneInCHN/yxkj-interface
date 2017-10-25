@@ -51,6 +51,19 @@ public class ContainerChannel extends BaseEntity {
   private Integer capacity;
 
   /**
+   * 线上锁定的商品数量
+   */
+  private Integer onlineLock;
+  /**
+   * 线下扫描，输码锁定的商品数量
+   */
+  private Integer offlineRemoteLock;
+
+  /**
+   * 线下中控锁定的商品数量
+   */
+  private Integer offlineLocalLock;
+  /**
    * 剩余货量
    */
   private Integer surplus;
@@ -176,4 +189,28 @@ public class ContainerChannel extends BaseEntity {
     this.price = price;
   }
 
+
+  public Integer getOnlineLock() {
+    return onlineLock;
+  }
+
+  public void setOnlineLock(Integer onlineLock) {
+    this.onlineLock = onlineLock;
+  }
+
+  public Integer getOfflineRemoteLock() {
+    return offlineRemoteLock;
+  }
+
+  public void setOfflineRemoteLock(Integer offlineRemoteLock) {
+    this.offlineRemoteLock = offlineRemoteLock;
+  }
+
+  public Integer getOfflineLocalLock() {
+    return offlineLocalLock;
+  }
+
+  public void setOfflineLocalLock(Integer offlineLocalLock) {
+    this.offlineLocalLock = offlineLocalLock;
+  }
 }

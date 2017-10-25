@@ -5,4 +5,5 @@ import com.yxkj.framework.service.BaseService;
 
 public interface AdResourceService extends BaseService<AdResource,Long>{
 
+		AdResource updateAdResource(AdResource request);
 }

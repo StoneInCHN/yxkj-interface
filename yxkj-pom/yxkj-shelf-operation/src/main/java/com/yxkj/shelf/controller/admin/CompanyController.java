@@ -100,8 +100,8 @@ public class CompanyController extends BaseController {
     		  pageable.getPageSize(), (int)orderPage.getTotal());
       response.setPage(pageInfo);
       response.setMsg(orderPage.getContent());
-
       response.setCode(CommonAttributes.SUCCESS);
+      
       return response;
     }
 

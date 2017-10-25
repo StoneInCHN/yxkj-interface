@@ -17,9 +17,9 @@ public interface SupplementListDao extends  BaseDao<SupplementList,Long>{
   
   List<Object[]> findWaitSupplySceneList(Long suppId);
   
-  List<Object> findWaitSupplyGoodsCategoryList(Long suppId);
+  List<Object[]> findWaitSupplyGoodsCategoryList(Long suppId);
 
-  List<Object[]> findWaitSupplyGoodsList(Long suppId, String sceneSn, String cateName, int pageNo, int pageSize);
+  List<Object[]> findWaitSupplyGoodsList(Long suppId, String sceneSn, Long cateId, int pageNo, int pageSize);
   
   List<Object[]> findWaitSupplyGoodsDetails(Long suppId, String goodsSn);
   

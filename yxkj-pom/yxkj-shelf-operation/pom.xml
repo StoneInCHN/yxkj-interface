@@ -476,7 +476,7 @@
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.8</version>

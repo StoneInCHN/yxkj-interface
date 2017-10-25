@@ -10,6 +10,13 @@ import com.yxkj.dao.ContainerKeeperDao;
 
 @Repository("containerKeeperDaoImpl")
 public class ContainerKeeperDaoImpl extends  BaseDaoImpl<ContainerKeeper,Long> implements ContainerKeeperDao {
+    
+    @Override
+    public ContainerKeeper findByCellPhoneNum(String cellPhoneNum) {
+      String jpql = "FROM ContainerKeeper c WHERE c.cellPhoneNum = :cellPhoneNum";
+      Query query = entityManager.createQuery(jpql).setParameter("cellPhoneNum", cellPhoneNum);
+      return (ContainerKeeper) query.getSingleResult();
+    }
 
 	@Override
 	public void updatePassword(String cellPhoneNum, String password) {
