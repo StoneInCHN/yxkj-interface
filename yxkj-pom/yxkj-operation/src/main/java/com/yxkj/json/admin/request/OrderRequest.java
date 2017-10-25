@@ -48,6 +48,19 @@ public class OrderRequest extends BaseListRequest {
    */
   private OrderStatus status;
 
+  /**
+   * 重复购买次数
+   */
+  private Integer repeatCount;
+
+
+  public Integer getRepeatCount() {
+    return repeatCount;
+  }
+
+  public void setRepeatCount(Integer repeatCount) {
+    this.repeatCount = repeatCount;
+  }
 
   public OrderStatus getStatus() {
     return status;

@@ -138,14 +138,14 @@ public class UserController extends BaseController {
     List<Ordering> orderings = pageable.getOrderings();
     orderings.add(Ordering.desc("createDate"));
 
-    Page<EndUser> touristPage = endUserService.findPage(pageable);
+    Page<EndUser> userPage = endUserService.findPage(pageable);
     String[] propertys =
         {"id", "wechatNickName", "alipayName", "userChannel", "cellPhoneNum", "gender", "sceneName"};
     List<Map<String, Object>> result =
-        FieldFilterUtils.filterCollection(propertys, touristPage.getContent());
+        FieldFilterUtils.filterCollection(propertys, userPage.getContent());
     PageResponse pageInfo =
         new PageResponse(pageable.getPageNumber(), pageable.getPageSize(),
-            (int) touristPage.getTotal());
+            (int) userPage.getTotal());
     response.setPage(pageInfo);
     response.setMsg(result);
     response.setCode(CommonAttributes.SUCCESS);
