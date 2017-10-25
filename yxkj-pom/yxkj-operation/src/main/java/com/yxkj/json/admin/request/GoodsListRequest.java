@@ -1,9 +1,9 @@
 package com.yxkj.json.admin.request;
 
 import com.yxkj.json.admin.bean.GoodsData;
-import com.yxkj.json.base.BaseRequest;
+import com.yxkj.json.base.BaseListRequest;
 
-public class GoodsRequest extends BaseRequest{
+public class GoodsListRequest extends BaseListRequest{
 	
 	private GoodsData goodsData;
 	

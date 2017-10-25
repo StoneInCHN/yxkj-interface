@@ -72,7 +72,18 @@ public class CommonController extends BaseController {
   
   @Resource(name = "captchaServiceImpl")
   private CaptchaService captchaService;
-  
+
+  @RequestMapping(value = "/getRsa", method = RequestMethod.POST)
+  @ApiOperation(value = "获取rsa密文，只供测试用", httpMethod = "POST", response = BaseResponse.class, notes = "获取rsa密文，只供测试用")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse getRsa(String str) throws Exception {
+    BaseResponse response = new BaseResponse();
+    String key = setting.getServerPublicKey();
+    String rsaStr = KeyGenerator.encrypt(str, RSAHelper.getPublicKey(key));
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(rsaStr);
+    return response;
+  }
   
   @RequestMapping(value = "/rsa", method = RequestMethod.POST)
   @ApiOperation(value = "获取公匙", httpMethod = "POST", response = BaseResponse.class, notes = "获取公匙")

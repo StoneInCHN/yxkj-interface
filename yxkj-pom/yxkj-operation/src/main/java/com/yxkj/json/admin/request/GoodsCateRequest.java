@@ -10,10 +10,10 @@ public class GoodsCateRequest extends BaseRequest{
 	*/
 	private String cateName;
 	
-	/**
-	 * 类别图片地址
-	 */
-	private String catePicUrl;
+//	/**
+//	 * 类别图片地址
+//	 */
+//	private String catePicUrl;
 
 	public String getCateName() {
 		return cateName;
@@ -23,12 +23,12 @@ public class GoodsCateRequest extends BaseRequest{
 		this.cateName = cateName;
 	}
 
-	public String getCatePicUrl() {
-		return catePicUrl;
-	}
-
-	public void setCatePicUrl(String catePicUrl) {
-		this.catePicUrl = catePicUrl;
-	}
+//	public String getCatePicUrl() {
+//		return catePicUrl;
+//	}
+//
+//	public void setCatePicUrl(String catePicUrl) {
+//		this.catePicUrl = catePicUrl;
+//	}
 
 }
