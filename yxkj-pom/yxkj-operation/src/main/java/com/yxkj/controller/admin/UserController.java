@@ -64,7 +64,8 @@ public class UserController extends BaseController {
       notes = "用户数据-所有用户")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
   public @ResponseBody ResponseMultiple<Map<String, Object>> list(
-      @ApiParam(name = "请求参数(json)", value = "参数[sceneId:优享空间ID; startTime:开始日期; endTime:结束日期]",
+      @ApiParam(name = "请求参数(json)",
+          value = "参数[userName:登录用户名; sceneId:优享空间ID; startTime:开始日期; endTime:结束日期]",
           required = true) @RequestBody UserRequest request) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     Long sceneId = request.getSceneId();
@@ -114,7 +115,8 @@ public class UserController extends BaseController {
       notes = "用户数据-注册用户")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
   public @ResponseBody ResponseMultiple<Map<String, Object>> regList(
-      @ApiParam(name = "请求参数(json)", value = "参数[sceneId:优享空间ID; startTime:开始日期; endTime:结束日期]",
+      @ApiParam(name = "请求参数(json)",
+          value = "参数[userName:登录用户名; sceneId:优享空间ID; startTime:开始日期; endTime:结束日期]",
           required = true) @RequestBody UserRequest request) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     Long sceneId = request.getSceneId();

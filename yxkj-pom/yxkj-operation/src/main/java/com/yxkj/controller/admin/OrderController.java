@@ -106,7 +106,7 @@ public class OrderController extends BaseController {
   public @ResponseBody ResponseMultiple<Map<String, Object>> list(
       @ApiParam(
           name = "请求参数(json)",
-          value = "参数[paymentTypeId:支付方式ID; status:订单状态; purMethod:购买方式; orderSn:订单号; userName:用户名; sceneName:优享空间名称; startTime:开始日期; endTime:结束日期]",
+          value = "参数[userName:登录用户名; paymentTypeId:支付方式ID; status:订单状态; purMethod:购买方式; orderSn:订单号; userName:用户名; sceneName:优享空间名称; startTime:开始日期; endTime:结束日期]",
           required = true) @RequestBody OrderRequest request) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     String sceneName = request.getSceneName();
@@ -176,7 +176,7 @@ public class OrderController extends BaseController {
       notes = "订单详情")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
   public @ResponseBody ResponseMultiple<Map<String, Object>> detail(@ApiParam(name = "请求参数(json)",
-      value = "参数[id:订单ID]", required = true) @RequestBody BaseRequest request) {
+      value = "参数[userName:登录用户名; id:订单ID]", required = true) @RequestBody BaseRequest request) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     Long orderId = request.getId();
     List<Filter> filters = new ArrayList<Filter>();
