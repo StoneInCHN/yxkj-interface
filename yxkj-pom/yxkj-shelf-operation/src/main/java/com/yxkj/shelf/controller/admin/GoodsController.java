@@ -79,6 +79,7 @@ public class GoodsController extends BaseController {
 	  }
       List<Ordering> orderings = pageable.getOrderings();
       orderings.add(Ordering.desc("createDate"));
+      orderings.add(Ordering.desc("sn"));
 
       Page<Goods> goodsPage = goodsService.findPage(pageable);      
       String[] propertys =
