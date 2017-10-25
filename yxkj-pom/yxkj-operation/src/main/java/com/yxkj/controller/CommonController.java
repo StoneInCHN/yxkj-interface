@@ -1,5 +1,6 @@
 package com.yxkj.controller;
 
+import com.yxkj.entity.commonenum.CommonEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -128,15 +129,16 @@ public class CommonController extends BaseController {
   @ApiOperation(value = "用户登录", httpMethod = "POST", response = BaseResponse.class, notes = "用户登录")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
   public @ResponseBody ResponseOne<Admin> login(
-		  @ApiParam(name = "请求参数(json)", value = "userName:用户名; password:密码(rsa密文)", required = true) 
-		  @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-	  
+      @ApiParam(name = "请求参数(json)", value = "userName:用户名; password:密码(rsa密文)",
+          required = true) @RequestBody LoginRequest loginRequest,
+      HttpServletRequest request) {
+
     ResponseOne<Admin> response = new ResponseOne<Admin>();
-    
+
     String serverPrivateKey = setting.getServerPrivateKey();
     String userName = loginRequest.getUserName();
     String password = loginRequest.getPassword();
-    String captcha = loginRequest.getCaptcha();   
+    String captcha = loginRequest.getCaptcha();
     String captchaId = loginRequest.getCaptchaId();
     boolean autoLogin = loginRequest.isAutoLogin();
     if (StringUtils.isEmpty(userName)) {
@@ -145,12 +147,12 @@ public class CommonController extends BaseController {
       return response;
     }
     try {
-        password = KeyGenerator.decrypt(password, RSAHelper.getPrivateKey(serverPrivateKey));
+      password = KeyGenerator.decrypt(password, RSAHelper.getPrivateKey(serverPrivateKey));
     } catch (Exception e) {
-    	LogUtil.debug(this.getClass(), "login", "登录密码，RSA解密错误：%s", e.getMessage());
-        response.setCode(CommonAttributes.FAIL_LOGIN);
-        response.setDesc(message("yxkj.request.failed"));
-        return response;
+      LogUtil.debug(this.getClass(), "login", "登录密码，RSA解密错误：%s", e.getMessage());
+      response.setCode(CommonAttributes.FAIL_LOGIN);
+      response.setDesc(message("yxkj.request.failed"));
+      return response;
     }
     if (StringUtils.isEmpty(password)) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
@@ -163,10 +165,10 @@ public class CommonController extends BaseController {
       return response;
     }
     if (!autoLogin && !captchaService.isValid(CaptchaType.adminLogin, captchaId, captcha)) {
-        response.setCode(CommonAttributes.FAIL_LOGIN);
-        response.setDesc(message("yxkj.admin.userName.captcha.error"));
-        LogUtil.debug(this.getClass(), "login", "验证码错误");
-        return response;
+      response.setCode(CommonAttributes.FAIL_LOGIN);
+      response.setDesc(message("yxkj.admin.userName.captcha.error"));
+      LogUtil.debug(this.getClass(), "login", "验证码错误");
+      return response;
     }
     LogUtil.debug(this.getClass(), "login", "登录名:%s", userName);
     Admin admin = adminService.findByUserName(userName);
@@ -189,7 +191,7 @@ public class CommonController extends BaseController {
       response.setDesc(message("yxkj.admin.userName.password.error"));
       LogUtil.debug(this.getClass(), "login", "密码错误");
       return response;
-    }   
+    }
     if (request.getRemoteAddr() != null) {
       admin.setLoginIp(request.getRemoteAddr());
       admin.setLoginDate(new Date());
@@ -217,19 +219,21 @@ public class CommonController extends BaseController {
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
+
   /**
-   * 更新图片(单张)
+   * 上传图片
+   *
    * @param request
    * @return
    */
-  @RequestMapping(value = "/uploadImg", method = {RequestMethod.GET, RequestMethod.POST})
-  public @ResponseBody BaseResponse uploadImg(HttpServletRequest request) {
+  @RequestMapping(value = "/uploadFile", method = {RequestMethod.GET, RequestMethod.POST})
+  public @ResponseBody BaseResponse uploadFile(HttpServletRequest request, ImageType imageType) {
     BaseResponse response = new BaseResponse();
     MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
     Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
     for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
       MultipartFile mf = entity.getValue();
-      String displayPath = fileService.saveImage(mf, ImageType.GOODS_IMG);
+      String displayPath = fileService.saveImage(mf, imageType);
       response.setDesc(displayPath);
       break;
     }

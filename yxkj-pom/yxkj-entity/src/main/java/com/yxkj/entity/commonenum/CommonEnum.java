@@ -205,6 +205,10 @@ public class CommonEnum {
     AUTH_IDCARD,
     /** 商品图片 */
     GOODS_IMG,
+    /**
+     * 广告资源
+     */
+    AD_RESOURCE
   }
 
   /**

@@ -2,6 +2,7 @@ package com.yxkj.service.impl;
 
 import javax.annotation.Resource;
 
+import com.yxkj.json.admin.request.AdResourceRequest;
 import org.springframework.stereotype.Service;
 
 import com.yxkj.entity.AdResource;
@@ -22,7 +23,7 @@ public class AdResourceServiceImpl extends BaseServiceImpl<AdResource, Long>
   }
 
   @Override
-  public AdResource updateAdResource(AdResource request) {
+  public AdResource updateAdResource(AdResourceRequest request) {
 
     AdResource oldAdResource = adResourceDao.find(request.getId());
     oldAdResource.setFileName(request.getFileName());

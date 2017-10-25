@@ -1,9 +1,10 @@
 package com.yxkj.json.admin.request;
 
 import com.yxkj.entity.commonenum.CommonEnum;
-import org.springframework.web.multipart.MultipartFile;
+import com.yxkj.json.base.BaseRequest;
 
-public class AdResourceRequest {
+public class AdResourceRequest extends BaseRequest {
+
   /**
    * 文件名称
    */
@@ -19,14 +20,11 @@ public class AdResourceRequest {
    */
   private String remark;
 
-  /**
-   * 文件
-   */
-  private MultipartFile adFile;
 
   /**
    * 广告类型
    */
+
   private CommonEnum.FileType fileType;
 
   public String getFileName() {
@@ -53,14 +51,6 @@ public class AdResourceRequest {
     this.remark = remark;
   }
 
-  public MultipartFile getAdFile() {
-    return adFile;
-  }
-
-  public void setAdFile(MultipartFile adFile) {
-    this.adFile = adFile;
-  }
-
   public CommonEnum.FileType getFileType() {
     return fileType;
   }
@@ -68,4 +58,5 @@ public class AdResourceRequest {
   public void setFileType(CommonEnum.FileType fileType) {
     this.fileType = fileType;
   }
+
 }
