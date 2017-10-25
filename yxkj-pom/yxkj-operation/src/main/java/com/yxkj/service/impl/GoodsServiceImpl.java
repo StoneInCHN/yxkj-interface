@@ -48,16 +48,16 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods,Long> implements Goo
 			  GoodsPic goodsPicLarge = new GoodsPic();
 			  goodsPicLarge.setSource(goodsData.getLargeUrl());
 			  goodsPicLarge.setTitle(goodsData.getName()+"(大图)");
-			  goodsPicSmall.setOrder(1);
+			  goodsPicLarge.setOrder(1);
 			  goods.getGoodsPics().add(goodsPicLarge);
     	  }else {
     		  List<GoodsPic> goodsPics = goods.getGoodsPics();
     		  for (GoodsPic goodsPic : goodsPics) {
-				if (goodsPic.getOrder() == 0) {
+				if (goodsPic.getOrder()!= null && goodsPic.getOrder() == 0) {
 					goodsPic.setSource(goodsData.getSmallUrl());
 					goodsPic.setTitle(goodsData.getName()+"(小图)");
 				}
-				if (goodsPic.getOrder() == 1) {
+				if (goodsPic.getOrder()!= null && goodsPic.getOrder() == 1) {
 					goodsPic.setSource(goodsData.getLargeUrl());
 					goodsPic.setTitle(goodsData.getName()+"(大图)");
 				}				

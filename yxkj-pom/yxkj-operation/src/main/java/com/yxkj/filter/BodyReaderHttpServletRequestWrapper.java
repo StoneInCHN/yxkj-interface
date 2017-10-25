@@ -24,7 +24,7 @@ public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapp
      */
     public BodyReaderHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        body = readBytes(request.getReader(), "utf-8");
+        body = readBytes(request.getReader(), "UTF-8");
     }
 
     @Override
