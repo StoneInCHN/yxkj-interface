@@ -15,7 +15,7 @@ import com.yxkj.controller.base.BaseController;
  * @author Andrea
  * @version 2017年10月12日 下午3:42:34
  */
-@Controller("containerH5Controller")
+@Controller("containerScanH5Controller")
 @RequestMapping("/scan/h5/cntr")
 public class ContainerScanH5Controller extends BaseController {
 
