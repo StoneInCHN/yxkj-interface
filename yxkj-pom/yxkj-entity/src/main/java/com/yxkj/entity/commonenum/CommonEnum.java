@@ -160,6 +160,16 @@ public class CommonEnum {
   }
 
   /**
+   * 出货异常
+   *
+   */
+  public enum ExcpReason {
+    /** 商品不足 */
+    LACK_GOODS,
+    /** 设备故障 */
+    DEVICE_EXCEPTION
+  }
+  /**
    * 系统参数配置
    * 
    *
