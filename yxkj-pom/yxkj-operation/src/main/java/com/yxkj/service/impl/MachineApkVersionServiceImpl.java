@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 
 import com.yxkj.entity.MachineAppUpgrade;
 import com.yxkj.entity.Scene;
+import com.yxkj.framework.paging.Page;
+import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.MachineApkVersionRequest;
 import com.yxkj.service.MachineAppUpgradeService;
 import com.yxkj.service.SceneService;
@@ -15,6 +17,9 @@ import com.yxkj.service.MachineApkVersionService;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("machineApkVersionServiceImpl")
 public class MachineApkVersionServiceImpl extends BaseServiceImpl<MachineApkVersion, Long>
@@ -69,5 +74,21 @@ public class MachineApkVersionServiceImpl extends BaseServiceImpl<MachineApkVers
       machineAppUpgradeService.save(machineAppUpgrade);
     }
     return apkVersion;
+  }
+
+  @Override
+  public Page<MachineApkVersion> findPageBySceneName(Pageable pageable, String sceneName) {
+    String jpql = null;
+    Map<String, String> paramMap = new HashMap<>();
+    if (sceneName != null) {
+      jpql =
+          "select apk from MachineApkVersion apk where apk.id in( select u.machineApkVersion.id from MachineAppUpgrade u where u.scene.name like:sceneName) ";
+      paramMap.put("sceneName", "%" + sceneName + "%");
+    } else {
+      jpql =
+          "select apk from MachineApkVersion apk where apk.id in( select u.machineApkVersion.id from MachineAppUpgrade u)";
+    }
+
+    return machineApkVersionDao.findPageCustomized(pageable, jpql, paramMap);
   }
 }

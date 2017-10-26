@@ -121,18 +121,11 @@ public class MachineApkVersionController extends BaseController {
     Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());
 
     List<Filter> filters = new ArrayList<>();
-    if (request.getSceneName() != null) {
-      LogUtil.debug(AdMachine.class, "list", "fileType:%s", request.getSceneName());
-      Filter fileTypeFilter =
-          new Filter("scene.name", Filter.Operator.like, "%" + request.getSceneName() + "%");
-      filters.add(fileTypeFilter);
-    }
-
-    pageable.setFilters(filters);
     List<Ordering> orderings = pageable.getOrderings();
     orderings.add(Ordering.desc("createDate"));
 
-    Page<MachineApkVersion> machineApkVersionPage = machineApkVersionService.findPage(pageable);
+    Page<MachineApkVersion> machineApkVersionPage =
+        machineApkVersionService.findPageBySceneName(pageable, request.getSceneName());
     PageResponse pageInfo = new PageResponse(pageable.getPageNumber(), pageable.getPageSize(),
         (int) machineApkVersionPage.getTotal());
     response.setPage(pageInfo);
