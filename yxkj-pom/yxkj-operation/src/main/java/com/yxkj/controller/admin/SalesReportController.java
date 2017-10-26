@@ -28,6 +28,7 @@ import com.yxkj.entity.Order;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 import com.yxkj.framework.filter.Filter;
 import com.yxkj.json.admin.request.OrderRequest;
+import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.OrderItemService;
 import com.yxkj.service.OrderService;
@@ -94,7 +95,7 @@ public class SalesReportController extends BaseController {
       resMap.put("profitRate", profit.divide(saleIncome, 4, BigDecimal.ROUND_HALF_UP));
       resMap.put("avgUnitPrice",
           saleIncome.divide(new BigDecimal(orderList.size()), 2, BigDecimal.ROUND_HALF_UP));
-      resMap.put("repeatPurRate", orderService.calRePurRate(2, null));
+      resMap.put("repeatPurRate", orderService.calRePurRate(2, null, null, null));
     }
     response.setMsg(resMap);
     response.setCode(CommonAttributes.SUCCESS);
@@ -117,8 +118,17 @@ public class SalesReportController extends BaseController {
           required = true) @RequestBody OrderRequest request) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
     Integer repeatCount = request.getRepeatCount();
+    Date startTime = request.getStartTime();
+    Date endTime = request.getEndTime();
+    if (startTime != null) {
+      startTime = TimeUtils.formatDate2Day0(startTime);
+    }
+    if (endTime != null) {
+      endTime = TimeUtils.formatDate2Day59(endTime);
+    }
     Map<String, Object> resMap = new HashMap<String, Object>();
-    resMap.put("repeatPurRate", orderService.calRePurRate(repeatCount + 1, null));
+    resMap.put("repeatPurRate",
+        orderService.calRePurRate(repeatCount + 1, null, startTime, endTime));
     response.setMsg(resMap);
     response.setCode(CommonAttributes.SUCCESS);
     return response;
@@ -126,7 +136,39 @@ public class SalesReportController extends BaseController {
 
 
   /**
-   * 数据概览-数据折线图
+   * 数据概览-优享空间数据列表
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/salesList", method = RequestMethod.POST)
+  @ApiOperation(value = "数据概览-优享空间数据列表", httpMethod = "POST", response = ResponseOne.class,
+      notes = "数据概览-优享空间数据列表")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody ResponseMultiple<Map<String, Object>> salesList(
+      @ApiParam(name = "请求参数(json)",
+          value = "参数[userName:登录用户名; sceneId:优享空间ID; startTime:开始日期; endTime:结束日期]",
+          required = false) @RequestBody OrderRequest request) {
+    Date startTime = request.getStartTime();
+    Date endTime = request.getEndTime();
+    Long sceneId = request.getSceneId();
+
+    if (startTime != null) {
+      startTime = TimeUtils.formatDate2Day0(startTime);
+    }
+    if (endTime != null) {
+      endTime = TimeUtils.formatDate2Day59(endTime);
+    }
+    ResponseMultiple<Map<String, Object>> response =
+        orderService.salesListDataMap(sceneId, startTime, endTime, request.getPageSize(),
+            request.getPageNumber());
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+
+
+  /**
+   * 数据概览-数据折线图 (只获取总销售额,总订单数,总成本,毛利率,平均客单价; 总用户数和重复购买率单独接口获取)
    * 
    * @param request
    * @return
@@ -135,27 +177,81 @@ public class SalesReportController extends BaseController {
   @ApiOperation(value = "数据概览-数据折线图", httpMethod = "POST", response = ResponseOne.class,
       notes = "数据概览-数据折线图")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-  public @ResponseBody ResponseOne<Map<String, Object>> salesGraph(
-      @ApiParam(name = "请求参数(json)", value = "参数[userName:登录用户名; startTime:开始日期; endTime:结束日期]",
-          required = false) @RequestBody OrderRequest request) {
-    ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>();
+  public @ResponseBody ResponseMultiple<Map<String, Object>> salesGraph(@ApiParam(
+      name = "请求参数(json)", value = "参数[userName:登录用户名; startTime:开始日期; endTime:结束日期]",
+      required = false) @RequestBody OrderRequest request) {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
     Date startTime = request.getStartTime();
     Date endTime = request.getEndTime();
-    Map<String, Object> resMap = new HashMap<String, Object>();
-    List<Filter> filters = new ArrayList<Filter>();
-    if (startTime != null) {
-      filters.add(Filter.ge("createDate", TimeUtils.formatDate2Day0(startTime)));
+    if (endTime == null) {
+      endTime = TimeUtils.formatDate2Day59(new Date());
     }
-    if (endTime != null) {
-      filters.add(Filter.lt("createDate", TimeUtils.formatDate2Day59(endTime)));
+    if (startTime == null) {
+      startTime = TimeUtils.formatDate2Day0(TimeUtils.addDays(-6, new Date()));// 默认7天,-6
     }
-    filters.add(Filter.ne("", OrderStatus.UNPAID));
-    resMap.put("userCount", touristService.count());// 总用户数
-    // List<DictConfig> dictConfigs = touristService.findList(null, filters, null);
-    String[] propertys = {"id", "configValue"};
+    List<Map<String, Object>> list = orderService.salesGraphDataMap(startTime, endTime);
+    response.setMsg(list);
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
 
+  /**
+   * 数据概览-数据折线图 重复购买率
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/salesGraphForRpRate", method = RequestMethod.POST)
+  @ApiOperation(value = "数据概览-数据折线图", httpMethod = "POST", response = ResponseOne.class,
+      notes = "数据概览-数据折线图")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody ResponseMultiple<Map<String, Object>> salesGraphForRpRate(@ApiParam(
+      name = "请求参数(json)",
+      value = "参数[userName:登录用户名; startTime:开始日期; endTime:结束日期; repeatCount:复购次数]",
+      required = false) @RequestBody OrderRequest request) {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
+    Date startTime = request.getStartTime();
+    Date endTime = request.getEndTime();
+    Integer repeatCount = request.getRepeatCount();
+    if (endTime == null) {
+      endTime = TimeUtils.formatDate2Day59(new Date());
+    }
+    if (startTime == null) {
+      startTime = TimeUtils.formatDate2Day0(TimeUtils.addDays(-6, new Date()));// 默认7天,-6
+    }
+    List<Map<String, Object>> list =
+        orderService.salesGraphRepeatRateMap(repeatCount + 1, startTime, endTime);
+    response.setMsg(list);
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+
+  /**
+   * 数据概览-数据折线图 总用户数
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/salesGraphForUserCount", method = RequestMethod.POST)
+  @ApiOperation(value = "数据概览-数据折线图", httpMethod = "POST", response = ResponseOne.class,
+      notes = "数据概览-数据折线图")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody ResponseMultiple<Map<String, Object>> salesGraphForUserCount(@ApiParam(
+      name = "请求参数(json)", value = "参数[userName:登录用户名; startTime:开始日期; endTime:结束日期]",
+      required = false) @RequestBody OrderRequest request) {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>();
+    Date startTime = request.getStartTime();
+    Date endTime = request.getEndTime();
+    if (endTime == null) {
+      endTime = TimeUtils.formatDate2Day59(new Date());
+    }
+    if (startTime == null) {
+      startTime = TimeUtils.formatDate2Day0(TimeUtils.addDays(-6, new Date()));// 默认7天,-6
+    }
+    List<Map<String, Object>> list = orderService.salesGraphUserCountMap(startTime, endTime);
+    response.setMsg(list);
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
 
 }

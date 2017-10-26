@@ -9,6 +9,10 @@ import com.yxkj.json.base.BaseListRequest;
 public class OrderRequest extends BaseListRequest {
 
   /**
+   * 优享空间ID
+   */
+  private Long sceneId;
+  /**
    * 优享空间
    */
   private String sceneName;
@@ -53,6 +57,14 @@ public class OrderRequest extends BaseListRequest {
    */
   private Integer repeatCount;
 
+
+  public Long getSceneId() {
+    return sceneId;
+  }
+
+  public void setSceneId(Long sceneId) {
+    this.sceneId = sceneId;
+  }
 
   public Integer getRepeatCount() {
     return repeatCount;
