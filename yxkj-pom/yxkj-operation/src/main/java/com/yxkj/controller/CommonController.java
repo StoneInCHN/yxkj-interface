@@ -220,24 +220,4 @@ public class CommonController extends BaseController {
     return response;
   }
 
-  /**
-   * 上传图片
-   *
-   * @param request
-   * @return
-   */
-  @RequestMapping(value = "/uploadFile", method = {RequestMethod.GET, RequestMethod.POST})
-  public @ResponseBody BaseResponse uploadFile(HttpServletRequest request, ImageType imageType) {
-    BaseResponse response = new BaseResponse();
-    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
-      MultipartFile mf = entity.getValue();
-      String displayPath = fileService.saveImage(mf, imageType);
-      response.setDesc(displayPath);
-      break;
-    }
-    response.setCode(CommonAttributes.SUCCESS);
-    return response;
-  }
 }
