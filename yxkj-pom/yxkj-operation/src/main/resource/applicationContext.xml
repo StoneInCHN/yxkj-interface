@@ -8,6 +8,7 @@
 	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd"
 	default-lazy-init="true">
 
+	<context:property-placeholder location="classpath*:/redis.properties" ignore-resource-not-found="true" ignore-unresolvable="true"/>
 	<context:property-placeholder location="classpath*:/common-config.properties" ignore-resource-not-found="true" ignore-unresolvable="true" />
 
 	<context:component-scan base-package="com.yxkj">
@@ -88,7 +89,12 @@
 			</list>
 		</property>
 	</bean>
-
+	<bean id="receiverClient" class="com.yxkj.common.client.ReceiverClient">
+		<constructor-arg index="0" value="${redis.ip}"/>
+		<constructor-arg index="1" value="${redis.port}"/>
+		<constructor-arg index="2" value="${redis.timeout}"/>
+		<constructor-arg index="3" value="${redis.requirepass}"/>
+	</bean>
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
 		<property name="defaultLocale" value="${locale}" />
 	</bean>
