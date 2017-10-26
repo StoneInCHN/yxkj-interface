@@ -2,8 +2,14 @@ package com.yxkj.json.admin.request;
 
 import com.yxkj.json.base.BaseRequest;
 
+import java.util.List;
+
 public class AdMachineRequest extends BaseRequest {
 
+  /**
+   * 优享空间Id
+   */
+  private List<Long> sceneIds;
   /**
    * 视频A
    */
@@ -34,6 +40,15 @@ public class AdMachineRequest extends BaseRequest {
    * 备注
    */
   private String remark;
+
+
+  public List<Long> getSceneIds() {
+    return sceneIds;
+  }
+
+  public void setSceneIds(List<Long> sceneIds) {
+    this.sceneIds = sceneIds;
+  }
 
   public String getAdvA() {
     return advA;

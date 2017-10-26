@@ -233,7 +233,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     long total = count(criteriaQuery, null);
     /**
      * 注释，用于手机接口，如果传入的pageNumber大于总页数，不做处理
-     * 
+     *
      * @author sujinxuan
      */
     // int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
@@ -362,27 +362,23 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	//  }
       //zhanglu:2017-10-14 start
       if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
-          if (filter.getValue() instanceof String) {
-            Path<String> path = getPath(root,filter.getProperty());
-            if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
-          restrictions =
-              criteriaBuilder.and(restrictions, criteriaBuilder.equal(
-                      criteriaBuilder.lower(path),
-                  ((String) filter.getValue()).toLowerCase()));
-        } else {
-          restrictions =
-                  criteriaBuilder.and(restrictions, criteriaBuilder.equal(path,
-                      ((String) filter.getValue())));
-            }
+        if (filter.getValue() instanceof String) {
+          Path<String> path = getPath(root, filter.getProperty());
+          if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder
+                .equal(criteriaBuilder.lower(path), ((String) filter.getValue()).toLowerCase()));
           } else {
-            Path<Object> path = getPath(root,filter.getProperty());
-            restrictions =
-              criteriaBuilder.and(restrictions,
-                    criteriaBuilder.equal(path, filter.getValue()));
+            restrictions = criteriaBuilder.and(restrictions,
+                criteriaBuilder.equal(path, ((String) filter.getValue())));
+          }
+        } else {
+          Path<Object> path = getPath(root, filter.getProperty());
+          restrictions =
+              criteriaBuilder.and(restrictions, criteriaBuilder.equal(path, filter.getValue()));
         }
-        }
+      }
       //zhanglu:2017-10-14 end
-      
+
       else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
         if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
             && filter.getValue() instanceof String) {
@@ -465,15 +461,15 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 //        restrictions =
 //            criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(filter.getValue()));
     	    //zhanglu:2017-10-13 start
+          Path<String> path = getPath(root, filter.getProperty());
   	    	if (filter.getValue() instanceof Object[]) {
 	          //如果传入的value是数组，那么用in(数组) 之前强制将其转成Object[]
 	          Object[] objects = (Object[]) filter.getValue();
 	          restrictions =
-	              criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(objects));
+	              criteriaBuilder.and(restrictions,path.in(objects));
 	        } else {
         restrictions =
-	              criteriaBuilder.and(restrictions, root.get(filter.getProperty())
-	                  .in(filter.getValue()));
+	              criteriaBuilder.and(restrictions,path.in((String)filter.getValue()));
 	        }
     	    //zhanglu:2017-10-13 end
       } else if (filter.getOperator() == Operator.isNull) {
@@ -736,7 +732,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
   }
 
   /**
-   * 
+   *
    * @param pageable
    * @param jpql
    * @param paramMap 用于设置SQL的参数 注意:paramMap.pub("distinct") 用于设置select 语句中有
@@ -760,7 +756,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     long total = countQuery.getSingleResult();
     /**
      * 注释，用于手机接口，如果传入的pageNumber大于总页数，不做处理
-     * 
+     *
      * @author sujinxuan
      */
     // int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());

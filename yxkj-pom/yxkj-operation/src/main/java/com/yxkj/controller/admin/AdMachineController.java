@@ -48,24 +48,6 @@ public class AdMachineController extends BaseController {
   @Resource(name = "adMachineServiceImpl")
   private AdMachineService adMachineService;
 
-  @RequestMapping(value = "/add", method = RequestMethod.POST)
-  @ApiOperation(value = "添加广告", httpMethod = "POST", response = ResponseMultiple.class,
-      notes = "添加广告")
-  @ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")
-  public @ResponseBody BaseResponse add(@ApiParam(name = "请求参数Json",
-      value = "参数[fileName:文件名；fileUrl:文件访问地址；fileType:广告类型]") @RequestBody AdResourceRequest request) {
-    BaseResponse response = new BaseResponse();
-    AdResource adResource = new AdResource();
-    adResource.setRemark(request.getRemark());
-    adResource.setFileUrl(request.getFileUrl());
-    adResource.setFileName(request.getFileName());
-    adResource.setFileType(request.getFileType());
-    adResourceService.save(adResource);
-    response.setCode(CommonAttributes.SUCCESS);
-    response.setDesc(message("yxkj.add.success"));
-    return response;
-  }
-
   @RequestMapping(value = "/update", method = RequestMethod.POST)
   @ApiOperation(value = "编辑广告", httpMethod = "POST", response = ResponseMultiple.class,
       notes = "编辑广告")
@@ -80,6 +62,25 @@ public class AdMachineController extends BaseController {
     }
 
     adMachineService.updateAdMachine(request);
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(message("yxkj.update.success"));
+    return response;
+  }
+
+  @RequestMapping(value = "/batchUpdate", method = RequestMethod.POST)
+  @ApiOperation(value = "广告管理-批量操作", httpMethod = "POST", response = ResponseMultiple.class,
+      notes = "广告管理-批量操作")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse batchUpdate(@ApiParam(name = "请求参数Json",
+      value = "参数[sceneId:优享空间Id；adva:视频A:advb:视频B；advc:图片1；advd:图片2；adve:图片3]") @RequestBody AdMachineRequest request) {
+    BaseResponse response = new BaseResponse();
+    if (request == null) {
+      response.setCode(CommonAttributes.FAIL_COMMON);
+      response.setDesc(message("yxkj.request.param.notmatch"));
+      return response;
+    }
+
+    adMachineService.batchUpdateAdMachine(request);
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.update.success"));
     return response;
