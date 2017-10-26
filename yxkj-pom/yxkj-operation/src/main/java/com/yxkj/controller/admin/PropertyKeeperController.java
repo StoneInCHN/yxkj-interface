@@ -58,7 +58,7 @@ public class PropertyKeeperController extends BaseController {
 	@Autowired
 	private ExportHelper exportHelper;	
 	
-    @RequestMapping(value = "/getKeeperList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getKeeperPage", method = RequestMethod.POST)
     @ApiOperation(value = "物业列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取物业列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseMultiple<Map<String, Object>> getKeeperList(

@@ -9,20 +9,6 @@ public class BaseListRequest extends BaseRequest {
   /** 分页-当前页码 */
   private Integer pageNumber = 1;
 
-  /**
-   * 查询关键字
-   */
-  private String key;
-
-
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
   public Integer getPageSize() {
     return pageSize;
   }

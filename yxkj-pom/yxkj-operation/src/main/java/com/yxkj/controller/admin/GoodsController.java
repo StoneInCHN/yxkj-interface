@@ -66,7 +66,7 @@ public class GoodsController extends BaseController {
 	@Autowired
 	private ExportHelper exportHelper;	
 	
-    @RequestMapping(value = "/getGoodsList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getGoodsPage", method = RequestMethod.POST)
     @ApiOperation(value = "商品列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取商品列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseMultiple<Map<String, Object>> getGoodsList(
@@ -218,7 +218,7 @@ public class GoodsController extends BaseController {
         return response;
     }
     
-    @RequestMapping(value = "/goodsCateList", method = RequestMethod.POST)
+    @RequestMapping(value = "/goodsCatePage", method = RequestMethod.POST)
     @ApiOperation(value = "商品分类列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于商品分类列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})	
 	public @ResponseBody ResponseMultiple<Map<String, Object>> goodsCateList(
