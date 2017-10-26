@@ -1,34 +1,18 @@
 package com.yxkj.json.admin.request;
 
-import com.yxkj.json.base.BaseListRequest;
+import com.yxkj.json.admin.bean.SceneData;
+import com.yxkj.json.base.BaseRequest;
 
-public class SceneRequest extends BaseListRequest{		
-	/**
-	 * 空间编号
-	*/
-	private String sn;
+public class SceneRequest extends BaseRequest{		
 
-	/**
-	 * 空间地址名称
-	*/
-	private String name;
+	private SceneData sceneData;
 
-	public String getSn() {
-		return sn;
+	public SceneData getSceneData() {
+		return sceneData;
 	}
 
-	public void setSn(String sn) {
-		this.sn = sn;
+	public void setSceneData(SceneData sceneData) {
+		this.sceneData = sceneData;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	  
-	  
-
+	
 }

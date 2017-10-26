@@ -1,9 +1,9 @@
 package com.yxkj.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,7 +32,7 @@ public class Scene extends BaseEntity {
   /**
    * 无人售货机货柜
    */
-  private Set<VendingContainer> vendingContainer = new HashSet<VendingContainer>();
+  private List<VendingContainer> vendingContainer = new ArrayList<VendingContainer>();
 
   /**
    * 空间编号
@@ -243,16 +243,14 @@ public class Scene extends BaseEntity {
     this.sn = sn;
   }
 
-
   @OneToMany(mappedBy = "scene")
-  public Set<VendingContainer> getVendingContainer() {
-    return vendingContainer;
+  public List<VendingContainer> getVendingContainer() {
+	return vendingContainer;
   }
 
-  public void setVendingContainer(Set<VendingContainer> vendingContainer) {
-    this.vendingContainer = vendingContainer;
+  public void setVendingContainer(List<VendingContainer> vendingContainer) {
+	this.vendingContainer = vendingContainer;
   }
-
 
 
 }

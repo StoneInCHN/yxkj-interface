@@ -27,9 +27,12 @@ import com.yxkj.framework.ordering.Ordering;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.SceneRequest;
+import com.yxkj.json.admin.request.SceneSearchRequest;
 import com.yxkj.json.admin.request.SearchListRequest;
+import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.PageResponse;
 import com.yxkj.json.base.ResponseMultiple;
+import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.SceneService;
 import com.yxkj.utils.FieldFilterUtils;
 
@@ -44,7 +47,7 @@ public class SceneController extends BaseController {
 
   @Resource(name = "sceneServiceImpl")
   private SceneService sceneService;
-
+  
   /**
    * 优享空间列表
    * 
@@ -56,7 +59,7 @@ public class SceneController extends BaseController {
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
   public @ResponseBody ResponseMultiple<Map<String, Object>> sceneList(
       @ApiParam(name = "请求参数(json)", value = "参数[userName:登录用户名; key:优享空间地址或编号]", required = false) 
-      @RequestBody SceneRequest request) {   
+      @RequestBody SceneSearchRequest request) {   
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>(); 
     Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
     List<Filter> filters = pageable.getFilters();
@@ -83,6 +86,48 @@ public class SceneController extends BaseController {
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
+  
+  @RequestMapping(value = "/addScene", method = RequestMethod.POST)
+  @ApiOperation(value = "添加场景", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加场景")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse addScene(
+  		@ApiParam (name = "请求参数(json)", value = "userName:用户名; sceneData:场景数据", required = true)
+  		@RequestBody SceneRequest request) {
+      BaseResponse response = new BaseResponse(); 
+      if (request.getSceneData() != null) {
+    	Scene scene = sceneService.getSceneEnity(request, null);
+    	if (scene != null) {
+        	sceneService.saveScene(scene);
+            response.setCode(CommonAttributes.SUCCESS);
+            response.setDesc(message("yxkj.request.success"));
+		}else {
+	          response.setCode(CommonAttributes.FAIL_COMMON);
+	          response.setDesc(message("yxkj.request.failed"));
+		}
+	  }
+      return response;
+  }
+  @RequestMapping(value = "/updateScene", method = RequestMethod.POST)
+  @ApiOperation(value = "更新场景", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新场景")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse updateScene(
+  		@ApiParam(name = "请求参数(json)", value = "userName:用户名; sceneData:场景数据", required = true)
+  		@RequestBody SceneRequest request) {
+      BaseResponse response = new BaseResponse(); 
+      if (request.getSceneData() != null && request.getId() != null) {
+    	Scene scene = sceneService.getSceneEnity(request, request.getId());
+    	if (scene != null) {
+        	sceneService.update(scene);
+            response.setCode(CommonAttributes.SUCCESS);
+            response.setDesc(message("yxkj.request.success"));
+		}else {
+	        response.setCode(CommonAttributes.FAIL_COMMON);
+	        response.setDesc(message("yxkj.request.failed"));
+		}
+	  }
+      return response;
+  }
+  
   /**
    * 获取优享空间下拉列表
    * 
