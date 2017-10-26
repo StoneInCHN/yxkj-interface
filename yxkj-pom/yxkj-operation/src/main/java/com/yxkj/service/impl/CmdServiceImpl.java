@@ -1,0 +1,124 @@
+package com.yxkj.service.impl;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.yxkj.common.client.ReceiverClient;
+import com.yxkj.common.commonenum.CommonEnum;
+import com.yxkj.common.entity.CmdMsg;
+import com.yxkj.common.log.LogUtil;
+import com.yxkj.dao.CmdDao;
+import com.yxkj.entity.CommandRecord;
+import com.yxkj.framework.service.impl.BaseServiceImpl;
+import com.yxkj.service.CmdService;
+import com.yxkj.service.OrderService;
+
+/**
+ * @author huyong
+ * @since 2017/9/26
+ */
+@Service("cmdServiceImpl")
+public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> implements CmdService {
+
+  @Resource(name = "orderServiceImpl")
+  private OrderService orderService;
+  private CmdDao cmdDao;
+
+  private ReceiverClient receiverClient;
+
+  @Autowired
+  public CmdServiceImpl(ReceiverClient receiverClient, CmdDao cmdDao) {
+    this.cmdDao = cmdDao;
+    this.receiverClient = receiverClient;
+  }
+
+  private void saveCommandRecordList(List<CmdMsg> cmdMsgList) {
+    cmdMsgList.forEach(cmdMsg -> {
+      CommandRecord record = new CommandRecord();
+
+      // 保存指令到数据库
+      record.setCmdContent(cmdMsg.getContent().get("orderItemId"));
+      record.setCmdType(cmdMsg.getType());
+      record.setDeviceNo(cmdMsg.getDeviceNo());
+      record.setCmdStatus(CommonEnum.CmdStatus.SendOut);
+      cmdDao.persist(record);
+
+      cmdMsg.setId(record.getId());
+
+    });
+
+  }
+
+  private Long saveCommandRecord(String deviceNo, CommonEnum.CmdType cmdType, String content) {
+    CommandRecord record = new CommandRecord();
+
+    // 保存指令到数据库
+    record.setCmdContent(content);
+    record.setCmdType(cmdType);
+    record.setDeviceNo(deviceNo);
+    record.setCmdStatus(CommonEnum.CmdStatus.SendOut);
+    cmdDao.persist(record);
+
+    return record.getId();
+  }
+
+  @Override
+  public void updateAdv(String deviceNo, Map<String, String> map) {
+    StringBuffer stringBuffer = new StringBuffer();
+    map.forEach((k, v) -> {
+      stringBuffer.append(k);
+      stringBuffer.append("=");
+      stringBuffer.append(v);
+    });
+    try {
+      Long recordId =
+          saveCommandRecord(deviceNo, CommonEnum.CmdType.AD_UPDATE, stringBuffer.toString());
+      CmdMsg cmdMsg = receiverClient.updateAdv(deviceNo, map, recordId);
+      LogUtil.debug(this.getClass(), "updateAdv", "CmdMsg = %s", cmdMsg.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void updateAudioVolume(String deviceNo, float volume) {
+    try {
+      Long recordId =
+          saveCommandRecord(deviceNo, CommonEnum.CmdType.VOLUME, String.valueOf(volume));
+      CmdMsg cmdMsg = receiverClient.updateAudioVolume(deviceNo, volume, recordId);
+      LogUtil.debug(this.getClass(), "updateAudioVolume", "CmdMsg = %s", cmdMsg.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void notificationCmd(String deviceNo, CommonEnum.CmdType cmdType) {
+    Long recordId = saveCommandRecord(deviceNo, cmdType, null);
+
+    try {
+      CmdMsg cmdMsg = receiverClient.notificationCmd(deviceNo, recordId, cmdType);
+
+      LogUtil.debug(this.getClass(), "notificationCmd", "CmdMsg = %s", cmdMsg.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void appUpdate(String deviceNo, String url) {
+    Long recordId = saveCommandRecord(deviceNo, CommonEnum.CmdType.APP_UPDATE, url);
+    try {
+      CmdMsg cmdMsg = receiverClient.appUpdateCmd(deviceNo, recordId, url);
+      LogUtil.debug(this.getClass(), "appUpdate", "CmdMsg = %s", cmdMsg.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+}
