@@ -30,6 +30,11 @@ import com.yxkj.entity.commonenum.CommonEnum.Gender;
 public class ContainerKeeper extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
+  
+  /**
+	* 管家姓名
+  */
+  private String realName;
 
   /**
    * 用户名
@@ -224,6 +229,15 @@ public class ContainerKeeper extends BaseEntity {
 
   public void setMsgKeepers(Set<MsgKeeper> msgKeepers) {
     this.msgKeepers = msgKeepers;
+  }
+  
+  @Column(length = 50)
+  public String getRealName() {
+	return realName;
+  }
+
+  public void setRealName(String realName) {
+	this.realName = realName;
   }
 
 }
