@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.BaseController;
-import com.yxkj.entity.ContainerKeeper;
+import com.yxkj.entity.PropertyKeeper;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.PropertyKeeperRequest;
@@ -31,30 +31,34 @@ import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.PageResponse;
 import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
-import com.yxkj.service.ContainerKeeperService;
+import com.yxkj.service.FileService;
+import com.yxkj.service.PropertyKeeperService;
 import com.yxkj.utils.ExportHelper;
 import com.yxkj.utils.FieldFilterUtils;
 import com.yxkj.utils.GenerateRandom;
 import com.yxkj.utils.ToolsUtils;
 
 /**
- * Controller - 管家管理
+ * Controller - 物业管理
  * @author luzhang
  *
  */
-@Controller("containerKeeperController")
-@RequestMapping("/admin/containerKeeper")
-@Api(value = "(货柜后台)管家管理页面", description = "管家管理页面")
-public class ContainerKeeperController extends BaseController {   
+@Controller("propertyKeeperController")
+@RequestMapping("/admin/propertyKeeper")
+@Api(value = "(货柜后台)物业管理页面", description = "物业管理页面")
+public class PropertyKeeperController extends BaseController {   
 	
-	@Resource(name = "containerKeeperServiceImpl")
-	private ContainerKeeperService containerKeeperService;
+	@Resource(name = "propertyKeeperServiceImpl")
+	private PropertyKeeperService propertyKeeperService;
+	
+	@Resource(name = "fileServiceImpl")
+	private FileService fileService;
 	
 	@Autowired
 	private ExportHelper exportHelper;	
 	
     @RequestMapping(value = "/getKeeperList", method = RequestMethod.POST)
-    @ApiOperation(value = "管家列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取管家列表")
+    @ApiOperation(value = "物业列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取物业列表")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody ResponseMultiple<Map<String, Object>> getKeeperList(
     		@ApiParam(name = "请求参数(json)", value = "userName:用户名; pageNumber:页码; pageSize:每页数量", required = false) 
@@ -63,8 +67,8 @@ public class ContainerKeeperController extends BaseController {
       ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<Map<String, Object>>(); 
       Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
 
-      Page<ContainerKeeper> keeperPage = containerKeeperService.findPage(pageable);      
-      String[] propertys = {"id", "userName", "cellPhoneNum", "scenes"};
+      Page<PropertyKeeper> keeperPage = propertyKeeperService.findPage(pageable);      
+      String[] propertys = {"id", "userName", "fenRunPoint", "cellPhoneNum", "scenes"};
       List<Map<String, Object>> result = FieldFilterUtils.filterCollection(propertys, keeperPage.getContent());
       PageResponse pageInfo = new PageResponse(pageable.getPageNumber(), 
     		  pageable.getPageSize(), (int)keeperPage.getTotal());
@@ -76,19 +80,19 @@ public class ContainerKeeperController extends BaseController {
     }
     
     @RequestMapping(value = "/addKeeper", method = RequestMethod.POST)
-    @ApiOperation(value = "添加管家", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加管家")
+    @ApiOperation(value = "添加物业", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加物业")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody BaseResponse addGoods(
-    		@ApiParam (name = "请求参数(json)", value = "userName:用户名; realName:管家姓名; cellPhoneNum:手机号; sceneIds:负责优享空间IDs", required = true)
+    		@ApiParam (name = "请求参数(json)", value = "userName:用户名; realName:物业姓名; cellPhoneNum:手机号; fenRunPoint:物业分润点; sceneIds:负责优享空间IDs", required = true)
     		@RequestBody PropertyKeeperRequest request) {
         BaseResponse response = new BaseResponse(); 
         if (request.getSceneIds() != null && request.getSceneIds().length > 0 ) {      
-      	    ContainerKeeper keeper = containerKeeperService.getContainerKeeperEntity(request, null);
+      	    PropertyKeeper keeper = propertyKeeperService.getPropertyKeeperEntity(request, null);
       	    String loginPwd = keeper.getLoginPwd();
       	    keeper.setLoginPwd(DigestUtils.md5Hex(loginPwd));      	    
-      	    containerKeeperService.save(keeper);
-		    ToolsUtils.sendSmsMsg(request.getCellPhoneNum(), message("yxkj.containerKeeper.create.sendSMS", 
-		    		keeper.getRealName(), keeper.getUserName(), loginPwd));
+      	    propertyKeeperService.save(keeper);
+		    ToolsUtils.sendSmsMsg(request.getCellPhoneNum(), message("yxkj.propertyKeeper.create.sendSMS", 
+		    		keeper.getRealName(), keeper.getUserName(), loginPwd, fileService.getProjectDeployUrl()));
             response.setCode(CommonAttributes.SUCCESS);
             response.setDesc(message("yxkj.request.success"));
   	  	}else {
@@ -98,16 +102,16 @@ public class ContainerKeeperController extends BaseController {
         return response;
     }
     @RequestMapping(value = "/updateKeeper", method = RequestMethod.POST)
-    @ApiOperation(value = "更新管家", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新管家")
+    @ApiOperation(value = "更新物业", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新物业")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody BaseResponse updateGoods(
-    		@ApiParam(name = "请求参数(json)", value = "serName:用户名; realName:管家姓名; cellPhoneNum:手机号; sceneIds:负责优享空间IDs", required = true)
+    		@ApiParam(name = "请求参数(json)", value = "serName:用户名; realName:物业姓名; cellPhoneNum:手机号; fenRunPoint:物业分润点; sceneIds:负责优享空间IDs", required = true)
     		@RequestBody PropertyKeeperRequest request) {
         BaseResponse response = new BaseResponse(); 
         if (request.getId() != null && request.getSceneIds() != null && request.getSceneIds().length > 0 ) {      
-      	    ContainerKeeper keeper = containerKeeperService.getContainerKeeperEntity(request, request.getId());
+      	    PropertyKeeper keeper = propertyKeeperService.getPropertyKeeperEntity(request, request.getId());
       	    if (keeper != null) {
-      	    	containerKeeperService.update(keeper, "userName", "loginPwd");
+      	    	propertyKeeperService.update(keeper, "userName", "loginPwd");
                 response.setCode(CommonAttributes.SUCCESS);
                 response.setDesc(message("yxkj.request.success"));
 			}else {
@@ -122,14 +126,14 @@ public class ContainerKeeperController extends BaseController {
     }
     
     @RequestMapping(value = "/deleteKeeper", method = RequestMethod.POST)
-    @ApiOperation(value = "删除管家", httpMethod = "POST", response = ResponseOne.class, notes = "用于删除管家")
+    @ApiOperation(value = "删除物业", httpMethod = "POST", response = ResponseOne.class, notes = "用于删除物业")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody BaseResponse deleteGoods(
-    		@ApiParam(name = "请求参数(json)", value = "userName:用户名; ids:管家ID数组", required = true) 
+    		@ApiParam(name = "请求参数(json)", value = "userName:用户名; ids:物业ID数组", required = true) 
     		@RequestBody BaseRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getIds() != null && request.getIds().length > 0) {
-    	  containerKeeperService.delete(request.getIds());
+    	  propertyKeeperService.delete(request.getIds());
           response.setCode(CommonAttributes.SUCCESS);
           response.setDesc(message("yxkj.request.success"));
 	  }else {
@@ -140,22 +144,22 @@ public class ContainerKeeperController extends BaseController {
     } 
     
     @RequestMapping(value = "/resetPwd", method = RequestMethod.POST)
-    @ApiOperation(value = "管家重置（随机）密码", httpMethod = "POST", response = ResponseOne.class, notes = "管家重置（随机）密码")
+    @ApiOperation(value = "物业重置（随机）密码", httpMethod = "POST", response = ResponseOne.class, notes = "物业重置（随机）密码")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody BaseResponse resetPwd(
-    		@ApiParam(name = "请求参数(json)", value = "userName:用户名; id:管家ID", required = true) 
+    		@ApiParam(name = "请求参数(json)", value = "userName:用户名; id:物业ID", required = true) 
     		@RequestBody BaseRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getId() == null) {
           response.setCode(CommonAttributes.FAIL_COMMON);
           response.setDesc(message("yxkj.request.failed"));   	  
       }
-      ContainerKeeper keeper = containerKeeperService.find(request.getId());
+      PropertyKeeper keeper = propertyKeeperService.find(request.getId());
       String newPwd = new GenerateRandom().createPassWord(10);//生成随机密码
       keeper.setLoginPwd(DigestUtils.md5Hex(newPwd));
-      containerKeeperService.update(keeper);
-	  ToolsUtils.sendSmsMsg(keeper.getCellPhoneNum(), message("yxkj.containerKeeper.resetPwd.sendSMS", 
-	    		keeper.getRealName(), keeper.getUserName(), newPwd));
+      propertyKeeperService.update(keeper);
+	  ToolsUtils.sendSmsMsg(keeper.getCellPhoneNum(), message("yxkj.propertyKeeper.resetPwd.sendSMS", 
+	    		keeper.getRealName(), keeper.getUserName(), newPwd, fileService.getProjectDeployUrl()));
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.request.success"));
       
