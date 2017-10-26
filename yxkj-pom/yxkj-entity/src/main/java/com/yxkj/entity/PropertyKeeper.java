@@ -1,5 +1,6 @@
 package com.yxkj.entity;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,25 +16,22 @@ import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
-import com.yxkj.entity.commonenum.CommonEnum.Gender;
 
 /**
- * Entity - 管家实体
+ * Entity - 物业实体
  * 
- * @author Andrea
- * @version 2017年9月15日 上午11:27:59
  */
 @Entity
-@Table(name = "t_container_keeper", 
+@Table(name = "t_property_keeper", 
 indexes = {@Index(name = "cellPhoneNumIndex", columnList = "cellPhoneNum"),
 		   @Index(name = "userNameIndex", columnList = "userName")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_container_keeper_sequence")
-public class ContainerKeeper extends BaseEntity {
+public class PropertyKeeper extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
   
   /**
-	* 管家姓名
+	* 姓名
   */
   private String realName;
 
@@ -42,10 +40,6 @@ public class ContainerKeeper extends BaseEntity {
    */
   private String userName;
 
-  /**
-   * 用户头像
-   */
-  private String userPhoto;
 
   /**
    * 手机号
@@ -61,18 +55,11 @@ public class ContainerKeeper extends BaseEntity {
    * 账号状态
    */
   private AccountStatus accountStatus;
+  
   /**
-   * 昵称
+   * 分润点(物业)
    */
-  private String nickName;
-  /**
-   * 年龄
-   */
-  private Integer age;
-  /**
-   * 性别
-   */
-  private Gender gender;
+  private BigDecimal fenRunPoint;
 
   /**
    * 地址
@@ -80,29 +67,12 @@ public class ContainerKeeper extends BaseEntity {
   private String address;
 
   /**
-   * 用户所在地区
+   * 所在地区
    */
   private Area area;
 
   /**
-   * 极光push注册ID
-   */
-  private String jpushRegId;
-
-
-  /**
-   * 配送员消息
-   */
-  private Set<MsgKeeper> msgKeepers = new HashSet<MsgKeeper>();
-
-  /**
-   * 是否开启消息推送
-   */
-  private Boolean isPushMsg;
-
-
-  /**
-   * 管家管理的优享空间
+   * 管理的优享空间
    */
   private Set<Scene> scenes = new HashSet<Scene>();
 
@@ -113,14 +83,6 @@ public class ContainerKeeper extends BaseEntity {
 
   public void setScenes(Set<Scene> scenes) {
     this.scenes = scenes;
-  }
-
-  public Boolean getIsPushMsg() {
-    return isPushMsg;
-  }
-
-  public void setIsPushMsg(Boolean isPushMsg) {
-    this.isPushMsg = isPushMsg;
   }
 
 
@@ -134,48 +96,12 @@ public class ContainerKeeper extends BaseEntity {
   }
 
 
-  @Column(length = 200)
-  public String getUserPhoto() {
-    return userPhoto;
-  }
-
-  public void setUserPhoto(String userPhoto) {
-    this.userPhoto = userPhoto;
-  }
-
-
-
   public AccountStatus getAccountStatus() {
     return accountStatus;
   }
 
   public void setAccountStatus(AccountStatus accountStatus) {
     this.accountStatus = accountStatus;
-  }
-
-  @Column(length = 100)
-  public String getNickName() {
-    return nickName;
-  }
-
-  public void setNickName(String nickName) {
-    this.nickName = nickName;
-  }
-
-  public Integer getAge() {
-    return age;
-  }
-
-  public void setAge(Integer age) {
-    this.age = age;
-  }
-
-  public Gender getGender() {
-    return gender;
-  }
-
-  public void setGender(Gender gender) {
-    this.gender = gender;
   }
 
   @Column(length = 200)
@@ -185,15 +111,6 @@ public class ContainerKeeper extends BaseEntity {
 
   public void setAddress(String address) {
     this.address = address;
-  }
-
-  @Column(length = 100)
-  public String getJpushRegId() {
-    return jpushRegId;
-  }
-
-  public void setJpushRegId(String jpushRegId) {
-    this.jpushRegId = jpushRegId;
   }
 
   @Column(length = 50, unique = true)
@@ -222,15 +139,6 @@ public class ContainerKeeper extends BaseEntity {
   public void setLoginPwd(String loginPwd) {
     this.loginPwd = loginPwd;
   }
-
-  @OneToMany(mappedBy = "keeper", cascade = CascadeType.ALL)
-  public Set<MsgKeeper> getMsgKeepers() {
-    return msgKeepers;
-  }
-
-  public void setMsgKeepers(Set<MsgKeeper> msgKeepers) {
-    this.msgKeepers = msgKeepers;
-  }
   
   @Column(length = 50)
   public String getRealName() {
@@ -239,6 +147,15 @@ public class ContainerKeeper extends BaseEntity {
 
   public void setRealName(String realName) {
 	this.realName = realName;
+  }
+  
+  @Column(scale = 4, precision = 10)
+  public BigDecimal getFenRunPoint() {
+	return fenRunPoint;
+  }
+
+  public void setFenRunPoint(BigDecimal fenRunPoint) {
+	this.fenRunPoint = fenRunPoint;
   }
 
 }

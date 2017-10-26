@@ -1,6 +1,7 @@
 package com.yxkj.json.admin.request;
 
-import com.ibm.icu.math.BigDecimal;
+import java.math.BigDecimal;
+
 import com.yxkj.json.base.BaseRequest;
 
 
