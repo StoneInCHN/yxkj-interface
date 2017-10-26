@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.yxkj.entity.commonenum.CommonEnum.ImageType.AD_RESOURCE;
 
 /**
  * Controller - 广告库管理
@@ -144,4 +143,5 @@ public class AdResourceController extends BaseController {
     response.setDesc(message("yxkj.request.success"));
     return response;
   }
+
 }

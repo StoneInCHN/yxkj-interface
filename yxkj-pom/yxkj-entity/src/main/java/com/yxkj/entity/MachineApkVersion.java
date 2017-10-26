@@ -10,6 +10,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yxkj.entity.base.BaseEntity;
@@ -57,8 +58,8 @@ public class MachineApkVersion extends BaseEntity {
   private Set<MachineAppUpgrade> machineAppUpgrades = new HashSet<MachineAppUpgrade>();
 
 
-
   @OneToMany(mappedBy = "machineApkVersion")
+  @JsonProperty
   public Set<MachineAppUpgrade> getMachineAppUpgrades() {
     return machineAppUpgrades;
   }
@@ -68,6 +69,7 @@ public class MachineApkVersion extends BaseEntity {
   }
 
   @Column(length = 20)
+  @JsonProperty
   public String getVersionName() {
     return versionName;
   }
@@ -86,6 +88,7 @@ public class MachineApkVersion extends BaseEntity {
   }
 
   @Column(length = 200)
+  @JsonProperty
   public String getApkPath() {
     return apkPath;
   }
@@ -96,6 +99,7 @@ public class MachineApkVersion extends BaseEntity {
 
 
   @Column(length = 500)
+  @JsonProperty
   public String getUpdateContent() {
     return updateContent;
   }

@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
@@ -115,6 +116,7 @@ public class Scene extends BaseEntity {
   }
 
   @Column(length = 30)
+  @JsonProperty
   public String getName() {
     return name;
   }
