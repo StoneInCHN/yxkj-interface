@@ -27,7 +27,9 @@ public class Sn extends BaseEntity {
     /** 订单 */
     ORDER,
     /** 公司编号 */
-    COMPANY_SN
+    COMPANY_SN,
+    /** 场景编号 */
+    SCENE_SN,
   }
 
   /** 类型 */

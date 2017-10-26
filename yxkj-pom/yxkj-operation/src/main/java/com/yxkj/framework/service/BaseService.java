@@ -28,6 +28,13 @@ public interface BaseService<T, ID extends Serializable> {
    * @return 实体对象，若不存在则返回null
    */
   T find(ID id);
+  /**
+   * 查找首个实体对象
+   * @param filters 筛选
+   * @param orders 排序
+   * @return 实体对象，若不存在则返回null
+   */
+  T findFirst(List<Filter> filters, List<Ordering> orderings);
 
   /**
    * 查找所有实体对象集合
