@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.BaseController;
+import com.yxkj.entity.ContainerKeeper;
 import com.yxkj.entity.PropertyKeeper;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
@@ -90,7 +91,7 @@ public class PropertyKeeperController extends BaseController {
       	    PropertyKeeper keeper = propertyKeeperService.getPropertyKeeperEntity(request, null);
       	    String loginPwd = keeper.getLoginPwd();
       	    keeper.setLoginPwd(DigestUtils.md5Hex(loginPwd));      	    
-      	    propertyKeeperService.save(keeper);
+      	    propertyKeeperService.saveKeeper(keeper);
 		    ToolsUtils.sendSmsMsg(request.getCellPhoneNum(), message("yxkj.propertyKeeper.create.sendSMS", 
 		    		keeper.getRealName(), keeper.getUserName(), loginPwd, fileService.getProjectDeployUrl()));
             response.setCode(CommonAttributes.SUCCESS);
@@ -109,15 +110,9 @@ public class PropertyKeeperController extends BaseController {
     		@RequestBody PropertyKeeperRequest request) {
         BaseResponse response = new BaseResponse(); 
         if (request.getId() != null && request.getSceneIds() != null && request.getSceneIds().length > 0 ) {      
-      	    PropertyKeeper keeper = propertyKeeperService.getPropertyKeeperEntity(request, request.getId());
-      	    if (keeper != null) {
-      	    	propertyKeeperService.update(keeper, "userName", "loginPwd");
-                response.setCode(CommonAttributes.SUCCESS);
-                response.setDesc(message("yxkj.request.success"));
-			}else {
-	            response.setCode(CommonAttributes.FAIL_COMMON);
-	            response.setDesc(message("yxkj.request.failed"));
-			}
+        	propertyKeeperService.updateKeeper(request);
+            response.setCode(CommonAttributes.SUCCESS);
+            response.setDesc(message("yxkj.request.success"));
   	  	}else {
             response.setCode(CommonAttributes.FAIL_COMMON);
             response.setDesc(message("yxkj.request.failed"));
@@ -133,7 +128,7 @@ public class PropertyKeeperController extends BaseController {
     		@RequestBody BaseRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getIds() != null && request.getIds().length > 0) {
-    	  propertyKeeperService.delete(request.getIds());
+    	  propertyKeeperService.deleteKeeper(request.getIds());
           response.setCode(CommonAttributes.SUCCESS);
           response.setDesc(message("yxkj.request.success"));
 	  }else {

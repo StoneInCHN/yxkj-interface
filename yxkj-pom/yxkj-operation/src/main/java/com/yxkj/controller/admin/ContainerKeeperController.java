@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.BaseController;
 import com.yxkj.entity.ContainerKeeper;
+import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.PropertyKeeperRequest;
@@ -86,7 +87,7 @@ public class ContainerKeeperController extends BaseController {
       	    ContainerKeeper keeper = containerKeeperService.getContainerKeeperEntity(request, null);
       	    String loginPwd = keeper.getLoginPwd();
       	    keeper.setLoginPwd(DigestUtils.md5Hex(loginPwd));      	    
-      	    containerKeeperService.save(keeper);
+      	    containerKeeperService.saveKeeper(keeper);      	   
 		    ToolsUtils.sendSmsMsg(request.getCellPhoneNum(), message("yxkj.containerKeeper.create.sendSMS", 
 		    		keeper.getRealName(), keeper.getUserName(), loginPwd));
             response.setCode(CommonAttributes.SUCCESS);
@@ -105,15 +106,9 @@ public class ContainerKeeperController extends BaseController {
     		@RequestBody PropertyKeeperRequest request) {
         BaseResponse response = new BaseResponse(); 
         if (request.getId() != null && request.getSceneIds() != null && request.getSceneIds().length > 0 ) {      
-      	    ContainerKeeper keeper = containerKeeperService.getContainerKeeperEntity(request, request.getId());
-      	    if (keeper != null) {
-      	    	containerKeeperService.update(keeper, "userName", "loginPwd");
-                response.setCode(CommonAttributes.SUCCESS);
-                response.setDesc(message("yxkj.request.success"));
-			}else {
-	            response.setCode(CommonAttributes.FAIL_COMMON);
-	            response.setDesc(message("yxkj.request.failed"));
-			}
+      	    containerKeeperService.updateKeeper(request);
+            response.setCode(CommonAttributes.SUCCESS);
+            response.setDesc(message("yxkj.request.success"));
   	  	}else {
             response.setCode(CommonAttributes.FAIL_COMMON);
             response.setDesc(message("yxkj.request.failed"));
@@ -129,7 +124,7 @@ public class ContainerKeeperController extends BaseController {
     		@RequestBody BaseRequest request) {
       BaseResponse response = new BaseResponse(); 
       if (request.getIds() != null && request.getIds().length > 0) {
-    	  containerKeeperService.delete(request.getIds());
+    	  containerKeeperService.deleteKeeper(request.getIds());
           response.setCode(CommonAttributes.SUCCESS);
           response.setDesc(message("yxkj.request.success"));
 	  }else {

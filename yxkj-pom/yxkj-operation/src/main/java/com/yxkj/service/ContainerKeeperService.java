@@ -9,4 +9,10 @@ public interface ContainerKeeperService extends BaseService<ContainerKeeper,Long
 	ContainerKeeper getContainerKeeperEntity(PropertyKeeperRequest request,
 			Long id);
 
+	void saveKeeper(ContainerKeeper keeper);
+
+	void updateKeeper(PropertyKeeperRequest request);
+
+	void deleteKeeper(Long[] ids);
+
 }

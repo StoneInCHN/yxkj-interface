@@ -104,7 +104,10 @@ public class Scene extends BaseEntity {
    * 管家
    */
   private ContainerKeeper cntrKeeper;
-
+  /**
+   * 物业
+   */
+  private PropertyKeeper propertyKeeper; 
 
   @ManyToOne(fetch = FetchType.LAZY)
   public ContainerKeeper getCntrKeeper() {
@@ -113,6 +116,15 @@ public class Scene extends BaseEntity {
 
   public void setCntrKeeper(ContainerKeeper cntrKeeper) {
     this.cntrKeeper = cntrKeeper;
+  }
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  public PropertyKeeper getPropertyKeeper() {
+	return propertyKeeper;
+  }
+
+  public void setPropertyKeeper(PropertyKeeper propertyKeeper) {
+	this.propertyKeeper = propertyKeeper;
   }
 
   @Column(length = 30)

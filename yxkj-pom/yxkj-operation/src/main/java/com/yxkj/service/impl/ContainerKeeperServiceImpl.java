@@ -5,6 +5,8 @@ import java.util.HashSet;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yxkj.dao.ContainerKeeperDao;
 import com.yxkj.entity.ContainerKeeper;
@@ -51,19 +53,57 @@ public class ContainerKeeperServiceImpl extends BaseServiceImpl<ContainerKeeper,
 				Scene scene = sceneService.find(sceneId);
 				keeper.getScenes().add(scene);
 			}
-		}else {
-			keeper = find(id);
-			if (keeper != null) {
-				keeper.setAccountStatus(AccountStatus.ACTIVED);
-				keeper.setCellPhoneNum(request.getCellPhoneNum());
-				keeper.setRealName(request.getRealName());
-				keeper.setScenes(new HashSet<Scene>());
+		}
+		return keeper;
+	}
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void saveKeeper(ContainerKeeper keeper) {
+		save(keeper);
+		for (Scene scene : keeper.getScenes()) {
+			scene.setCntrKeeper(keeper);
+			sceneService.update(scene);
+		}
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updateKeeper(PropertyKeeperRequest request) {
+  	    ContainerKeeper keeper = find(request.getId());
+		keeper.setAccountStatus(AccountStatus.ACTIVED);
+		keeper.setCellPhoneNum(request.getCellPhoneNum());
+		keeper.setRealName(request.getRealName());
+		if (keeper != null) {
+			if (keeper.getScenes() != null && keeper.getScenes().size() > 0) {
+				for (Scene scene : keeper.getScenes()) {
+					scene.setCntrKeeper(null);
+					sceneService.update(scene);
+				}
+			}
+			keeper.setScenes(new HashSet<Scene>());
+			update(keeper);
+			if (request.getSceneIds() != null) {
 				for (Long sceneId : request.getSceneIds()) {
 					Scene scene = sceneService.find(sceneId);
-					keeper.getScenes().add(scene);
+					scene.setCntrKeeper(keeper);
+					sceneService.update(scene);
 				}
 			}
 		}
-		return keeper;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void deleteKeeper(Long[] ids) {
+		for (Long id : ids) {
+			ContainerKeeper keeper = find(id);
+			if (keeper != null && keeper.getScenes() != null && keeper.getScenes().size() > 0) {
+				for (Scene scene : keeper.getScenes()) {
+					scene.setCntrKeeper(null);
+					sceneService.update(scene);
+				}
+			}
+			delete(keeper);
+		}
 	}
 }

@@ -76,7 +76,7 @@ public class PropertyKeeper extends BaseEntity {
    */
   private Set<Scene> scenes = new HashSet<Scene>();
 
-  @OneToMany(mappedBy = "cntrKeeper", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "propertyKeeper", cascade = CascadeType.PERSIST)
   public Set<Scene> getScenes() {
     return scenes;
   }

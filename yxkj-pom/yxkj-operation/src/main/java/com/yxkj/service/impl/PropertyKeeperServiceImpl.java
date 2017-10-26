@@ -5,6 +5,8 @@ import java.util.HashSet;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yxkj.dao.PropertyKeeperDao;
 import com.yxkj.entity.PropertyKeeper;
@@ -70,4 +72,55 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
   		}
   		return keeper;
   	}
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void saveKeeper(PropertyKeeper keeper) {
+		save(keeper);
+		for (Scene scene : keeper.getScenes()) {
+			scene.setPropertyKeeper(keeper);
+			sceneService.update(scene);
+		}
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updateKeeper(PropertyKeeperRequest request) {
+  	    PropertyKeeper keeper = find(request.getId());
+		keeper.setAccountStatus(AccountStatus.ACTIVED);
+		keeper.setCellPhoneNum(request.getCellPhoneNum());
+		keeper.setRealName(request.getRealName());
+		keeper.setFenRunPoint(request.getFenRunPoint());
+		if (keeper != null) {
+			if (keeper.getScenes() != null && keeper.getScenes().size() > 0) {
+				for (Scene scene : keeper.getScenes()) {
+					scene.setPropertyKeeper(null);
+					sceneService.update(scene);
+				}
+			}
+			keeper.setScenes(new HashSet<Scene>());
+			update(keeper);
+			if (request.getSceneIds() != null) {
+				for (Long sceneId : request.getSceneIds()) {
+					Scene scene = sceneService.find(sceneId);
+					scene.setPropertyKeeper(keeper);
+					sceneService.update(scene);
+				}
+			}
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void deleteKeeper(Long[] ids) {
+		for (Long id : ids) {
+			PropertyKeeper keeper = find(id);
+			if (keeper != null && keeper.getScenes() != null && keeper.getScenes().size() > 0) {
+				for (Scene scene : keeper.getScenes()) {
+					scene.setPropertyKeeper(null);
+					sceneService.update(scene);
+				}
+			}
+			delete(keeper);
+		}
+	}
 }
