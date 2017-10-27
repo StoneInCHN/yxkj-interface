@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 
 /**
  * Entity - 优享空间场景
@@ -99,6 +100,11 @@ public class Scene extends BaseEntity {
    * 是否含有微仓
    */
   private Boolean hasStore;
+  
+  /**
+   * 删除状态，修改为"不可用 "为逻辑删除
+   */
+  private CommonStatus removeStatus;
 
   /**
    * 管家
@@ -108,6 +114,7 @@ public class Scene extends BaseEntity {
    * 物业
    */
   private PropertyKeeper propertyKeeper; 
+  
 
   @ManyToOne(fetch = FetchType.LAZY)
   public ContainerKeeper getCntrKeeper() {
@@ -252,5 +259,13 @@ public class Scene extends BaseEntity {
 	this.vendingContainer = vendingContainer;
   }
 
+  public CommonStatus getRemoveStatus() {
+	return removeStatus;
+  }
 
+  public void setRemoveStatus(CommonStatus removeStatus) {
+	this.removeStatus = removeStatus;
+  }
+
+  
 }

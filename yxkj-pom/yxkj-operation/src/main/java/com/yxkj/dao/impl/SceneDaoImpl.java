@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yxkj.dao.SceneDao;
 import com.yxkj.entity.Scene;
+import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 import com.yxkj.framework.dao.impl.BaseDaoImpl;
 
 @Repository("sceneDaoImpl")
@@ -26,6 +27,8 @@ public class SceneDaoImpl extends BaseDaoImpl<Scene, Long> implements SceneDao {
     Predicate restrictions =
         criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder
             .conjunction();
+    restrictions =
+                criteriaBuilder.and(restrictions, criteriaBuilder.equal(scene.get("removeStatus"), CommonStatus.ACITVE));
     restrictions =
         criteriaBuilder.and(restrictions, criteriaBuilder.like(scene.get("sn"), "%" + key + "%"));
     restrictions =

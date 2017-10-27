@@ -30,7 +30,6 @@ public class CommonEnum {
    * 通用状态
    */
   public enum CommonStatus {
-
     /** 可用 */
     ACITVE,
     /** 不可用 */

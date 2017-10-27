@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
+
 public class SceneData {  
 	  /**
 	   * 空间编号
@@ -39,6 +41,31 @@ public class SceneData {
 	   * 纬度
 	   */
 	  private BigDecimal latitude;
+	  
+	  /**
+	   * 中控货柜 服务状态
+	   */
+	  private CommonStatus status;
+	  
+	  /**
+	   * 中控货柜 音量
+	   */
+	  private String volume;
+	  
+	  /**
+	   * 中控货柜 IMEI
+	   */
+	  private String imei;
+	  
+	  /**
+	   * 中控 重启间隔天数
+	   */
+	  private Integer rebootDay;
+
+	  /**
+	   * 中控 默认重启时间
+	   */
+	  private String rebootTime;
 
 	  /**
 	   * 是否含有微仓
@@ -101,6 +128,46 @@ public class SceneData {
 		this.latitude = latitude;
 	}
 
+	public CommonStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(CommonStatus status) {
+		this.status = status;
+	}
+
+	public String getVolume() {
+		return volume;
+	}
+
+	public void setVolume(String volume) {
+		this.volume = volume;
+	}
+
+	public String getImei() {
+		return imei;
+	}
+
+	public void setImei(String imei) {
+		this.imei = imei;
+	}
+
+	public Integer getRebootDay() {
+		return rebootDay;
+	}
+
+	public void setRebootDay(Integer rebootDay) {
+		this.rebootDay = rebootDay;
+	}
+
+	public String getRebootTime() {
+		return rebootTime;
+	}
+
+	public void setRebootTime(String rebootTime) {
+		this.rebootTime = rebootTime;
+	}
+
 	public Boolean getHasStore() {
 		return hasStore;
 	}
@@ -108,5 +175,7 @@ public class SceneData {
 	public void setHasStore(Boolean hasStore) {
 		this.hasStore = hasStore;
 	}
+
+
 	
 }
