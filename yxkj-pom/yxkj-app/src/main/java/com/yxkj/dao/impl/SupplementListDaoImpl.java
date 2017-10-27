@@ -13,40 +13,21 @@ import com.yxkj.dao.SupplementListDao;
 @Repository("supplementListDaoImpl")
 public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> implements SupplementListDao {
 
-  @SuppressWarnings("unchecked")
   @Override
-  public List<Object[]> findWaitSupplyScene(Long suppId, int pageNo, int pageSize) {
-    String jpql = "SELECT s.sn, s.name FROM Scene s WHERE s.cntrKeeper.id = :suppId";
-    Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId)
-        .setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
-    
-    return query.getResultList();
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public List<Object[]> findCentralVendingContainer(String sceneSn) {
-    String sql = "SELECT v.id, v.sn FROM t_vending_container v WHERE v.parent is null AND v.scene = "
-        + "(SELECT s.id FROM t_scene s WHERE s.sn = :sceneSn)";
-    Query query = entityManager.createNativeQuery(sql).setParameter("sceneSn", sceneSn);
-    return query.getResultList();
-  }
-  
-  @SuppressWarnings("unchecked")
-  @Override
-  public List<Object[]> findChildrenVendingContainer(Long id){
-    String sql = "SELECT v.id, v.sn FROM t_vending_container v WHERE v.parent = :id";
-    Query query = entityManager.createNativeQuery(sql).setParameter("id", id);
-    
-    return query.getResultList();
-  }
-
-  @Override
-  public Integer findWaitSupplyCount(Long cntrId) {
+  public Integer findWaitSupplyCountByCntrId(Long cntrId) {
     String jpql = "SELECT s.waitSupplyCount FROM SupplementList s WHERE s.cntrId = :cntrId";
     Query query = entityManager.createQuery(jpql).setParameter("cntrId", cntrId);
     
     return (Integer) query.getSingleResult();
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object> findWaitSupplyCountBySuppId(Long suppId) {
+    String jpql = "SELECT s.waitSupplyCount FROM SupplementList s WHERE s.suppId = :suppId";
+    Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId);
+    
+    return (List<Object>) query.getResultList();
   }
 
   @SuppressWarnings("unchecked")
@@ -70,16 +51,18 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
   @Override
   public List<Object[]> findWaitSupplyGoodsList(Long suppId, String sceneSn, Long cateId,
       int pageNo, int pageSize) {
-    String jpql = "SELECT s.goodsSn, s.goodsName, s.waitSupplyCount FROM SupplementList s WHERE s.suppId = :suppId";
-    if(sceneSn!=null && !"".equals(sceneSn))
+    String jpql = "SELECT s.goodsSn, s.goodsName, sum(s.waitSupplyCount)"
+        + " FROM SupplementList s WHERE s.suppId = :suppId";
+    if(sceneSn != null && !"".equals(sceneSn))
       jpql += " AND s.sceneSn = :sceneSn";
-    if(cateId!=null)
+    if(cateId != null && cateId != 0)
       jpql += " AND s.goodsSn IN (SELECT g.sn FROM Goods g WHERE g.category.id = :cateId)";
+    jpql += " GROUP BY s.goodsSn";
     Query query = entityManager.createQuery(jpql);
     query.setParameter("suppId", suppId);
-    if(sceneSn!=null && !"".equals(sceneSn))
+    if(sceneSn != null && !"".equals(sceneSn))
       query.setParameter("sceneSn", sceneSn);
-    if(cateId!=null)
+    if(cateId != null && cateId != 0)
       query.setParameter("cateId", cateId);
     query.setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
     return query.getResultList();
@@ -93,21 +76,24 @@ public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> imp
     return query.getResultList();
   }
 
-  @Override
-  public Object findGoodsPicByGoodsSn(String goodsSn) {
-    String sql = "SELECT p.source FROM t_goods_image p WHERE p.orders = 0 AND p.goods = (SELECT g.id FROM t_goods g WHERE g.sn = :goodsSn)";
-    Query query = entityManager.createNativeQuery(sql).setParameter("goodsSn", goodsSn);
-    return query.getSingleResult();
-  }
-
   @SuppressWarnings("unchecked")
   @Override
   public List<Object[]> getWaitSupplyContainerGoods(Long suppId, Long cntrId, int pageNo,
       int pageSize) {
-    String sql = "SELECT s.goods_sn, s.goods_name, c.sn, s.wait_supply_count FROM t_supp_list s JOIN t_cntr_channel c"
+    String sql = "SELECT s.id, s.goods_sn, s.goods_name, c.sn, s.wait_supply_count, s.remain_count FROM t_supp_list s JOIN t_cntr_channel c"
         + " ON s.channel = c.id WHERE s.supp_id = :suppId AND s.cntr_id = :cntrId";
     Query query =entityManager.createNativeQuery(sql).setParameter("suppId", suppId).setParameter("cntrId", cntrId)
         .setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
+    return query.getResultList();
+  }
+
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object> findWaitSupplyCountSceneSn(String sceneSn) {
+    String jpql = "SELECT s.waitSupplyCount FROM SupplementList s WHERE s.sceneSn = :sceneSn";
+    Query query = entityManager.createQuery(jpql).setParameter("sceneSn", sceneSn);
+    
     return query.getResultList();
   }
 

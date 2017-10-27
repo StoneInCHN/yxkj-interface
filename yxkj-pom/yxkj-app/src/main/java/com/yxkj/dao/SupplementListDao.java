@@ -6,14 +6,10 @@ import com.yxkj.entity.SupplementList;
 import com.yxkj.framework.dao.BaseDao;
 
 public interface SupplementListDao extends  BaseDao<SupplementList,Long>{
-
-  List<Object[]> findWaitSupplyScene(Long suppId, int pageNo, int pageSize);
   
-  List<Object[]> findCentralVendingContainer(String sceneSn);
+  Integer findWaitSupplyCountByCntrId(Long cntrId);
   
-  List<Object[]> findChildrenVendingContainer(Long id);
-  
-  Integer findWaitSupplyCount(Long cntrId);
+  List<Object> findWaitSupplyCountBySuppId(Long suppId);
   
   List<Object[]> findWaitSupplySceneList(Long suppId);
   
@@ -25,6 +21,6 @@ public interface SupplementListDao extends  BaseDao<SupplementList,Long>{
   
   List<Object[]> getWaitSupplyContainerGoods(Long suppId, Long cntrId, int pageNo, int pageSize);
   
-  Object findGoodsPicByGoodsSn(String goodsSn);
-  
+  List<Object> findWaitSupplyCountSceneSn(String sceneSn);
+
 }

@@ -1,7 +1,7 @@
 package com.yxkj.json.bean;
 
 public class WaitSupplyGoods {
-    
+  
   /**
    * 商品编号
    */
@@ -23,6 +23,7 @@ public class WaitSupplyGoods {
   private Integer waitSupplyCount;
   
   public WaitSupplyGoods(){}
+  
 
   public WaitSupplyGoods(String goodsSn, String goodsName, Integer waitSupplyCount) {
     this.goodsSn = goodsSn;
@@ -61,6 +62,6 @@ public class WaitSupplyGoods {
   public void setWaitSupplyCount(Integer waitSupplyCount) {
     this.waitSupplyCount = waitSupplyCount;
   }
-  
+
 }
 

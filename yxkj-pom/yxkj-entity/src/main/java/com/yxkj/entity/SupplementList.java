@@ -204,5 +204,4 @@ public class SupplementList extends BaseEntity {
     this.waitSupplyCount = waitSupplyCount;
   }
 
-
 }

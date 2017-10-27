@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +36,6 @@ import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.ContainerKeeperService;
 import com.yxkj.utils.KeyGenerator;
 import com.yxkj.utils.RSAHelper;
-import com.yxkj.utils.RSAUtils;
 import com.yxkj.utils.SmsUtil;
 import com.yxkj.utils.TimeUtils;
 import com.yxkj.utils.TokenUtil;
@@ -176,7 +177,8 @@ public class AcconutController extends MobileBaseController {
     }
     String code;
     try {
-      code = SmsUtil.sendVerificationCode(cellPhoneNum);
+      code = SmsUtil.getRandNum(6);
+      SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
       redisTemplate.opsForValue().set(type+"_"+cellPhoneNum, code, setting.getSmsCodeTimeOut(), TimeUnit.SECONDS);
     } catch (Exception e) {
       e.printStackTrace();
@@ -278,8 +280,8 @@ public class AcconutController extends MobileBaseController {
     }
 
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
-    String newPwd = RSAUtils.decrypt(privateKey, keeperAccountRequest.getNewPwd());
-    String oldPwd = RSAUtils.decrypt(privateKey, keeperAccountRequest.getOldPwd());
+    String newPwd = KeyGenerator.decrypt(keeperAccountRequest.getNewPwd(), privateKey);
+    String oldPwd = KeyGenerator.decrypt(keeperAccountRequest.getOldPwd(), privateKey);
 
     if (StringUtils.isEmpty(cellPhoneNum) && StringUtils.isEmpty(newPwd)
         && StringUtils.isEmpty(oldPwd)) {
@@ -287,7 +289,15 @@ public class AcconutController extends MobileBaseController {
       response.setDesc(message("yxkj.request.param.missing"));
       return response;
     }
-
+    String pattern = "^[a-zA-Z0-9]{8,}&";
+    Pattern p = Pattern.compile(pattern);
+    Matcher matcher = p.matcher(newPwd);
+    if(!matcher.matches()){
+      response.setCode(CommonAttributes.ERROR_FORMAL);
+      response.setDesc(message("yxkj.keeper.password.formal.error"));
+      LogUtil.debug(this.getClass(), "resetPassword", "新密码格式错误");
+      return response;
+    }
     if (containerKeeperService.findByCellPhoneNum(cellPhoneNum).getLoginPwd()
         .equals(DigestUtils.md5Hex(oldPwd))) {
       try {
@@ -372,7 +382,16 @@ public class AcconutController extends MobileBaseController {
       return response;
     }
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
-    String newPwd = RSAUtils.decrypt(privateKey, keeperAccountRequest.getNewPwd());
+    String newPwd = KeyGenerator.decrypt(keeperAccountRequest.getNewPwd(), privateKey);
+    String pattern = "^[a-zA-Z0-9]{8,}&";
+    Pattern p = Pattern.compile(pattern);
+    Matcher matcher = p.matcher(newPwd);
+    if(!matcher.matches()){
+      response.setCode(CommonAttributes.ERROR_FORMAL);
+      response.setDesc(message("yxkj.keeper.password.formal.error"));
+      LogUtil.debug(this.getClass(), "resetPassword", "新密码格式错误");
+      return response;
+    }
     try {
       containerKeeperService.resetPassword(cellPhoneNum, DigestUtils.md5Hex(newPwd));
       response.setCode(CommonAttributes.SUCCESS);

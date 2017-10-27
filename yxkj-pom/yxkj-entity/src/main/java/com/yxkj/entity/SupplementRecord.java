@@ -1,21 +1,13 @@
 package com.yxkj.entity;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.Valid;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import com.yxkj.entity.base.BaseEntity;
 
@@ -81,7 +73,7 @@ public class SupplementRecord extends BaseEntity {
   /**
    * 管家上传的补货图片
    */
-  private List<SupplementPic> suppPics = new ArrayList<SupplementPic>();
+  private SupplementPic suppPic;
 
   /**
    * 货柜ID
@@ -97,7 +89,25 @@ public class SupplementRecord extends BaseEntity {
    * 补货汇总记录(按一组机器)
    */
   private SupplementSumRec suppSum;
-
+  
+  public SupplementRecord() {}
+  
+  public SupplementRecord(ContainerChannel channel, Long sceneId, String sceneSn, String sceneName,
+      String goodsSn, String goodsName, Integer supplyCount, Integer waitSupplyCount, Long suppId,
+      Long cntrId, String cntrSn) {
+    super();
+    this.channel = channel;
+    this.sceneId = sceneId;
+    this.sceneSn = sceneSn;
+    this.sceneName = sceneName;
+    this.goodsSn = goodsSn;
+    this.goodsName = goodsName;
+    this.supplyCount = supplyCount;
+    this.waitSupplyCount = waitSupplyCount;
+    this.suppId = suppId;
+    this.cntrId = cntrId;
+    this.cntrSn = cntrSn;
+  }
 
   public Long getSceneId() {
     return sceneId;
@@ -141,16 +151,13 @@ public class SupplementRecord extends BaseEntity {
     this.suppId = suppId;
   }
 
-  @Valid
-  @ElementCollection
-  @LazyCollection(LazyCollectionOption.FALSE)
-  @CollectionTable(name = "t_supp_goods_image")
-  public List<SupplementPic> getSuppPics() {
-    return suppPics;
+  @ManyToOne
+  public SupplementPic getSuppPic() {
+    return suppPic;
   }
 
-  public void setSuppPics(List<SupplementPic> suppPics) {
-    this.suppPics = suppPics;
+  public void setSuppPic(SupplementPic suppPic) {
+    this.suppPic = suppPic;
   }
 
   public ContainerChannel getChannel() {
@@ -214,6 +221,13 @@ public class SupplementRecord extends BaseEntity {
     this.waitSupplyCount = waitSupplyCount;
   }
 
-
+  @Override
+  public String toString() {
+    return "SupplementRecord [channel=" + channel + ", sceneId=" + sceneId + ", sceneSn=" + sceneSn
+        + ", sceneName=" + sceneName + ", goodsSn=" + goodsSn + ", goodsName=" + goodsName
+        + ", supplyCount=" + supplyCount + ", waitSupplyCount=" + waitSupplyCount + ", suppId="
+        + suppId + ", suppPic=" + suppPic + ", cntrId=" + cntrId + ", cntrSn=" + cntrSn
+        + ", suppSum=" + suppSum + "]";
+  }
 
 }
