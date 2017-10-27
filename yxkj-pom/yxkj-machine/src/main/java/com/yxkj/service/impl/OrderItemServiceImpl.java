@@ -33,7 +33,9 @@ public class OrderItemServiceImpl extends BaseServiceImpl<OrderItem, Long>
       CommonEnum.ShipmentStatus shipmentStatus) {
 
     OrderItem orderItem = orderItemDao.find(orderItemId);
-
+    if (shipmentStatus.equals(CommonEnum.ShipmentStatus.SHIPMENT_SUCCESS)){
+      orderItem.setPickupStatus(CommonEnum.PickupStatus.PICKUP);
+    }
     orderItem.setShipmentStatus(shipmentStatus);
     OrderItem newOrderItem = orderItemDao.merge(orderItem);
 

@@ -48,10 +48,10 @@ import com.yxkj.framework.paging.Pageable;
 
 public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 
-  /** 瀹炰綋绫荤被鍨?*/
+  /** 实体类类型*/
   private Class<T> entityClass;
 
-  /** 鍒悕鏁?*/
+  /** 别名数*/
   private static volatile long aliasCount = 0;
 
   @PersistenceContext
@@ -232,8 +232,8 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     }
     long total = count(criteriaQuery, null);
     /**
-     * 娉ㄩ噴锛岀敤浜庢墜鏈烘帴鍙ｏ紝濡傛灉浼犲叆鐨刾ageNumber澶т簬鎬婚〉鏁帮紝涓嶅仛澶勭悊
-     * 
+     * 注释，用于手机接口，如果传入的pageNumber大于总页数，不做处理
+     *
      * @author sujinxuan
      */
     // int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
@@ -349,7 +349,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	//    if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
 	//    if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
 	//        && filter.getValue() instanceof String) {
-      		//zhanglu:杩欓噷閫昏緫杩樻湁闂锛屽鏋渆q鐨勬槸瀛楃涓插苟涓斾笉浼爄gnoreCase锛屽叾瀹炴槸璧颁笉杩涜繖涓猧f鏉′欢鐨勶紝璧扮殑鏄痚lse閲岄潰鍘绘瘮杈僥q瀵硅薄
+      		//zhanglu:很多时候，我们不用ignoreCase但是filter的value却是String类型，这么并逻辑是进入不了这个if里面的
 	//      restrictions =
 	//          criteriaBuilder.and(restrictions, criteriaBuilder.equal(
 	//              criteriaBuilder.lower(root.<String>get(filter.getProperty())),
@@ -362,27 +362,23 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	//  }
       //zhanglu:2017-10-14 start
       if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
-          if (filter.getValue() instanceof String) {
-            Path<String> path = getPath(root,filter.getProperty());
-            if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
-          restrictions =
-              criteriaBuilder.and(restrictions, criteriaBuilder.equal(
-                      criteriaBuilder.lower(path),
-                  ((String) filter.getValue()).toLowerCase()));
-        } else {
-          restrictions =
-                  criteriaBuilder.and(restrictions, criteriaBuilder.equal(path,
-                      ((String) filter.getValue())));
-            }
+        if (filter.getValue() instanceof String) {
+          Path<String> path = getPath(root, filter.getProperty());
+          if (filter.getIgnoreCase() != null && filter.getIgnoreCase()) {
+            restrictions = criteriaBuilder.and(restrictions, criteriaBuilder
+                .equal(criteriaBuilder.lower(path), ((String) filter.getValue()).toLowerCase()));
           } else {
-            Path<Object> path = getPath(root,filter.getProperty());
-            restrictions =
-              criteriaBuilder.and(restrictions,
-                    criteriaBuilder.equal(path, filter.getValue()));
+            restrictions = criteriaBuilder.and(restrictions,
+                criteriaBuilder.equal(path, ((String) filter.getValue())));
+          }
+        } else {
+          Path<Object> path = getPath(root, filter.getProperty());
+          restrictions =
+              criteriaBuilder.and(restrictions, criteriaBuilder.equal(path, filter.getValue()));
         }
-        }
+      }
       //zhanglu:2017-10-14 end
-      
+
       else if (filter.getOperator() == Operator.ne && filter.getValue() != null) {
         if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
             && filter.getValue() instanceof String) {
@@ -465,15 +461,15 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 //        restrictions =
 //            criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(filter.getValue()));
     	    //zhanglu:2017-10-13 start
+          Path<String> path = getPath(root, filter.getProperty());
   	    	if (filter.getValue() instanceof Object[]) {
-	          // 浼犻€掑涓弬鏁?Object... values
+	          //如果传入的value是数组，那么用in(数组) 之前强制将其转成Object[]
 	          Object[] objects = (Object[]) filter.getValue();
 	          restrictions =
-	              criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(objects));
+	              criteriaBuilder.and(restrictions,path.in(objects));
 	        } else {
         restrictions =
-	              criteriaBuilder.and(restrictions, root.get(filter.getProperty())
-	                  .in(filter.getValue()));
+	              criteriaBuilder.and(restrictions,path.in((String)filter.getValue()));
 	        }
     	    //zhanglu:2017-10-13 end
       } else if (filter.getOperator() == Operator.isNull) {
@@ -514,7 +510,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 //        if (filter.getOperator() == Operator.eq && filter.getValue() != null) {
 //          if (filter.getIgnoreCase() != null && filter.getIgnoreCase()
 //              && filter.getValue() instanceof String) {
-           //zhanglu:杩欓噷閫昏緫杩樻湁闂锛屽鏋渆q鐨勬槸瀛楃涓插苟涓斾笉浼爄gnoreCase锛屽叾瀹炴槸璧颁笉杩涜繖涓猧f鏉′欢鐨勶紝璧扮殑鏄痚lse閲岄潰鍘绘瘮杈僥q瀵硅薄
+           //zhanglu:很多时候，我们不用ignoreCase但是filter的value却是String类型，这么并逻辑是进入不了这个if里面的
 //            restrictions =
 //                criteriaBuilder.and(restrictions, criteriaBuilder.equal(
 //                    criteriaBuilder.lower(root.<String>get(filter.getProperty())),
@@ -644,7 +640,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 //                  .in(filter.getValue()));
     	    //zhanglu:2017-10-13 start
   	    	if (filter.getValue() instanceof Object[]) {
-	          // 浼犻€掑涓弬鏁?Object... values
+  	    	  //如果传入的value是数组，那么用in(数组) 之前强制将其转成Object[]
 	          Object[] objects = (Object[]) filter.getValue();
 	          restrictions =
 	              criteriaBuilder.and(restrictions, root.get(filter.getProperty()).in(objects));
@@ -736,11 +732,11 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
   }
 
   /**
-   * 
+   *
    * @param pageable
    * @param jpql
-   * @param paramMap 鐢ㄤ簬璁剧疆SQL鐨勫弬鏁?娉ㄦ剰:paramMap.pub("distinct") 鐢ㄤ簬璁剧疆select 璇彞涓湁
-   *        distinct鍏抽敭瀛楋紝鍙傛暟鍐呭涓篸istinct鐨勫唴瀹?   * 
+   * @param paramMap 用于设置SQL的参数 注意:paramMap.pub("distinct") 用于设置select 语句中有
+   *        distinct关键字，参数内容为distinct的内容
    * @return
    */
   public Page<T> findPageCustomized(Pageable pageable, String jpql,
@@ -759,8 +755,8 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 
     long total = countQuery.getSingleResult();
     /**
-     * 娉ㄩ噴锛岀敤浜庢墜鏈烘帴鍙ｏ紝濡傛灉浼犲叆鐨刾ageNumber澶т簬鎬婚〉鏁帮紝涓嶅仛澶勭悊
-     * 
+     * 注释，用于手机接口，如果传入的pageNumber大于总页数，不做处理
+     *
      * @author sujinxuan
      */
     // int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
@@ -790,7 +786,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
   }
 
   /**
-   * 浠庢暟鎹簱鍒濆鍖朓ndex
+   * 从数据库初始化Index
    */
   @Override
   public void refreshIndex() {
@@ -805,7 +801,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
   }
 
   /**
-   * lucene鍒嗛〉鏌ヨ
+   * lucene分页查询
    */
   @SuppressWarnings("unchecked")
   @Override
@@ -841,7 +837,7 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 
   }
   /**
-   * 鏀寔澶氱骇瀛楁鏌ヨ 鐢?闅斿紑
+   * 支持多级查询，属性之间用.分割
    * @param root
    * @param property
    * @author luzhang

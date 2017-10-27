@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yxkj.entity.base.BaseEntity;
 
 /**
@@ -17,8 +18,7 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月15日 上午11:24:10
  */
 @Entity
-@Table(name = "t_machineapp_upgrade", indexes = {@Index(name = "sceneIdIndex",
-    columnList = "sceneId")})
+@Table(name = "t_machineapp_upgrade")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_machineapp_upgrade_sequence")
 public class MachineAppUpgrade extends BaseEntity {
 
@@ -30,14 +30,9 @@ public class MachineAppUpgrade extends BaseEntity {
   private MachineApkVersion machineApkVersion;
 
   /**
-   * 优享空间名称
+   * 优享空间
    */
-  private String sceneName;
-
-  /**
-   * 优享空间ID
-   */
-  private Long sceneId;
+  private Scene scene;
 
   /**
    * 中控柜ID
@@ -78,25 +73,8 @@ public class MachineAppUpgrade extends BaseEntity {
     this.cntrSn = cntrSn;
   }
 
-  @Column(length = 50)
-  public String getSceneName() {
-    return sceneName;
-  }
 
-  public void setSceneName(String sceneName) {
-    this.sceneName = sceneName;
-  }
-
-  public Long getSceneId() {
-    return sceneId;
-  }
-
-  public void setSceneId(Long sceneId) {
-    this.sceneId = sceneId;
-  }
-
-
-
+  @JsonProperty
   public Boolean getUpgradeSucc() {
     return upgradeSucc;
   }
@@ -123,6 +101,13 @@ public class MachineAppUpgrade extends BaseEntity {
     this.machineApkVersion = machineApkVersion;
   }
 
+  @ManyToOne
+  @JsonProperty
+  public Scene getScene() {
+    return scene;
+  }
 
-
+  public void setScene(Scene scene) {
+    this.scene = scene;
+  }
 }

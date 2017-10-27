@@ -18,8 +18,10 @@
 	  if("shelf".equals(sys)){
 	    redirectUrl = setting.getShelfSysUrl()+"?type=alipay&compId="+request.getParameter("compId")+"&goodsId="+request.getParameter("goodsId")+"&authCode="+request.getParameter("auth_code");
 	  }
-	  if("cntr".equals(sys)){
+	  else if("cntr".equals(sys)){
 	    redirectUrl = setting.getCntrSysUrl()+"?type=alipay&imei="+request.getParameter("imei")+"&gl="+request.getParameter("gList")+"&authCode="+request.getParameter("auth_code");
+	  }else if ("cntrScan".equals(sys)){
+		  redirectUrl = setting.getCntrScanSysUrl()+"?type=alipay&imei="+request.getParameter("imei")+"&cntrId="+request.getParameter("cntrId")+"&authCode="+request.getParameter("auth_code");
 	  }
 	}
 	if(hearders.contains("MicroMessenger")){
@@ -27,8 +29,11 @@
 	  if("shelf".equals(state[0])){
 	    redirectUrl = setting.getShelfSysUrl()+"?type=wx&compId="+state[1]+"&goodsId="+state[2]+"&authCode="+request.getParameter("code");
 	  }
-	  if("cntr".equals(state[0])){
+	  else if("cntr".equals(state[0])){
 	    redirectUrl = setting.getCntrSysUrl()+"?type=wx&imei="+state[1]+"&gl="+state[2]+"&authCode="+request.getParameter("code");
+	  }
+	  else if("cntrGoods".equals(state[0])){
+	    redirectUrl = setting.getCntrScanSysUrl()+"?type=wx&imei="+state[1]+"&cntrId="+state[2]+"&authCode="+request.getParameter("code");
 	  }
 	}
 	response.sendRedirect(redirectUrl);

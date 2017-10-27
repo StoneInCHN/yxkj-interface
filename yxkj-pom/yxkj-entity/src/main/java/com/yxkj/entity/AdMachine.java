@@ -1,10 +1,6 @@
 package com.yxkj.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.yxkj.entity.base.BaseEntity;
 
@@ -15,7 +11,7 @@ import com.yxkj.entity.base.BaseEntity;
  * @version 2017年9月15日 下午5:40:14
  */
 @Entity
-@Table(name = "t_ad_machine", indexes = {@Index(name = "sceneIdIndex", columnList = "sceneId")})
+@Table(name = "t_ad_machine")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_ad_machine_sequence")
 public class AdMachine extends BaseEntity {
 
@@ -23,14 +19,10 @@ public class AdMachine extends BaseEntity {
   private static final long serialVersionUID = 1L;
 
   /**
-   * 优享空间名称
+   * 优享空间
    */
-  private String sceneName;
+  private Scene scene;
 
-  /**
-   * 优享空间ID
-   */
-  private Long sceneId;
 
   /**
    * 中控柜ID
@@ -56,27 +48,27 @@ public class AdMachine extends BaseEntity {
   /**
    * 视频A
    */
-  private String adA;
+  private String advA;
 
   /**
    * 视频B
    */
-  private String adB;
+  private String advB;
 
   /**
    * 图片1
    */
-  private String adC;
+  private String advC;
 
   /**
    * 图片2
    */
-  private String adD;
+  private String advD;
 
   /**
    * 图片3
    */
-  private String adE;
+  private String advE;
 
 
   /**
@@ -102,66 +94,49 @@ public class AdMachine extends BaseEntity {
     this.cntrSn = cntrSn;
   }
 
-  @Column(length = 50)
-  public String getSceneName() {
-    return sceneName;
+  @Column(length = 200)
+  public String getAdvA() {
+    return advA;
   }
 
-  public void setSceneName(String sceneName) {
-    this.sceneName = sceneName;
-  }
-
-  public Long getSceneId() {
-    return sceneId;
-  }
-
-  public void setSceneId(Long sceneId) {
-    this.sceneId = sceneId;
+  public void setAdvA(String advA) {
+    this.advA = advA;
   }
 
   @Column(length = 200)
-  public String getAdA() {
-    return adA;
+  public String getAdvB() {
+    return advB;
   }
 
-  public void setAdA(String adA) {
-    this.adA = adA;
-  }
-
-  @Column(length = 200)
-  public String getAdB() {
-    return adB;
-  }
-
-  public void setAdB(String adB) {
-    this.adB = adB;
+  public void setAdvB(String advB) {
+    this.advB = advB;
   }
 
   @Column(length = 200)
-  public String getAdC() {
-    return adC;
+  public String getAdvC() {
+    return advC;
   }
 
-  public void setAdC(String adC) {
-    this.adC = adC;
-  }
-
-  @Column(length = 200)
-  public String getAdD() {
-    return adD;
-  }
-
-  public void setAdD(String adD) {
-    this.adD = adD;
+  public void setAdvC(String advC) {
+    this.advC = advC;
   }
 
   @Column(length = 200)
-  public String getAdE() {
-    return adE;
+  public String getAdvD() {
+    return advD;
   }
 
-  public void setAdE(String adE) {
-    this.adE = adE;
+  public void setAdvD(String advD) {
+    this.advD = advD;
+  }
+
+  @Column(length = 200)
+  public String getAdvE() {
+    return advE;
+  }
+
+  public void setAdvE(String advE) {
+    this.advE = advE;
   }
 
   @Column(length = 100)
@@ -192,4 +167,12 @@ public class AdMachine extends BaseEntity {
     this.isActive = isActive;
   }
 
+  @ManyToOne
+  public Scene getScene() {
+    return scene;
+  }
+
+  public void setScene(Scene scene) {
+    this.scene = scene;
+  }
 }

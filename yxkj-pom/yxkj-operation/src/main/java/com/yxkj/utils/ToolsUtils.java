@@ -1,10 +1,22 @@
 package com.yxkj.utils;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+
+import com.yxkj.beans.Setting;
+import com.yxkj.common.log.LogUtil;
+
 
 public class ToolsUtils implements Serializable {
 
@@ -101,4 +113,86 @@ public class ToolsUtils implements Serializable {
     sb.append("\n}");
     return sb.toString();
   }
+  /**
+   * 发送短信
+   * @param smsUrl
+   * @param parameters
+   * @return
+   */
+  public static String sendReq(String smsUrl, String parameters) {
+
+	    StringBuffer response = new StringBuffer();
+	    try {
+	        LogUtil.debug(ToolsUtils.class, "sendReq", "Request API URL is : %s", smsUrl + parameters);
+
+	      URL url = new URL(smsUrl);
+	      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+	      // add reuqest header
+	      con.setRequestMethod("GET");
+	      con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+	      con.setDoOutput(true);
+	      DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+	      wr.write(parameters.getBytes());
+	      // wr.writeBytes(parameters);
+	      wr.flush();
+	      wr.close();
+
+	      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	      String inputLine;
+
+	      while ((inputLine = in.readLine()) != null) {
+	        response.append(inputLine);
+	      }
+	      in.close();
+
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	    LogUtil.debug(ToolsUtils.class, "Response", "Response from API is : %s", response.toString());
+	    return response.toString();
+	}
+  /**
+   * 发送短信
+   * @param smsUrl
+   * @param parameters
+   * @return
+   */
+	public static String sendSmsMsg(String mobile, String msg) {
+	    try {
+	      Setting setting = SettingUtils.get();
+	      String smsUrl = setting.getSmsUrl();
+	      String smsOrgId = setting.getSmsOrgId();
+	      String smsUserName = setting.getSmsUserName();
+	      String smsPwd = setting.getSmsPwd();
+	      String message = URLEncoder.encode(msg, "UTF-8");
+	      String url =
+	          "Id=" + smsOrgId + "&Name=" + smsUserName + "&Psw=" + smsPwd + "&Message=" + message
+	              + "&Phone=" + mobile + "&Timestamp=0";
+	      String rs = sendReq(smsUrl, url);
+	      return rs;
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	    return null;
+	}
+	public static void main(String[] args){
+	    try {
+	    	  String mobile = "18280330380";
+	    	  String msg = "DALU您好，恭喜您成为优比家的管家，您的账号为12345678910，初始密码为zxasfasdgfa，请尽快登陆管家系统修改您的密码，谢谢。";
+		      String smsUrl = "http://124.172.234.157:8180/Service.asmx/SendMessage";
+		      String smsOrgId = "300";
+		      String smsUserName = "ybj";
+		      String smsPwd = "123456";
+		      String message = URLEncoder.encode(msg, "UTF-8");
+		      String url =
+		          "Id=" + smsOrgId + "&Name=" + smsUserName + "&Psw=" + smsPwd + "&Message=" + message
+		              + "&Phone=" + mobile + "&Timestamp=0";
+		      String rs = sendReq(smsUrl, url);
+		      System.out.println(rs);
+		    } catch (Exception e) {
+		      e.printStackTrace();
+		    }
+	}
 }

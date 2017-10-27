@@ -7,6 +7,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.yxkj.entity.base.BaseEntity;
+import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.entity.commonenum.CommonEnum.ShipmentExcpType;
 
 /**
@@ -72,6 +73,10 @@ public class ShipmentException extends BaseEntity {
    */
   private ShipmentExcpType excpType;
 
+  /**
+   * 异常原因
+   */
+  private CommonEnum.ExcpReason excpReason;
 
   @Column(length = 50)
   public String getSceneName() {
@@ -162,6 +167,14 @@ public class ShipmentException extends BaseEntity {
 
   public void setChannelSn(String channelSn) {
     this.channelSn = channelSn;
+  }
+
+  public CommonEnum.ExcpReason getExcpReason() {
+    return excpReason;
+  }
+
+  public void setExcpReason(CommonEnum.ExcpReason excpReason) {
+    this.excpReason = excpReason;
   }
 
 

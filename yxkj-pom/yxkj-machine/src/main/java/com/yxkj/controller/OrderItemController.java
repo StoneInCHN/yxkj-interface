@@ -1,21 +1,37 @@
 package com.yxkj.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.annotation.Resource;
 
-import com.yxkj.common.log.LogUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.MobileBaseController;
+import com.yxkj.entity.Order;
 import com.yxkj.entity.OrderItem;
 import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.json.base.BaseResponse;
+import com.yxkj.json.base.ResponseMultiple;
+import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.OrderItemService;
-
-import io.swagger.annotations.*;
+import com.yxkj.service.OrderService;
 
 /**
  * Controller - 订单
@@ -28,14 +44,20 @@ public class OrderItemController extends MobileBaseController {
   @Resource(name = "orderItemServiceImpl")
   private OrderItemService orderItemService;
 
+  @Resource(name = "orderServiceImpl")
+  private OrderService orderService;
+
   /**
    * 更新出货状态
+   * 
+   * @param orderItemId 订单项ID
+   * @param shipmentStatus 出货状态
+   * @return
    */
   @RequestMapping(value = "updateOrderItemShipmentStatus", method = RequestMethod.POST)
-  @ApiOperation(value = "更新出货状态", httpMethod = "POST", response = BaseResponse.class, notes = "更新出货状态",
-      nickname = "updateOrderItemShipmentStatus")
-  @ApiResponses({
-      @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
+  @ApiOperation(value = "更新出货状态", httpMethod = "POST", response = BaseResponse.class,
+      notes = "更新出货状态", nickname = "updateOrderItemShipmentStatus")
+  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
   @ApiImplicitParams({
       @ApiImplicitParam(paramType = "query", name = "orderItemId", value = "命令记录ID号",
@@ -56,6 +78,49 @@ public class OrderItemController extends MobileBaseController {
       response.setCode(CommonAttributes.SUCCESS);
     else
       response.setCode(CommonAttributes.FAIL_COMMON);
+    return response;
+  }
+
+
+  /**
+   * - 商品出货状态查询
+   * 
+   * @param orderId 订单ID
+   * @return
+   */
+  @RequestMapping(value = "/getOrderItemOutStatus", method = RequestMethod.POST)
+  @ApiOperation(value = "商品出货状态查询", httpMethod = "POST", response = ResponseOne.class,
+      notes = "商品出货状态查询")
+  @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
+  @UserValidCheck
+  public @ResponseBody ResponseMultiple<Map<String, Object>> getOrderItemOutStatus(Long orderId) {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<>();
+
+    Order order = orderService.find(orderId);
+
+    Set<OrderItem> orderItemSet = order.getOrderItems();
+    List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+    orderItemSet.forEach(orderItem -> {
+      boolean isContain = false;
+      for (Map<String, Object> map : maps) {
+        Long cid = (Long) map.get("cId");
+        if (cid.equals(orderItem.getCntrId())
+            && map.get("status").equals(orderItem.getShipmentStatus())) {
+          isContain = true;
+          map.put("count", (Integer) map.get("count") + 1);
+        }
+      }
+      if (!isContain) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("cId", orderItem.getCntrId());
+        map.put("status", orderItem.getShipmentStatus());
+        map.put("count", 1);
+        map.put("goodName", orderItem.getgName());
+        maps.add(map);
+      }
+    });
+    response.setMsg(maps);
+    response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
 }

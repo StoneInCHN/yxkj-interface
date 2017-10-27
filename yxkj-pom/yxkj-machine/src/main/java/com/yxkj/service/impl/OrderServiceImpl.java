@@ -1,8 +1,10 @@
 package com.yxkj.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -10,6 +12,7 @@ import com.yxkj.common.client.ReceiverClient;
 import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.common.entity.CmdMsg;
 import com.yxkj.dao.*;
+import com.yxkj.utils.PayUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,8 @@ import com.yxkj.framework.service.impl.BaseServiceImpl;
 import com.yxkj.json.beans.GoodsBean;
 import com.yxkj.service.CmdService;
 import com.yxkj.service.OrderService;
+
+import static com.yxkj.entity.commonenum.CommonEnum.PickupStatus.LACK;
 
 @Service("orderServiceImpl")
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -67,6 +72,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     Order order = new Order();
     order.setPaymentType(payType);
     order.setPaymentTypeId(payType);
+    order.setDeviceNo(imei);
     order.setStatus(OrderStatus.UNPAID);
     order.setPurMethod(PurMethod.CONTROLL_MACHINE);
     Scene scene = sceneDao.getByImei(imei);
@@ -123,7 +129,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 
   @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-  public Order callbackAfterPay(String orderSn) {
+  public synchronized Order callbackAfterPay(String orderSn) {
     Order order = orderDao.getOrderBySn(orderSn);
     if (!OrderStatus.UNPAID.equals(order.getStatus())) {
       LogUtil.debug(this.getClass(), "callbackAfterPay",
@@ -133,6 +139,33 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     }
     order.setStatus(OrderStatus.PAID);
     order.setPaymentTime(new Date());
+
+    Set<OrderItem> orderItemSet = order.getOrderItems();
+
+    List<OrderItem> refundOrderItemList = new ArrayList<>();
+    // 支付完成，更新库存数据，
+    for (OrderItem orderItem : orderItemSet) {
+      ContainerChannel containerChannel = containerChannelDao.find(orderItem.getCntrId());
+      // 更新库存
+      if (containerChannel.getSurplus() > 1) {
+        containerChannel.setSurplus(containerChannel.getSurplus() - 1);
+        switch (order.getPurMethod()) {
+          case CONTROLL_MACHINE:
+            containerChannel.setOfflineLocalLock(containerChannel.getOfflineLocalLock() - 1);
+            break;
+          case SCAN_CODE:
+          case INPUT_CODE:
+            containerChannel.setOfflineRemoteLock(containerChannel.getOfflineRemoteLock() - 1);
+            break;
+        }
+      } else {
+        orderItem.setPickupStatus(LACK);
+        refundOrderItemList.add(orderItem);
+      }
+    }
+    //如果缺货，自动退款流程
+    if (!refundOrderItemList.isEmpty())
+      refund(order,refundOrderItemList);
     orderDao.merge(order);
     cmdService.notificationCmd(order.getDeviceNo(), CommonEnum.CmdType.PAYMENT_SUCCESS);
     cmdService.salesOut(order.getId());
@@ -156,5 +189,32 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   public List<CmdMsg> salesOut(Long orderId) {
 
     return orderDao.salesOut(orderId);
+  }
+
+  /**
+   * 退款
+   * 
+   * @param refundOrderItemList
+   */
+  private void refund(Order order, List<OrderItem> refundOrderItemList) {
+    double refundFee = 0;
+    for (OrderItem orderItem : refundOrderItemList) {
+      refundFee += orderItem.getPrice().doubleValue();
+    }
+    String orderSn = order.getSn();
+    boolean refundResponse = false;
+    if ("wx".equals(order.getPaymentType())) {
+      refundResponse = PayUtil.aliRefund(orderSn, String.valueOf(refundFee));
+    } else if ("alipay".equals(order.getPaymentType())) {
+      refundResponse =
+          PayUtil.weRefund(orderSn, String.valueOf(order.getAmount()), String.valueOf(refundFee));
+    }
+
+    if (refundResponse) {
+      // 退款成功，更新退款状态
+      for (OrderItem orderItem : refundOrderItemList) {
+        orderItem.setRefundStatus(com.yxkj.entity.commonenum.CommonEnum.RefundStatus.REFUNDED);
+      }
+    }
   }
 }

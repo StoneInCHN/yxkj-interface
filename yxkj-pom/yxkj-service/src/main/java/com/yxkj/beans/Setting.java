@@ -46,6 +46,10 @@ public class Setting implements Serializable {
    */
   private String cntrSysUrl;
 
+  /**
+   * 货柜扫码URL
+   */
+  private String cntrScanSysUrl;
 
   public String getCntrSysUrl() {
     return cntrSysUrl;
@@ -88,4 +92,11 @@ public class Setting implements Serializable {
     this.authRedirectUrl = authRedirectUrl;
   }
 
+  public String getCntrScanSysUrl() {
+    return cntrScanSysUrl;
+  }
+
+  public void setCntrScanSysUrl(String cntrScanSysUrl) {
+    this.cntrScanSysUrl = cntrScanSysUrl;
+  }
 }

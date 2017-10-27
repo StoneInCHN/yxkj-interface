@@ -23,15 +23,17 @@ public class QRCodeGenerator {
   }
 
   public byte[] generateQrImage(String uuid) {
-    int size = 100;
+    int size = 88;
     byte[] bytes = null;
     try {
       Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap =
           new Hashtable<EncodeHintType, ErrorCorrectionLevel>();
-      hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+      hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
       QRCodeWriter qrCodeWriter = new QRCodeWriter();
       BitMatrix byteMatrix = qrCodeWriter.encode(uuid, BarcodeFormat.QR_CODE, size, size, hintMap);
       int CrunchifyWidth = byteMatrix.getWidth();
+      CrunchifyWidth = CrunchifyWidth-22;
+      System.out.println(CrunchifyWidth);
       BufferedImage image =
           new BufferedImage(CrunchifyWidth, CrunchifyWidth, BufferedImage.TYPE_INT_RGB);
       image.createGraphics();
@@ -43,7 +45,7 @@ public class QRCodeGenerator {
 
       for (int i = 0; i < CrunchifyWidth; i++) {
         for (int j = 0; j < CrunchifyWidth; j++) {
-          if (byteMatrix.get(i, j)) {
+          if (byteMatrix.get(i+11, j+11)) {
             graphics.fillRect(i, j, 1, 1);
           }
         }

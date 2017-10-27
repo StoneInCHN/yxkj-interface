@@ -24,12 +24,18 @@ import com.yxkj.entity.commonenum.CommonEnum.Gender;
  * @version 2017年9月15日 上午11:27:59
  */
 @Entity
-@Table(name = "t_container_keeper", indexes = {@Index(name = "cellPhoneNumIndex",
-    columnList = "cellPhoneNum")})
+@Table(name = "t_container_keeper", 
+indexes = {@Index(name = "cellPhoneNumIndex", columnList = "cellPhoneNum"),
+		   @Index(name = "userNameIndex", columnList = "userName")})
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_container_keeper_sequence")
 public class ContainerKeeper extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
+  
+  /**
+	* 管家姓名
+  */
+  private String realName;
 
   /**
    * 用户名
@@ -190,7 +196,7 @@ public class ContainerKeeper extends BaseEntity {
     this.jpushRegId = jpushRegId;
   }
 
-  @Column(length = 50)
+  @Column(length = 50, unique = true)
   public String getUserName() {
     return userName;
   }
@@ -224,6 +230,15 @@ public class ContainerKeeper extends BaseEntity {
 
   public void setMsgKeepers(Set<MsgKeeper> msgKeepers) {
     this.msgKeepers = msgKeepers;
+  }
+  
+  @Column(length = 50)
+  public String getRealName() {
+	return realName;
+  }
+
+  public void setRealName(String realName) {
+	this.realName = realName;
   }
 
 }

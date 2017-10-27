@@ -39,8 +39,8 @@ public class GeneratePdf {
 	private List<Map<String,Object>> goodsList;
 	private OutputStream out;
 	private String projectDeployUrl;	
-	private final int saleBottom = 30;
-	private final int descHeight = 22;
+	private final int saleBottom = 20;
+	private final int descHeight = 15;
 	
 	public GeneratePdf(String companyName,String companyId,List<Map<String,Object>> goodsList,OutputStream out,String projectDeployUrl){
 		this.companyName = companyName;
@@ -69,24 +69,24 @@ public class GeneratePdf {
             doc.open();
             doc.newPage();
             
-//            Paragraph p1 = new Paragraph("商品二维码列表", firsetTitleFont);
-//            p1.setLeading(50);
-//            p1.setAlignment(Element.ALIGN_CENTER);
-//            doc.add(p1);
+            Paragraph p1 = new Paragraph("商品二维码列表", firsetTitleFont);
+            p1.setLeading(50);
+            p1.setAlignment(Element.ALIGN_CENTER);
+            doc.add(p1);
                 
-//            p1 = new Paragraph();  
-//            p1.setLeading(20);
-//            p1.setAlignment(Element.ALIGN_CENTER);
-//            Phrase ph1 = new Phrase(); 
-//            Chunk c3 = new Chunk("公司名称：", textFont) ;
-//            Chunk c33 = new Chunk(companyName, boldFont) ;
-//            ph1.add(c3);
-//            ph1.add(c33);
-//            p1.add(ph1);
-//            doc.add(p1);
-//            Paragraph p1 = new Paragraph("   ");
-//            p1.setLeading(20);
-//            doc.add(p1);
+            p1 = new Paragraph();  
+            p1.setLeading(20);
+            p1.setAlignment(Element.ALIGN_CENTER);
+            Phrase ph1 = new Phrase(); 
+            Chunk c3 = new Chunk("公司名称：", textFont) ;
+            Chunk c33 = new Chunk(companyName, boldFont) ;
+            ph1.add(c3);
+            ph1.add(c33);
+            p1.add(ph1);
+            doc.add(p1);
+            p1 = new Paragraph("   ");
+            p1.setLeading(35);
+            doc.add(p1);
             
             // 创建一个有4列的表格  
             PdfPTable qrTable = new PdfPTable(4);
@@ -97,7 +97,7 @@ public class GeneratePdf {
             		Map<String,Object> goods = goodsList.get(i*4 + j);   
         			String desc = "";
         			if (goods.get("name") != null) {
-        				desc += getShortStr(goods.get("name").toString(), 16, false);
+        				desc += getShortStr(goods.get("name").toString(), 9, false);
 					}
         			if (goods.get("spec") != null) {
         				desc += goods.get("spec").toString();
@@ -105,11 +105,11 @@ public class GeneratePdf {
                     cell = new PdfPCell(new Phrase(desc, textFont));
                     qrTable.addCell(setCommonStyle(cell, descHeight)); 
 				}
-            	for (int j = 0; j < 4; j++) {  
-            		String shortName = getShortStr(companyName, 6, true);
-                    cell = new PdfPCell(new Phrase(shortName, textFont));
-                    qrTable.addCell(setCommonStyle(cell, 12)); 
-				}
+//            	for (int j = 0; j < 4; j++) {  
+//            		String shortName = getShortStr(companyName, 6, true);
+//                    cell = new PdfPCell(new Phrase(shortName, textFont));
+//                    qrTable.addCell(setCommonStyle(cell, 12)); 
+//				}
             	for (int j = 0; j < 4; j++) {
             		Map<String,Object> goods = goodsList.get(i*4 + j);                    
                     String content = projectDeployUrl+"/h5/shelf/"+companyId+"/"+goods.get("sn");  
@@ -117,7 +117,7 @@ public class GeneratePdf {
                     QRCodeGenerator qr = new QRCodeGenerator();
                     img = Image.getInstance(qr.generateQrImage(content));                    
                     cell= new PdfPCell(img);
-                    qrTable.addCell(setCommonStyle(cell, 60)); 
+                    qrTable.addCell(setCommonStyle(cell, 30)); 
 				}
             	for (int j = 0; j < 4; j++) {  
             		Map<String,Object> goods = goodsList.get(i*4 + j);
@@ -137,7 +137,7 @@ public class GeneratePdf {
             			Map<String,Object> goods = goodsList.get(level*4 + j); 
             			String desc = "";
             			if (goods.get("name")!=null) {
-            				desc += getShortStr(goods.get("name").toString(), 16, false);
+            				desc += getShortStr(goods.get("name").toString(), 9, false);
 						}
             			if (goods.get("spec")!=null) {
             				desc += goods.get("spec").toString();
@@ -148,16 +148,16 @@ public class GeneratePdf {
 					}
                     qrTable.addCell(setCommonStyle(cell, descHeight)); 
 				}
-            	for (int j = 0; j < 4; j++) {  
-            		if (j<left) {
-                		String shortName = getShortStr(companyName, 6, true);
-                        cell = new PdfPCell(new Phrase(shortName, textFont));
-					}else {
-	                    cell = new PdfPCell(new Phrase(" ", textFont));
-					}
-
-                    qrTable.addCell(setCommonStyle(cell, 12)); 
-				}
+//            	for (int j = 0; j < 4; j++) {  
+//            		if (j<left) {
+//                		String shortName = getShortStr(companyName, 6, true);
+//                        cell = new PdfPCell(new Phrase(shortName, textFont));
+//					}else {
+//	                    cell = new PdfPCell(new Phrase(" ", textFont));
+//					}
+//
+//                    qrTable.addCell(setCommonStyle(cell, 12)); 
+//				}
             	for (int j = 0; j < 4; j++) {
             		if (j<left) {
             			Map<String,Object> goods = goodsList.get(level*4 + j); 
@@ -169,7 +169,7 @@ public class GeneratePdf {
 					}else {
 	                    cell = new PdfPCell(new Phrase(" ", textFont));
 					}      
-                    qrTable.addCell(setCommonStyle(cell, 60)); 
+                    qrTable.addCell(setCommonStyle(cell, 30)); 
 				}
             	for (int j = 0; j < 4; j++) {
             		if (j<left) {
@@ -230,16 +230,16 @@ public class GeneratePdf {
         try {
         	List<Map<String,Object>> goodsList = new ArrayList<Map<String,Object>>();
         	Map<String,Object> map = new HashMap<String, Object>();
-        	for (int i = 0; i < 134; i++) {
-        		map.put("id", "1");
-            	map.put("sn", "100001");
-            	map.put("name", "我喜欢出发我喜欢出发我喜欢出发我喜欢出发我喜欢出发我喜欢出发我喜欢出发");
-            	map.put("spec", "80g");
-            	map.put("salePrice", new BigDecimal("12.5"));
+        	for (int i = 0; i < 114; i++) {
+        		map.put("id", "20");
+            	map.put("sn", "6923450656181");
+            	map.put("name", "益达木糖醇口香糖冰凉薄荷40粒");
+            	map.put("spec", "1g");
+            	map.put("salePrice", new BigDecimal("10.00"));
             	goodsList.add(map);
         	}
-        	OutputStream out = new FileOutputStream(new File("E:\\商品二维码.pdf"));
-            GeneratePdf gp = new GeneratePdf("全成首位科技有限公司","1",goodsList,out,"http://test.ybjcq.com");
+        	OutputStream out = new FileOutputStream(new File("D:\\商品二维码.pdf"));
+            GeneratePdf gp = new GeneratePdf("优比家（重庆）实业有限公司","2",goodsList,out,"http://www.ybjstore.com");
             gp.generatePdf();
         } catch (Exception e) {
             e.printStackTrace();

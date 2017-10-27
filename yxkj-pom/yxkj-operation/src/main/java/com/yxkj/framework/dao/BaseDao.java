@@ -2,6 +2,7 @@ package com.yxkj.framework.dao;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.LockModeType;
 
@@ -163,4 +164,8 @@ public interface BaseDao<T, ID extends Serializable> {
    */
   void refreshIndex();
 
+  List<T> findListCustomized(String jpql, Map<String, ? extends Object> paramMap);
+
+  Page<T> findPageCustomized(Pageable pageable, String jpql,
+      Map<String, ? extends Object> paramMap);
 }

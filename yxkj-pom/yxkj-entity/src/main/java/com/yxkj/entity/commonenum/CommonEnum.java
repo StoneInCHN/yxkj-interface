@@ -131,7 +131,10 @@ public class CommonEnum {
     /** 出货成功 */
     SHIPMENT_SUCCESS,
     /** 出货失败 */
-    SHIPMENT_FAIL
+    SHIPMENT_FAIL, /**
+     * 正在出货
+     */
+    SHIPMENT_INPROCESS
   }
 
   /**
@@ -157,6 +160,16 @@ public class CommonEnum {
   }
 
   /**
+   * 出货异常
+   *
+   */
+  public enum ExcpReason {
+    /** 商品不足 */
+    LACK_GOODS,
+    /** 设备故障 */
+    DEVICE_EXCEPTION
+  }
+  /**
    * 系统参数配置
    * 
    *
@@ -170,11 +183,13 @@ public class CommonEnum {
    *
    */
   public enum DictKey {
-    /** 软件许可协议 0 */
+    /** 支付方式 0 */
+    PAYMENTTYPE,
+    /** 软件许可协议 1 */
     LICENSE_AGREEMENT,
-    /** 客服电话 1 */
+    /** 客服电话 2 */
     CUSTOMER_PHONE,
-    /** 关于 2 */
+    /** 关于 3 */
     ABOUT_US
   }
 
@@ -200,6 +215,10 @@ public class CommonEnum {
     AUTH_IDCARD,
     /** 商品图片 */
     GOODS_IMG,
+    /**
+     * 广告资源
+     */
+    AD_RESOURCE
   }
 
   /**
