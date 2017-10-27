@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.yxkj.json.request.OrderInfoReq;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,7 +75,6 @@ public class OrderItemController extends MobileBaseController {
   /**
    * - 商品出货状态查询
    * 
-   * @param orderSn 订单号
    * @return
    */
   @RequestMapping(value = "/getOrderItemOutStatus", method = RequestMethod.POST)
@@ -83,10 +83,10 @@ public class OrderItemController extends MobileBaseController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
   public @ResponseBody ResponseMultiple<Map<String, Object>> getOrderItemOutStatus(
-      @RequestBody String orderSn) {
+      @RequestBody OrderInfoReq req) {
     ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<>();
 
-    Order order = orderService.getOrderBySn(orderSn);
+    Order order = orderService.getOrderBySn(req.getOrderSn());
 
     Set<OrderItem> orderItemSet = order.getOrderItems();
     List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
