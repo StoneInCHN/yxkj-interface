@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.yxkj.entity.base.BaseEntity;
 import com.yxkj.entity.commonenum.CommonEnum.ChannelGoodsStatus;
@@ -54,6 +55,7 @@ public class ContainerChannel extends BaseEntity {
    * 线上锁定的商品数量
    */
   private Integer onlineLock;
+  
   /**
    * 线下扫描，输码锁定的商品数量
    */
@@ -63,6 +65,7 @@ public class ContainerChannel extends BaseEntity {
    * 线下中控锁定的商品数量
    */
   private Integer offlineLocalLock;
+  
   /**
    * 剩余货量
    */
@@ -76,6 +79,7 @@ public class ContainerChannel extends BaseEntity {
   /**
    * 货道商品状态
    */
+  @Transient
   private ChannelGoodsStatus chgsStatus;
 
   /**
@@ -109,7 +113,11 @@ public class ContainerChannel extends BaseEntity {
   }
 
   public ChannelGoodsStatus getChgsStatus() {
-    return chgsStatus;
+	if (this.surplus < this.warning) {
+		return ChannelGoodsStatus.LACK;
+	}else {
+		return ChannelGoodsStatus.SUFFICIENT;
+	}
   }
 
   public void setChgsStatus(ChannelGoodsStatus chgsStatus) {

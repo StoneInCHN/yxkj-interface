@@ -43,6 +43,11 @@ public class ContainerCategoryController extends BaseController {
   @Resource(name = "containerCategoryServiceImpl")
   private ContainerCategoryService containerCategoryService;
   
+  /**
+   * 货柜类型列表
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/list", method = RequestMethod.POST)
   @ApiOperation(value = "货柜类型列表", httpMethod = "POST", response = ResponseMultiple.class, notes = "货柜类型列表")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -57,7 +62,11 @@ public class ContainerCategoryController extends BaseController {
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
-  
+  /**
+   * 添加货柜类型
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/add", method = RequestMethod.POST)
   @ApiOperation(value = "添加货柜类型", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加货柜")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -85,7 +94,11 @@ public class ContainerCategoryController extends BaseController {
       response.setDesc(message("yxkj.request.success"));
       return response;
   }
-  
+  /**
+   * 编辑货柜类型
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/update", method = RequestMethod.POST)
   @ApiOperation(value = "编辑货柜类型", httpMethod = "POST", response = ResponseOne.class, notes = "用于编辑货柜")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -118,6 +131,11 @@ public class ContainerCategoryController extends BaseController {
       response.setDesc(message("yxkj.request.success"));
       return response;
   }
+  /**
+   * 删除货柜类型
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/delete", method = RequestMethod.POST)
   @ApiOperation(value = "删除货柜类型", httpMethod = "POST", response = ResponseOne.class, notes = "用于删除货柜类型")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
