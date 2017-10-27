@@ -73,6 +73,9 @@ public class VendingContainerServiceImpl extends BaseServiceImpl<VendingContaine
 			for (int i = 0; i < category.getTotalChannel(); i++) {
 				ContainerChannel channel = new ContainerChannel();
 				channel.setCntr(container);
+	      		channel.setOfflineLocalLock(0);
+	      		channel.setOfflineRemoteLock(0);
+	      		channel.setOnlineLock(0);
 				containerChannelDao.persist(channel);
 			}
 		}		

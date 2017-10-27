@@ -98,7 +98,11 @@ public class VendingContainerController extends BaseController {
 		}
       return response;
   }
-  
+  /**
+   * 添加货柜
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/addContainer", method = RequestMethod.POST)
   @ApiOperation(value = "添加货柜", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加货柜")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -122,7 +126,11 @@ public class VendingContainerController extends BaseController {
 	  }
       return response;
   }
-  
+  /**
+   * 编辑货柜
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/updateContainer", method = RequestMethod.POST)
   @ApiOperation(value = "编辑货柜", httpMethod = "POST", response = ResponseOne.class, notes = "用于编辑货柜")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -147,7 +155,11 @@ public class VendingContainerController extends BaseController {
 	  }
       return response;
   }
-  
+  /**
+   * 删除货柜
+   * @param request
+   * @return
+   */
   @RequestMapping(value = "/deleteContainer", method = RequestMethod.POST)
   @ApiOperation(value = "删除货柜", httpMethod = "POST", response = ResponseOne.class, notes = "用于删除货柜")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
