@@ -18,6 +18,7 @@ import com.yxkj.entity.SupplementPic;
 import com.yxkj.entity.SupplementRecord;
 import com.yxkj.entity.SupplementSumRec;
 import com.yxkj.dao.ContainerKeeperDao;
+import com.yxkj.dao.GoodsDao;
 import com.yxkj.dao.GoodsPicDao;
 import com.yxkj.dao.SceneDao;
 import com.yxkj.dao.SupplementListDao;
@@ -27,7 +28,6 @@ import com.yxkj.dao.SupplementSumRecDao;
 import com.yxkj.dao.VendingContainerDao;
 import com.yxkj.service.SupplementListService;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
-import com.yxkj.json.bean.SupplementSumRecord;
 import com.yxkj.json.bean.SupplyRecord;
 import com.yxkj.json.bean.WaitSupplyContainerGoods;
 import com.yxkj.json.bean.WaitSupplyGoods;
@@ -39,6 +39,9 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
 
       @Resource(name="sceneDaoImpl")
       private SceneDao sceneDao;
+      
+      @Resource(name="goodsDaoImpl")
+      private GoodsDao goodsDao;
       
       @Resource(name="goodsPicDaoImpl")
       private GoodsPicDao goodsPicDao;
@@ -68,7 +71,6 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
       
       //获取待补货清单
       public WaitSupplyList getWaitSupplyListBySuppId(Long suppId, String pageNo, int pageSize) {
-        
         WaitSupplyList waitSupplyList = new WaitSupplyList();
         
         int waitSupplySumCount = 0;
@@ -122,7 +124,8 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         waitSupplyList.setWaitSupplySumCount(waitSupplySumCount);
         return waitSupplyList;
       }
-
+      
+      //获取待补优享空间列表
       @Override
       public List<Map<String, String>> getWaitSupplySceneList(Long suppId) {
         List<Map<String, String>> sceneList = new LinkedList<>();
@@ -137,6 +140,7 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         return sceneList;
       }
       
+      //获取待补商品列表
       @Override
       public List<WaitSupplyGoods> getWaitSupplyGoodList(Long suppId, String sceneSn, Long cateId,
           String pageNo, int pageSize) {
@@ -153,6 +157,7 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         return waitSupplyGoodList;
       }
       
+      //获取待补商品类别列表
       @Override
       public List<Map<String,Object>> getWaitSupplyGoodsCategoryList(Long  suppId) {
         List<Map<String,Object>> waitSupplyGoodsCategoryList = new LinkedList<>();
@@ -167,6 +172,7 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         return waitSupplyGoodsCategoryList;
       }
 
+      //获取待补商品详情
       @Override
       public WaitSupplyGoodsDetails getWaitSupplyGoodsDetails(Long suppId, String goodsSn) {
         Integer sumCount = 0;
@@ -183,7 +189,42 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         }
         return new WaitSupplyGoodsDetails(goodsSn, goodsName, sceneCountList, sumCount);
       }
+      
+      //开始补货
+      @Override
+      public Object[] startSupplyGoods(Long suppId, String sceneSn) {
+        Object[] objs = null;
+        SupplementSumRec supplementSumRec = null;
+        try {
+          objs = supplementSumRecDao.findUnfinishedSupplyRecord(suppId, sceneSn);
+          return objs;
+        } catch (Exception e) {}
+        try {
+          supplementSumRec = supplementSumRecDao.findSupplementSumRecordBySceneSn(suppId, sceneSn);
+        } catch (Exception ex) {
+          supplementSumRec = new SupplementSumRec();
+        }
+        supplementSumRec.setSceneSn(sceneSn);
+        supplementSumRec.setSceneName((String)sceneDao.findSceneNameBySn(sceneSn));
+        ContainerKeeper keeper = containerKeeperDao.find(suppId);
+        supplementSumRec.setSuppId(suppId);
+        supplementSumRec.setSuppMobile(keeper.getCellPhoneNum());
+        supplementSumRec.setSuppName(keeper.getUserName());
+        //设置开始时间
+        supplementSumRec.setSuppStartTime(new Date());
+        List<Object> countList = supplementListDao.findWaitSupplyCountSceneSn(sceneSn);
+        Integer waitSuppTotalCount = 0;
+        for (Object count : countList) {
+          waitSuppTotalCount += (Integer)count;
+        }
+        supplementSumRec.setWaitSuppTotalCount(waitSuppTotalCount);
+        supplementSumRec.setLackCount(waitSuppTotalCount);
+        supplementSumRec.setSuppTotalCount(0);
+        supplementSumRecDao.persist(supplementSumRec);
+        return null;
+      }
 
+      //获取货柜待补商品
       @Override
       public List<WaitSupplyContainerGoods> getWaitSupplyContainerGoods(Long suppId, Long cntrId,
           String pageNo, int pageSize) {
@@ -198,35 +239,28 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         }
         return waitSupplyContainerGoodsList;
       }
+      
+      //获取全部商品
+      @Override
+      public List<WaitSupplyContainerGoods> getContainerGoodsList(Long cntrId, String pageNo, int pageSize) {
+        List<WaitSupplyContainerGoods> goodsList = new LinkedList<>();
+        List<Object[]> objects = goodsDao.getContainerGoodsList(cntrId, Integer.valueOf(pageNo), pageSize);
+        for (Object[] goodsObj : objects) {
+          String goodsSn = (String)goodsObj[2];
+          WaitSupplyContainerGoods goods = new WaitSupplyContainerGoods((Long)goodsObj[0], (String)goodsObj[1],
+              (String)goodsObj[2], (String)goodsObj[3], (Integer)goodsObj[5], (Integer)goodsObj[6]);
+          goods.setGoodsPic((String)goodsPicDao.findGoodsPicByGoodsSn(goodsSn));
+        }
+        return goodsList;
+      }
 
+      //提交补货记录
       @Override
       @Transactional
       public void commitSupplyRecords(Long suppId, String sceneSn, List<SupplyRecord> records) throws Exception {
         Integer suppCount = 0;
-        //查询优享空间的汇总记录，若没有，则新建
-        SupplementSumRec supplementSumRec = null;
-        try {
-          supplementSumRec = supplementSumRecDao.findSupplementSumRecordBySceneSn(suppId, sceneSn);
-        } catch (Exception e) {
-          supplementSumRec = new SupplementSumRec();
-          supplementSumRec.setSceneSn(sceneSn);
-          supplementSumRec.setSceneName((String)sceneDao.findSceneNameBySn(sceneSn));
-          ContainerKeeper keeper = containerKeeperDao.find(suppId);
-          List<Object> countList = supplementListDao.findWaitSupplyCountSceneSn(sceneSn);
-          supplementSumRec.setSuppId(suppId);
-          supplementSumRec.setSuppMobile(keeper.getCellPhoneNum());
-          supplementSumRec.setSuppName(keeper.getUserName());
-          //设置开始时间
-          supplementSumRec.setSuppStartTime(new Date());
-          Integer waitSuppTotalCount = 0;
-          for (Object count : countList) {
-            waitSuppTotalCount += (Integer)count;
-          }
-          supplementSumRec.setWaitSuppTotalCount(waitSuppTotalCount);
-          supplementSumRec.setLackCount(waitSuppTotalCount);
-          supplementSumRec.setSuppTotalCount(0);
-          supplementSumRecDao.persist(supplementSumRec);
-        }
+        SupplementSumRec supplementSumRec = supplementSumRecDao.findSupplementSumRecordBySceneSn(suppId, sceneSn);
+        
         for (SupplyRecord record : records) {
           SupplementList supplementList = supplementListDao.find(record.getSupplementId());
           SupplementRecord supplementRecord = new SupplementRecord();
@@ -251,6 +285,7 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
           } else {
             throw new Exception();
           }
+          supplementRecord.setSuppSum(supplementSumRec);
           //添加补货记录
           supplementRecordDao.persist(supplementRecord);
           suppCount += record.getSupplyCount();
@@ -260,12 +295,13 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         supplementSumRec.setLackCount(supplementSumRec.getLackCount() - suppCount);
         supplementSumRecDao.merge(supplementSumRec);
       }
-
+      
+      //上传补货图片
       @Override
       @Transactional
-      public void uploadSupplementPic(Long suppId, Long cntrId, String picFileName) {
+      public void uploadSupplementPic(Long suppId, Long cntrId, String picPath) {
         SupplementPic supplementPic = new SupplementPic();
-        supplementPic.setSource(picFileName);
+        supplementPic.setSource(picPath);
         supplementPicDao.persist(supplementPic);
         List<SupplementRecord> records = supplementRecordDao.findRecordByCntrId(suppId, cntrId);
         System.out.println(records.size());
@@ -275,14 +311,17 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         }
       }
 
+      //完成补货
       @Override
-      public List<SupplementSumRecord> getSupplementSumRecord(String pageNo, String pageSize, Long suppId) {
-        List<SupplementSumRec> sumRec = supplementSumRecDao.findSupplementSumRecord(
-            Integer.valueOf(pageNo).intValue(), Integer.valueOf(pageSize).intValue(), suppId);
-        for (SupplementSumRec supplementSumRec : sumRec) {
-          System.out.println(supplementSumRec.getSuppEndTime());
-        }
+      public Object[] finishSupplyGoods(Long suppId, String sceneSn) {
+        try {
+          Object[] objs = supplementSumRecDao.findUnfinishedSupplyRecord(suppId, sceneSn);
+          if(objs != null) return objs;
+        } catch (Exception e) {}
+        SupplementSumRec supplementSumRec = supplementSumRecDao.findSupplementSumRecordBySceneSn(suppId, sceneSn);
+        supplementSumRec.setSuppEndTime(new Date());
+        supplementSumRecDao.persist(supplementSumRec);
         return null;
       }
-      
+
 }

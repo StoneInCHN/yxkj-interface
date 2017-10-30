@@ -24,7 +24,7 @@ public class SupplementRecordDaoImpl extends  BaseDaoImpl<SupplementRecord,Long>
   @SuppressWarnings("unchecked")
   @Override
   public List<Object[]> findSupplementVendingContainerBySceneSn(Long suppId, String sceneSn) {
-    String jpql = "SELECT DISTINCT s.cntrId, s.sntrSn FROM SupplementRecord s WHERE s.suppId = :suppId AND s.sceneSn = :sceneSn";
+    String jpql = "SELECT DISTINCT s.cntrId, s.cntrSn FROM SupplementRecord s WHERE s.suppId = :suppId AND s.sceneSn = :sceneSn";
     Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId).setParameter("sceneSn", sceneSn);
     
     return query.getResultList();
@@ -32,8 +32,8 @@ public class SupplementRecordDaoImpl extends  BaseDaoImpl<SupplementRecord,Long>
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<Object[]> findSupplementGoodsRecordByCntrId(Long suppId, String cntrId) {
-    String jpql = "SELECT s. FROM SupplementRecord s WHERE s.suppId = :suppd AND s.cntrId = :cntrId AND s.suppPic is null";
+  public List<Object[]> findSupplementGoodsRecordByCntrId(Long suppId, Long cntrId) {
+    String jpql = "SELECT s.channel.sn, s.goodsSn, s.goodsName, s.waitSupplyCount, s.supplyCount FROM SupplementRecord s WHERE s.suppId = :suppId AND s.cntrId = :cntrId";
     Query query = entityManager.createQuery(jpql).setParameter("cntrId", cntrId).setParameter("suppId", suppId);
     
     return query.getResultList();

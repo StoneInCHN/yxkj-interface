@@ -19,12 +19,12 @@
 		<!-- 机构代码 -->
 		<setting name="smsOrgId" value="300" />
 		<!-- 用户名 -->
-		<setting name="smsUserName" value="【优比家】" />
+		<setting name="smsUserName" value="ybj" />
 		<!-- 密码 -->
 		<setting name="smsPwd" value="123456" />
 		
 		<!-- 验证码消息内容 -->
-		<setting name="smsContentTemp" value="【享个购】您的验证码是" />
+		<setting name="smsContentTemp" value="【优比家】您的验证码是:" />
 		
 		<!-- 验证码消息内容后缀 -->
 		<setting name="smsPostfix" value="，如非本人操作请忽略。" />

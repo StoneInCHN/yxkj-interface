@@ -217,7 +217,11 @@ public class CommonEnum {
     /**
      * 广告资源
      */
-    AD_RESOURCE
+    AD_RESOURCE,
+    /**
+     * 管家补货照片
+     */
+    KEEPER_SUPP_IMG
   }
 
   /**

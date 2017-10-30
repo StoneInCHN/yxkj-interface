@@ -3,7 +3,7 @@ package com.yxkj.json.bean;
 public class WaitSupplyContainerGoods {
   
   /**
-   * 待补id
+   * id
    */
   private Long id;
   

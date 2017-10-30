@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.yxkj.entity.SupplementList;
 import com.yxkj.framework.service.BaseService;
-import com.yxkj.json.bean.SupplementSumRecord;
 import com.yxkj.json.bean.SupplyRecord;
 import com.yxkj.json.bean.WaitSupplyContainerGoods;
 import com.yxkj.json.bean.WaitSupplyGoods;
@@ -26,9 +25,14 @@ public interface SupplementListService extends BaseService<SupplementList,Long>{
   
   List<WaitSupplyContainerGoods> getWaitSupplyContainerGoods(Long suppId, Long cntrId, String pageNo, int pageSize);
   
+  List<WaitSupplyContainerGoods> getContainerGoodsList(Long cntrId, String pageNo, int pageSize);
+  
   void uploadSupplementPic(Long suppId, Long cntrId, String picFileName);
+  
+  Object[] startSupplyGoods(Long suppId, String sceneSn);
   
   void commitSupplyRecords(Long userId, String sceneSn, List<SupplyRecord> records) throws Exception;
   
-  List<SupplementSumRecord> getSupplementSumRecord(String pageNo, String pageSize, Long suppId);
+  Object[] finishSupplyGoods(Long suppId, String sceneSn);
+  
 }

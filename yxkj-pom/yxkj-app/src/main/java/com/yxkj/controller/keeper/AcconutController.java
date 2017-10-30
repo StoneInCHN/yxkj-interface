@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import java.security.PrivateKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -23,6 +24,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
@@ -33,7 +35,10 @@ import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.request.KeeperAccountRequest;
 import com.yxkj.json.base.ResponseOne;
+import com.yxkj.json.bean.KeeperNotice;
+import com.yxkj.json.bean.KeeperNoticeItem;
 import com.yxkj.service.ContainerKeeperService;
+import com.yxkj.service.MsgKeeperService;
 import com.yxkj.utils.KeyGenerator;
 import com.yxkj.utils.RSAHelper;
 import com.yxkj.utils.SmsUtil;
@@ -47,8 +52,12 @@ public class AcconutController extends MobileBaseController {
   @Resource(name = "containerKeeperServiceImpl")
   private ContainerKeeperService containerKeeperService;
 
+  @Resource(name = "msgKeeperServiceImpl")
+  private MsgKeeperService msgKeeperService;
+
   @Resource(name = "redisTemplate")
   private RedisTemplate<String, String> redisTemplate;
+  
 
   /**
    * 获取公钥
@@ -404,5 +413,61 @@ public class AcconutController extends MobileBaseController {
       LogUtil.debug(this.getClass(), "resetPassword", "重置密码失败");
       return response;
     }
+  }
+  
+  /**
+   * 查看消息
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/getMsg", method = RequestMethod.POST)
+  @ApiOperation(value = "查看消息", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
+  public @ResponseBody ResponseOne<Map<String, Object>> getMsg(
+      @ApiParam(name = "请求参数(json)", value = "{userId:管家Id}", required = true)
+      @RequestParam("userId")Long userId) {
+    ResponseOne<Map<String, Object>> response = new ResponseOne<>();
+    Map<String, Object> map = new HashMap<>();
+    try {
+      List<KeeperNotice> notices= msgKeeperService.getKeeperNotices(userId);
+      map.put("groups", notices);
+      response.setMsg(map);
+    } catch (Exception e) {
+      e.printStackTrace();
+      response.setCode(CommonAttributes.FAIL_COMMON);
+      response.setDesc(message("yxkj.request.failed"));
+    }
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(message("yxkj.request.success"));
+    return response;
+  }
+  
+  /**
+   * 查看消息
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/getMsgDetails", method = RequestMethod.POST)
+  @ApiOperation(value = "查看消息详情", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息详情")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
+  public @ResponseBody ResponseOne<Map<String, Object>> getMsgDetails(
+      @ApiParam(name = "请求参数(json)", value = "{userId:管家Id}", required = true)
+      @RequestParam("userId")Long userId, @RequestParam("type")String type) {
+    ResponseOne<Map<String, Object>> response = new ResponseOne<>();
+    Map<String, Object> map = new HashMap<>();
+    try {
+      List<KeeperNoticeItem> items = msgKeeperService.getTypeNotices(userId, type);
+      map.put("groups", items);
+      response.setMsg(map);
+    } catch (Exception e) {
+      e.printStackTrace();
+      response.setCode(CommonAttributes.FAIL_COMMON);
+      response.setDesc(message("yxkj.request.failed"));
+    }
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(message("yxkj.request.success"));
+    return response;
   }
 }

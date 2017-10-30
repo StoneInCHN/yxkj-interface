@@ -10,5 +10,5 @@ public interface SupplementRecordDao extends  BaseDao<SupplementRecord,Long>{
   
   List<Object[]> findSupplementVendingContainerBySceneSn(Long suppId, String sceneSn);
   
-  List<Object[]> findSupplementGoodsRecordByCntrId(Long suppId, String cntrId);
+  List<Object[]> findSupplementGoodsRecordByCntrId(Long suppId, Long cntrId);
 }

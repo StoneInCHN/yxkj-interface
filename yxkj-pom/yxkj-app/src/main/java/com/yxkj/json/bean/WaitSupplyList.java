@@ -131,6 +131,7 @@ public class WaitSupplyList {
         public WaitSupplyVendingContainer(Long id, String cntrSn) {
           this.id = id;
           this.cntrSn = cntrSn;
+          this.vendingContainerName = cntrSn+"货柜";
         }
 
         public Long getId() {
@@ -155,6 +156,7 @@ public class WaitSupplyList {
 
         public void setCntrSn(String cntrSn) {
           this.cntrSn = cntrSn;
+          this.vendingContainerName = cntrSn+"货柜";
         }
 
         public boolean getCentral() {
