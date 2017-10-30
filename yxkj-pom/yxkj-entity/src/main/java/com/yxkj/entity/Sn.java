@@ -30,6 +30,10 @@ public class Sn extends BaseEntity {
     COMPANY_SN,
     /** 场景编号 */
     SCENE_SN,
+    /**
+     * 退款单
+     */
+      REFUND
   }
 
   /** 类型 */

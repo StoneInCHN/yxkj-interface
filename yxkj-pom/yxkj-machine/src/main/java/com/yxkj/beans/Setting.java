@@ -173,6 +173,15 @@ public class Setting implements Serializable {
   private String wechatAddOrderUrl;
 
   /**
+   * 微信退款接口
+   */
+  private String wechatRefundUrl;
+
+  /**
+   * 微信证书地址
+   */
+  private String pkcs12Path;
+  /**
    * 微信Token接口
    */
   private String wechatTokenUrl;
@@ -548,5 +557,19 @@ public class Setting implements Serializable {
   }
 
 
+  public String getWechatRefundUrl() {
+    return wechatRefundUrl;
+  }
 
+  public void setWechatRefundUrl(String wechatRefundUrl) {
+    this.wechatRefundUrl = wechatRefundUrl;
+  }
+
+  public String getPkcs12Path() {
+    return pkcs12Path;
+  }
+
+  public void setPkcs12Path(String pkcs12Path) {
+    this.pkcs12Path = pkcs12Path;
+  }
 }

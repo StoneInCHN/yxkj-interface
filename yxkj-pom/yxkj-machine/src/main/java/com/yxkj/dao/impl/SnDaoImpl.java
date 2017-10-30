@@ -32,6 +32,7 @@ public class SnDaoImpl extends BaseDaoImpl<Sn, Long> implements SnDao, Initializ
   private String orderPrefix;
   @Value("${sn.order.maxLo}")
   private int orderMaxLo;
+  private HiloOptimizer refundHiloOptimizer;
 
 
   @Override
@@ -39,6 +40,8 @@ public class SnDaoImpl extends BaseDaoImpl<Sn, Long> implements SnDao, Initializ
     Assert.notNull(type);
     if (type == Type.ORDER) {
       return orderHiloOptimizer.generate();
+    }else if (type == Type.REFUND){
+      return refundHiloOptimizer.generate();
     }
     return null;
   }
@@ -46,7 +49,7 @@ public class SnDaoImpl extends BaseDaoImpl<Sn, Long> implements SnDao, Initializ
   @Override
   public void afterPropertiesSet() throws Exception {
     orderHiloOptimizer = new HiloOptimizer(Type.ORDER, orderPrefix, orderMaxLo);
-
+    refundHiloOptimizer = new HiloOptimizer(Type.REFUND, orderPrefix, orderMaxLo);
   }
 
   /**

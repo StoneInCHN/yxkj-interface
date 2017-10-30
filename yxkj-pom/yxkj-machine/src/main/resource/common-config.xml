@@ -48,6 +48,10 @@
 		<setting name="wechatNotifyUrl" value="http://machine.ybjcq.com/yxkj-machine/order/pay/notify_wechat" />
 		<!-- 微信下订单接口 -->
 		<setting name="wechatAddOrderUrl" value="https://api.mch.weixin.qq.com/pay/unifiedorder" />
+		<!-- 微信退款接口-->
+		<setting name="wechatRefundUrl" value="https://api.mch.weixin.qq.com/secapi/pay/refund" />
+		<!-- 微信证书地址-->
+		<setting name="pkcs12Path" value="/mnt/machine/cert/apiclient_cert.p12" />
 		<!-- 微信Token接口 -->
 		<setting name="wechatTokenUrl" value="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=APPID&amp;secret=APPSECRET" />
 		
