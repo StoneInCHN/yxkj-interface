@@ -40,6 +40,11 @@ public class GoodsSaleInfo extends BaseEntity {
   private String name;
 
   /**
+   * 商品规格(净含量)
+   */
+  private String spec;
+
+  /**
    * 商品编号
    */
   private String sn;
@@ -80,6 +85,14 @@ public class GoodsSaleInfo extends BaseEntity {
    */
   private Date reportTime;
 
+
+  public String getSpec() {
+    return spec;
+  }
+
+  public void setSpec(String spec) {
+    this.spec = spec;
+  }
 
   @Temporal(TemporalType.DATE)
   public Date getReportTime() {
