@@ -1,5 +1,6 @@
 package com.yxkj.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.FlushModeType;
@@ -20,7 +21,7 @@ import com.yxkj.framework.dao.impl.BaseDaoImpl;
 public class SceneDaoImpl extends BaseDaoImpl<Scene, Long> implements SceneDao {
 
   @Override
-  public List<Scene> getByKey(String key) {
+  public List<Scene> getByKey(String key, Long pId) {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Scene> criteriaQuery = criteriaBuilder.createQuery(Scene.class);
     Root<Scene> scene = criteriaQuery.from(Scene.class);
@@ -28,12 +29,23 @@ public class SceneDaoImpl extends BaseDaoImpl<Scene, Long> implements SceneDao {
         criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder
             .conjunction();
     restrictions =
-                criteriaBuilder.and(restrictions, criteriaBuilder.equal(scene.get("removeStatus"), CommonStatus.ACITVE));
-    restrictions =
         criteriaBuilder.and(restrictions, criteriaBuilder.like(scene.get("sn"), "%" + key + "%"));
     restrictions =
         criteriaBuilder.or(restrictions, criteriaBuilder.like(scene.get("name"), "%" + key + "%"));
+    restrictions =
+        criteriaBuilder.and(restrictions,
+            criteriaBuilder.equal(scene.get("removeStatus"), CommonStatus.ACITVE));
+    if (pId != null) {
+      restrictions =
+          criteriaBuilder.and(restrictions,
+              criteriaBuilder.equal((scene.get("propertyKeeper")).get("id"), pId));
+    }
+
     criteriaQuery.where(restrictions);
+    List<javax.persistence.criteria.Order> orderList =
+        new ArrayList<javax.persistence.criteria.Order>();
+    orderList.add(criteriaBuilder.asc(scene.get("sn")));
+    criteriaQuery.orderBy(orderList);
     TypedQuery<Scene> query =
         entityManager.createQuery(criteriaQuery).setFlushMode(FlushModeType.COMMIT);
     return query.getResultList();
