@@ -2,8 +2,6 @@ package com.yxkj.json.admin.request;
 
 import java.util.Date;
 
-import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
-import com.yxkj.entity.commonenum.CommonEnum.PurMethod;
 import com.yxkj.json.base.BaseListRequest;
 
 public class GoodsReportRequest extends BaseListRequest {
@@ -15,17 +13,17 @@ public class GoodsReportRequest extends BaseListRequest {
   /**
    * 优享空间
    */
-  private String sceneName;
+  private Long gCateId;
 
   /**
-   * 订单号
+   * 商品条码
    */
-  private String orderSn;
+  private String gCode;
 
   /**
-   * 用户名
+   * 商品名称
    */
-  private String userName;
+  private String gName;
 
   /**
    * 开始日期
@@ -37,25 +35,6 @@ public class GoodsReportRequest extends BaseListRequest {
    */
   private Date endTime;
 
-  /**
-   * 购买方式
-   */
-  private PurMethod purMethod;
-
-  /**
-   * 支付方式ID
-   */
-  private Long paymentTypeId;
-
-  /**
-   * 订单状态
-   */
-  private OrderStatus status;
-
-  /**
-   * 重复购买次数
-   */
-  private Integer repeatCount;
 
 
   public Long getSceneId() {
@@ -66,62 +45,29 @@ public class GoodsReportRequest extends BaseListRequest {
     this.sceneId = sceneId;
   }
 
-  public Integer getRepeatCount() {
-    return repeatCount;
+  public Long getgCateId() {
+    return gCateId;
   }
 
-  public void setRepeatCount(Integer repeatCount) {
-    this.repeatCount = repeatCount;
+  public void setgCateId(Long gCateId) {
+    this.gCateId = gCateId;
   }
 
-  public OrderStatus getStatus() {
-    return status;
+  public String getgCode() {
+    return gCode;
   }
 
-  public void setStatus(OrderStatus status) {
-    this.status = status;
+  public void setgCode(String gCode) {
+    this.gCode = gCode;
   }
 
-  public String getSceneName() {
-    return sceneName;
+  public String getgName() {
+    return gName;
   }
 
-  public void setSceneName(String sceneName) {
-    this.sceneName = sceneName;
+  public void setgName(String gName) {
+    this.gName = gName;
   }
-
-  public String getOrderSn() {
-    return orderSn;
-  }
-
-  public void setOrderSn(String orderSn) {
-    this.orderSn = orderSn;
-  }
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
-
-  public PurMethod getPurMethod() {
-    return purMethod;
-  }
-
-  public void setPurMethod(PurMethod purMethod) {
-    this.purMethod = purMethod;
-  }
-
-  public Long getPaymentTypeId() {
-    return paymentTypeId;
-  }
-
-  public void setPaymentTypeId(Long paymentTypeId) {
-    this.paymentTypeId = paymentTypeId;
-  }
-
 
   public Date getStartTime() {
     return startTime;
