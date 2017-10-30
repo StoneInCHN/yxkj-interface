@@ -4,7 +4,10 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.yxkj.entity.ContainerChannel;
+import com.yxkj.entity.GoodsPic;
 import com.yxkj.json.request.OrderInfoReq;
+import com.yxkj.service.ContainerChannelService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +38,9 @@ public class OrderItemController extends MobileBaseController {
 
   @Resource(name = "orderServiceImpl")
   private OrderService orderService;
+
+  @Resource(name = "containerChannelServiceImpl")
+  private ContainerChannelService containerChannelService;
 
   /**
    * 更新出货状态
@@ -101,8 +107,21 @@ public class OrderItemController extends MobileBaseController {
         }
       }
       if (!isContain) {
+
+        ContainerChannel containerChannel = containerChannelService.find(orderItem.getCntrId());
+
+        List<GoodsPic> goodsPics = containerChannel.getGoods().getGoodsPics();
+
         Map<String, Object> map = new HashMap<>();
         map.put("cId", orderItem.getCntrId());
+        for (GoodsPic goodsPic : goodsPics) {
+          if (goodsPic.getOrder() == 0) {
+            map.put("pic", goodsPic.getSource());
+          }
+        }
+        map.put("pickUpStatus", orderItem.getPickupStatus());
+        map.put("refundStatus", orderItem.getRefundStatus());
+        map.put("cntrSn", containerChannel.getCntr().getSn());
         map.put("status", orderItem.getShipmentStatus());
         map.put("count", 1);
         map.put("goodName", orderItem.getgName());
