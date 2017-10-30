@@ -31,19 +31,19 @@ public class FileServiceImpl implements FileService {
   private String uploadPath;
   @Value("${ProjectUploadPath}")
   private String projectUploadPath;
-  
+
   @Value("${system.project_name}")
-  private String projectName;	
-  
+  private String projectName;
+
   @Resource(name = "taskExecutor")
   private Executor threadPoolExecutor;
-  
+
   @Value("${system.project_deploy_url}")
   private String projectDeployUrl;
-  
+
   @Value("${qrCode.prefix.url}")
   private String qrCodePrefixUrl;
-  
+
 
   /**
    * 批量上传图片
@@ -53,7 +53,7 @@ public class FileServiceImpl implements FileService {
    */
   @Override
   public List<String> saveImage(MultipartFile[] multipartFile) {
-	List<String> webPaths = new ArrayList<String>();
+    List<String> webPaths = new ArrayList<String>();
     String projectPath = projectUploadPath;
     if (multipartFile == null || multipartFile.length == 0) {
       return null;
@@ -76,14 +76,14 @@ public class FileServiceImpl implements FileService {
         }
 
         multiFile.transferTo(tempFile);
-        //异步执行
-        threadPoolExecutor.execute(new Runnable() {		
-	  		@Override
-	  		public void run() {
-	  			proccessImage(tempFile, sourcePath);			
-	  		}
+        // 异步执行
+        threadPoolExecutor.execute(new Runnable() {
+          @Override
+          public void run() {
+            proccessImage(tempFile, sourcePath);
+          }
         });
-        
+
       }
     } catch (IllegalStateException e) {
       e.printStackTrace();
@@ -107,8 +107,8 @@ public class FileServiceImpl implements FileService {
         return null;
       }
       String uuid = UUID.randomUUID().toString();
-      
-      if (imageType == ImageType.KEEPER_SUPP_IMG) {  //管家补货图片
+
+      if (imageType == ImageType.KEEPER_SUPP_IMG) { // 管家补货图片
         imgUploadPath = uploadPath + File.separator + "keeper";
         projectPath = projectUploadPath + File.separator + "keeper";
       }
@@ -116,9 +116,10 @@ public class FileServiceImpl implements FileService {
           imgUploadPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
       if (StringUtils.isNotBlank(projectName)) {
-    	  webPath += File.separator + projectName + File.separator;
-	  }
-      webPath += projectPath + File.separator + "src_" + uuid + "."
+        webPath += File.separator + projectName + File.separator;
+      }
+      webPath +=
+          projectPath + File.separator + "src_" + uuid + "."
               + FilenameUtils.getExtension(multiFile.getOriginalFilename());
 
       File tempFile =
@@ -128,19 +129,14 @@ public class FileServiceImpl implements FileService {
         tempFile.getParentFile().mkdirs();
       }
       multiFile.transferTo(tempFile);
-//      //异步执行
-//      threadPoolExecutor.execute(new Runnable() {		
-//		@Override
-//		public void run() {
-			proccessImage(tempFile, sourcePath);			
-//		}
-//      });      
-      
+      proccessImage(tempFile, sourcePath);
+
     } catch (Exception e) {
       e.printStackTrace();
     }
     return webPath;
   }
+
   /**
    * 直接保存图片
    * 
@@ -150,14 +146,15 @@ public class FileServiceImpl implements FileService {
    */
   private void proccessImage(File tempFile, String sourcePath) {
     try {
-    	File destSrcFile = new File(sourcePath);
-    	FileUtils.moveFile(tempFile, destSrcFile);
+      File destSrcFile = new File(sourcePath);
+      FileUtils.moveFile(tempFile, destSrcFile);
     } catch (IOException e) {
-    	FileUtils.deleteQuietly(tempFile);
-    	LogUtil.debug(this.getClass(), "proccessImage", "Catch IOException:"+e.getMessage());
-        e.printStackTrace();
+      FileUtils.deleteQuietly(tempFile);
+      LogUtil.debug(this.getClass(), "proccessImage", "Catch IOException:" + e.getMessage());
+      e.printStackTrace();
     }
   }
+
   /**
    * 处理并保存图片
    * 
@@ -175,7 +172,7 @@ public class FileServiceImpl implements FileService {
     File resizedFile =
         new File(tempPath + File.pathSeparator + "upload_" + UUID.randomUUID() + "."
             + DEST_EXTENSION);
-    ImageUtils.zoom(tempFile, resizedFile, width, height);//图片缩放
+    ImageUtils.zoom(tempFile, resizedFile, width, height);// 图片缩放
 
     File destFile = new File(resizedPath);
     try {
@@ -189,19 +186,20 @@ public class FileServiceImpl implements FileService {
     }
   }
 
-	@Override
-	public String getProjectDeployUrl() {
-		if (StringUtils.isNotBlank(projectDeployUrl)) {
-			return projectDeployUrl;
-		}
-		return "";
-	}
-	@Override
-	public String getQrCodePrefixUrl() {
-		if (StringUtils.isNotBlank(qrCodePrefixUrl)) {
-			return qrCodePrefixUrl;
-		}
-		return "";
-	}	
-	
+  @Override
+  public String getProjectDeployUrl() {
+    if (StringUtils.isNotBlank(projectDeployUrl)) {
+      return projectDeployUrl;
+    }
+    return "";
+  }
+
+  @Override
+  public String getQrCodePrefixUrl() {
+    if (StringUtils.isNotBlank(qrCodePrefixUrl)) {
+      return qrCodePrefixUrl;
+    }
+    return "";
+  }
+
 }

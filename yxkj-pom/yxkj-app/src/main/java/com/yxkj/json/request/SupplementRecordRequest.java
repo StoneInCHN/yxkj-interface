@@ -2,18 +2,34 @@ package com.yxkj.json.request;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.yxkj.json.bean.SupplyRecord;
 
 
 public class SupplementRecordRequest {
-  
+
   private Long userId;
-  
+
   private String sceneSn;
-  
+
   private Long cntrId;
-  
+
   private List<SupplyRecord> supplementRecords;
+
+  /**
+   * 上传的补货图片
+   */
+  private MultipartFile suppPic;
+
+
+  public MultipartFile getSuppPic() {
+    return suppPic;
+  }
+
+  public void setSuppPic(MultipartFile suppPic) {
+    this.suppPic = suppPic;
+  }
 
   public Long getUserId() {
     return userId;

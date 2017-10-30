@@ -1,11 +1,15 @@
 package com.yxkj.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -26,7 +30,7 @@ public class SupplementPic implements Serializable, Comparable<SupplementPic> {
 
 
   private static final long serialVersionUID = -673883300094536107L;
-  
+
   private Long id;
 
   /** 标题 */
@@ -47,6 +51,19 @@ public class SupplementPic implements Serializable, Comparable<SupplementPic> {
   /** 排序 */
   private Integer order;
 
+
+  private Set<SupplementRecord> supplementRecords = new HashSet<SupplementRecord>();
+
+
+  @OneToMany(cascade = CascadeType.PERSIST)
+  public Set<SupplementRecord> getSupplementRecords() {
+    return supplementRecords;
+  }
+
+  public void setSupplementRecords(Set<SupplementRecord> supplementRecords) {
+    this.supplementRecords = supplementRecords;
+  }
+
   /**
    * 获取Id
    * 
@@ -57,7 +74,7 @@ public class SupplementPic implements Serializable, Comparable<SupplementPic> {
   public Long getId() {
     return id;
   }
-  
+
   /**
    * 获取Id
    * 

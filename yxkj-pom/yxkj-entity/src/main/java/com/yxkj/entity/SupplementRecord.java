@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -90,9 +89,9 @@ public class SupplementRecord extends BaseEntity {
    * 补货汇总记录(按一组机器)
    */
   private SupplementSumRec suppSum;
-  
+
   public SupplementRecord() {}
-  
+
   public SupplementRecord(ContainerChannel channel, Long sceneId, String sceneSn, String sceneName,
       String goodsSn, String goodsName, Integer supplyCount, Integer waitSupplyCount, Long suppId,
       Long cntrId, String cntrSn) {
@@ -152,7 +151,7 @@ public class SupplementRecord extends BaseEntity {
     this.suppId = suppId;
   }
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   public SupplementPic getSuppPic() {
     return suppPic;
   }
