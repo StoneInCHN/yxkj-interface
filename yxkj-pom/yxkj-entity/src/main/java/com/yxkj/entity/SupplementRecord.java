@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -160,6 +161,7 @@ public class SupplementRecord extends BaseEntity {
     this.suppPic = suppPic;
   }
 
+  @ManyToOne
   public ContainerChannel getChannel() {
     return channel;
   }

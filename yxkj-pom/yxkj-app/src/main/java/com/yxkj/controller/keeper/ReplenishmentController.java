@@ -1,12 +1,9 @@
 package com.yxkj.controller.keeper;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,21 +12,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.MobileBaseController;
+import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.ResponseOne;
+import com.yxkj.json.bean.SceneSupplementRecord;
+import com.yxkj.json.bean.SumSupplementRecord;
 import com.yxkj.json.bean.WaitSupplyContainerGoods;
 import com.yxkj.json.bean.WaitSupplyGoods;
 import com.yxkj.json.bean.WaitSupplyGoodsDetails;
 import com.yxkj.json.bean.WaitSupplyList;
 import com.yxkj.json.request.SupplementRecordRequest;
 import com.yxkj.json.request.WaitSupplyListRequest;
+import com.yxkj.service.FileService;
 import com.yxkj.service.SupplementListService;
+import com.yxkj.service.SupplementRecordService;
+import com.yxkj.service.SupplementSumRecService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,6 +45,15 @@ public class ReplenishmentController extends MobileBaseController {
 
 	@Resource(name="supplementListServiceImpl")
 	private SupplementListService supplementListService;
+	
+	@Resource(name="supplementRecordServiceImpl")
+	private SupplementRecordService supplementRecordService;
+	
+	@Resource(name="supplementSumRecServiceImpl")
+	private SupplementSumRecService SupplementSumRecService;
+	
+	@Resource(name="fileServiceImpl")
+	private FileService fileService;
 	
 	
 	@RequestMapping(value="/getWaitSupplyState", method=RequestMethod.POST)
@@ -164,14 +176,35 @@ public class ReplenishmentController extends MobileBaseController {
         return response;
 	}
 	
-//	@RequestMapping(value="/startSupplyGoods", method=RequestMethod.POST)
-//    @ApiOperation(value = "获取货柜待补商品清单", httpMethod = "POST", response = ResponseOne.class, notes = "获取货柜待补商品清单")
-//    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-//    public @ResponseBody ResponseOne<Map<String, Object>> startSupplyGoods(
-//            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneId}", required = true)
-//            @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
-//	}
-//	
+	@RequestMapping(value="/startSupplyGoods", method=RequestMethod.POST)
+    @ApiOperation(value = "开始补货", httpMethod = "POST", response = ResponseOne.class, notes = "开始补货")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseOne<Map<String, Object>> startSupplyGoods(
+            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneSn:优享空间编号}", required = true)
+            @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
+	    ResponseOne<Map<String, Object>> response = new ResponseOne<>();
+	    Map<String, Object> map = new HashMap<>();
+	    try {
+	      Object[] sceneObjs = supplementListService.startSupplyGoods(waitSupplyListRequest.getUserId(), waitSupplyListRequest.getSceneSn());
+	      if(sceneObjs != null) {
+	        map.put("sceneSn", (String)sceneObjs[0]);
+	        map.put("sceneName", (String)sceneObjs[1]);
+	        response.setCode(CommonAttributes.FAIL_COMMON);
+	        response.setDesc(message("yxkj.request.fail"));
+	        response.setMsg(map);
+	        return response;
+	      }
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.setCode(CommonAttributes.FAIL_COMMON);
+          response.setDesc(message("yxkj.request.fail"));
+          return response;
+        }
+	    response.setCode(CommonAttributes.SUCCESS);
+	    response.setDesc(message("yxkj.request.success"));
+	    return response;
+	}
+	
 	@RequestMapping(value="/getWaitSupplyContainerGoodsList", method=RequestMethod.POST)
     @ApiOperation(value = "获取货柜待补商品清单", httpMethod = "POST", response = ResponseOne.class, notes = "获取货柜待补商品清单")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -208,7 +241,8 @@ public class ReplenishmentController extends MobileBaseController {
         Map<String, Object> goodsMap = new HashMap<>();
         List<WaitSupplyContainerGoods> waitSupplyContainerGoodsList = new LinkedList<>();
         try{
-          
+          waitSupplyContainerGoodsList = supplementListService.getContainerGoodsList(waitSupplyListRequest.getCntrId(),
+              waitSupplyListRequest.getPageNo(), Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
           goodsMap.put("groups", waitSupplyContainerGoodsList);
         }catch (Exception e) {
           e.printStackTrace();
@@ -249,74 +283,103 @@ public class ReplenishmentController extends MobileBaseController {
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
     public @ResponseBody BaseResponse uploadSupplementPic(
             @ApiParam(name = "请求参数(json)", value = "{userId:管家Id, cntrId:货柜id}", required = true)
-            @RequestBody SupplementRecordRequest req, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
+            @RequestBody SupplementRecordRequest req, HttpServletRequest request) {
 	    BaseResponse response = new BaseResponse();
-        List<String> picFileType = Arrays.asList("jpg", "gif", "jpeg", "png");
-        String filePath = request.getSession().getServletContext().getRealPath("/") + "upload/";
-        if (file != null) {
-          String fileType = file.getOriginalFilename().split("\\.")[1];
-          if(picFileType.contains(fileType)) {
-            String picFileName = UUID.randomUUID().toString() + "." +fileType;
-            try {
-              file.transferTo(new File(filePath+picFileName));
-              supplementListService.uploadSupplementPic(req.getUserId(), req.getCntrId(), picFileName);
-            } catch (Exception e) {
-              e.printStackTrace();
-              response.setCode(CommonAttributes.FAIL_COMMON);
-              response.setDesc(message("yxkj.request.failed"));
-              return response;
-            }
-            response.setCode(CommonAttributes.SUCCESS);
-            response.setDesc(message("yxkj.request.success"));
-            return response;
+	    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        try {
+          Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+          for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+            MultipartFile mf = entity.getValue();
+            String path = fileService.saveImage(mf, ImageType.KEEPER_SUPP_IMG);
+            supplementListService.uploadSupplementPic(req.getUserId(), req.getCntrId(), path);
+            break;
           }
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.setCode(CommonAttributes.FAIL_COMMON);
+          response.setDesc(message("yxkj.request.failed"));
+          return response;
         }
-        response.setCode(CommonAttributes.FAIL_COMMON);
-        response.setDesc(message("yxkj.request.failed"));
+        response.setCode(CommonAttributes.SUCCESS);
+        response.setDesc(message("yxkj.request.success"));
         return response;
 	}
 	
-//	@RequestMapping(value="/getSupplementSumRecord", method=RequestMethod.POST)
-//    @ApiOperation(value = "查看总补货记录", httpMethod = "POST", response = ResponseOne.class, notes = "查看总补货记录")
-//    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-//    public @ResponseBody ResponseOne<Map<String, Object>> getSupplementSumRecord() {
-//        ResponseOne<Map<String, Object>> response = new ResponseOne<>();
-//        Map<String, Object> supplyRecordMap = new HashMap<>(); 
-//        List<SupplementSumRecord> records = new LinkedList<>();
-//        try {
-//          
-//          supplyRecordMap.put("records", records);
-//        } catch (Exception e) {
-//          e.printStackTrace();
-//          response.setCode(CommonAttributes.FAIL_COMMON);
-//          response.setDesc(message("yxkj.request.failed"));
-//          return response;
-//        }
-//        response.setCode(CommonAttributes.SUCCESS);
-//        response.setDesc(message("yxkj.request.success"));
-//        response.setMsg(supplyRecordMap);
-//        return response;
-//    }
+	@RequestMapping(value="/finishSupplyGoods", method=RequestMethod.POST)
+    @ApiOperation(value = "完成补货", httpMethod = "POST", response = ResponseOne.class, notes = "完成补货")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseOne<Map<String, Object>> finishSupplyGoods(
+            @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneSn:优享空间编号}", required = true)
+            @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
+        ResponseOne<Map<String, Object>> response = new ResponseOne<>();
+        Map<String, Object> map = new HashMap<>();
+        try {
+          Object[] sceneObjs = supplementListService.finishSupplyGoods(waitSupplyListRequest.getUserId(), waitSupplyListRequest.getSceneSn());
+          if (sceneObjs != null) {
+            map.put("sceneSn", (String)sceneObjs[0]);
+            map.put("sceneName", (String)sceneObjs[1]);
+            response.setCode(CommonAttributes.FAIL_COMMON);
+            response.setDesc(message("yxkj.request.fail"));
+            response.setMsg(map);
+            return response;
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.setCode(CommonAttributes.FAIL_COMMON);
+          response.setDesc(message("yxkj.request.fail"));
+          return response;
+        }
+        response.setCode(CommonAttributes.SUCCESS);
+        response.setDesc(message("yxkj.request.success"));
+        return response;
+    }
 	
-//	@RequestMapping(value="/getSupplementRecordDetails", method=RequestMethod.POST)
-//    @ApiOperation(value = "查看补货记录详情", httpMethod = "POST", response = ResponseOne.class, notes = "查看补货记录详情")
-//    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-//    public @ResponseBody ResponseOne<Map<String, Object>> getSupplementRecordDetails(
-//            @ApiParam(name = "请求参数(json)", value = "{userId:管家Id, sceneSn:优享空间编号}")
-//            @RequestBody SupplementRecordRequest request) {
-//        ResponseOne<Map<String, Object>> response = new ResponseOne<>();
-//        Map<String, Object> supplyRecordMap = new HashMap<>(); 
-//        try {
-//          
-//        } catch (Exception e) {
-//          e.printStackTrace();
-//          response.setCode(CommonAttributes.FAIL_COMMON);
-//          response.setDesc(message("yxkj.request.failed"));
-//          return response;
-//        }
-//        response.setCode(CommonAttributes.SUCCESS);
-//        response.setDesc(message("yxkj.request.success"));
-//        return response;
-//    }
+	@RequestMapping(value="/getSupplementSumRecord", method=RequestMethod.POST)
+    @ApiOperation(value = "查看总补货记录", httpMethod = "POST", response = ResponseOne.class, notes = "查看总补货记录")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseOne<Map<String, Object>> getSupplementSumRecord(
+        @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,pageNo:页码,pageSize:页记录数", required = true)
+        @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
+        ResponseOne<Map<String, Object>> response = new ResponseOne<>();
+        Map<String, Object> supplyRecordMap = new HashMap<>(); 
+        try {
+          List<SumSupplementRecord> records = SupplementSumRecService.findSupplySumRecord(waitSupplyListRequest.getUserId(),
+              waitSupplyListRequest.getPageNo(), Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
+          supplyRecordMap.put("groups", records);
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.setCode(CommonAttributes.FAIL_COMMON);
+          response.setDesc(message("yxkj.request.failed"));
+          return response;
+        }
+        response.setCode(CommonAttributes.SUCCESS);
+        response.setDesc(message("yxkj.request.success"));
+        response.setMsg(supplyRecordMap);
+        return response;
+    }
+	
+	@RequestMapping(value="/getSupplementRecordDetails", method=RequestMethod.POST)
+    @ApiOperation(value = "查看补货记录详情", httpMethod = "POST", response = ResponseOne.class, notes = "查看补货记录详情")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseOne<Map<String, Object>> getSupplementRecordDetails(
+            @ApiParam(name = "请求参数(json)", value = "{userId:管家Id, sceneSn:优享空间编号}")
+            @RequestBody SupplementRecordRequest request) {
+        ResponseOne<Map<String, Object>> response = new ResponseOne<>();
+        Map<String, Object> supplyRecordMap = new HashMap<>(); 
+        try {
+          List<SceneSupplementRecord> recordlist = supplementRecordService.getSupplementRecordDetails(
+              request.getUserId(), request.getSceneSn());
+          supplyRecordMap.put("groups", recordlist);
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.setCode(CommonAttributes.FAIL_COMMON);
+          response.setDesc(message("yxkj.request.failed"));
+          return response;
+        }
+        response.setMsg(supplyRecordMap);
+        response.setCode(CommonAttributes.SUCCESS);
+        response.setDesc(message("yxkj.request.success"));
+        return response;
+    }
 	
 }

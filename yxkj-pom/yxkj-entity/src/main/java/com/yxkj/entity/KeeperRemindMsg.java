@@ -1,5 +1,6 @@
 package com.yxkj.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,7 +47,8 @@ public class KeeperRemindMsg extends BaseEntity {
    * 通知类型
    */
   private RemindType type;
-
+  
+  private Date sendDate;
 
   public RemindType getType() {
     return type;
@@ -92,6 +94,12 @@ public class KeeperRemindMsg extends BaseEntity {
     this.msgKeepers = msgKeepers;
   }
 
+  public Date getSendDate() {
+    return sendDate;
+  }
 
+  public void setSendDate(Date sendDate) {
+    this.sendDate = sendDate;
+  }
 
 }
