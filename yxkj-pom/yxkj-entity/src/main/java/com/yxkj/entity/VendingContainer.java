@@ -1,5 +1,6 @@
 package com.yxkj.entity;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,6 +68,11 @@ public class VendingContainer extends BaseEntity {
    * 音量
    */
   private String volume;
+  
+  /**
+   * 货柜预警比例
+   */
+  private BigDecimal warningPer;  
 
   /**
    * 货柜类型
@@ -114,7 +120,7 @@ public class VendingContainer extends BaseEntity {
     this.children = children;
   }
 
-  @OneToMany(mappedBy = "cntr")
+  @OneToMany(mappedBy = "cntr", cascade = CascadeType.ALL)
   public Set<ContainerChannel> getCntrChannel() {
     return cntrChannel;
   }
@@ -221,7 +227,15 @@ public class VendingContainer extends BaseEntity {
   public void setScene(Scene scene) {
     this.scene = scene;
   }
+  
+  @Column(scale = 2, precision = 10)
+  public BigDecimal getWarningPer() {
+	return warningPer;
+  }
 
+  public void setWarningPer(BigDecimal warningPer) {
+	this.warningPer = warningPer;
+  }
 
 
 }

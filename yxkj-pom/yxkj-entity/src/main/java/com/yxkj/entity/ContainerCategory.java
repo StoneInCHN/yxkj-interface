@@ -24,7 +24,12 @@ public class ContainerCategory extends BaseEntity {
 
 
     private static final long serialVersionUID = -3578676079608900213L;
-
+    
+    /**
+     * 是否为中控柜
+     */
+    private boolean central;
+    
     /**
      * 货柜类别名称
      */
@@ -60,15 +65,13 @@ public class ContainerCategory extends BaseEntity {
      */
     private Integer lineChannel;
 
-
     /**
      * 每列货道数
      */
     private Integer columnChannel;
 
-
     /**
-     * 货道总数
+     * 货道总数(物理货道数)
      */
     private Integer totalChannel;
 
@@ -190,4 +193,14 @@ public class ContainerCategory extends BaseEntity {
     public void setCntrType(CntrType cntrType) {
         this.cntrType = cntrType;
     }
+
+	public boolean isCentral() {
+		return central;
+	}
+
+	public void setCentral(boolean central) {
+		this.central = central;
+	}
+    
+    
 }

@@ -36,6 +36,10 @@ public class OrderInfoReq extends BaseRequest {
    */
   private String imei;
 
+  /**
+   * 订单号
+   */
+  private String orderSn;
 
   public List<String> getgInfo() {
     return gInfo;
@@ -69,5 +73,11 @@ public class OrderInfoReq extends BaseRequest {
     this.type = type;
   }
 
+  public String getOrderSn() {
+    return orderSn;
+  }
 
+  public void setOrderSn(String orderSn) {
+    this.orderSn = orderSn;
+  }
 }

@@ -385,40 +385,6 @@ public class CommonController extends BaseController {
     return response;
   }
 
-  // /**
-  // * 导出Excel
-  // * @throws IOException
-  // */
-  // @RequestMapping(value = "/dataExport", method = {RequestMethod.GET, RequestMethod.POST})
-  // public void dataExport(HttpServletRequest request, HttpServletResponse response) throws
-  // IOException {
-  // List<Ordering> orders = new ArrayList<Ordering>();
-  // orders.add(Ordering.desc("createDate"));
-  // List<Filter> filters = new ArrayList<Filter>();
-  // // String requestParam = HttpServletRequestUtils.getRequestParam(request, "UTF-8");
-  // // String nickName = getReqPram(requestParam, "nickName");
-  // // String companyName = getReqPram(requestParam, "companyName");
-  // String nickName = request.getParameter("nickName");
-  // String companyName = request.getParameter("companyName");
-  // if (nickName != null && StringUtils.isNotBlank(nickName)) {
-  // filters.add(Filter.like("nickName", "%"+nickName.trim()+"%"));
-  // }
-  // if (companyName != null && StringUtils.isNotBlank(companyName)) {
-  // filters.add(Filter.like("companyName", "%"+companyName.trim()+"%"));
-  // }
-  // List<Tourist> lists = touristService.findList(null, filters, orders);
-  // if (lists != null && lists.size() > 0) {
-  // String title = "User List"; // 工作簿标题，同时也是excel文件名前缀
-  // String[] headers = {"id", "userName", "cellPhoneNum", "gender", "nickName", "userChannel",
-  // "regTime", "companyName"}; // 需要导出的字段
-  // String[] headersName = {"用户ID", "用户识别码", "手机号", "性别", "账号昵称", "用户获取渠道", "注册时间", "所属公司"}; //
-  // 字段对应列的列名
-  // List<Map<String, String>> mapList = exportHelper.prepareExportTourist(lists);
-  // if (mapList.size() > 0) {
-  // exportListToExcel(response, mapList, title, headers, headersName);
-  // }
-  // }
-  // }
   private boolean isValidGoodsRow(Map<String, Object> rowMap) {
 	if (rowMap.get("sn") != null && StringUtils.isNotBlank(rowMap.get("sn").toString())) {
 		if (goodsService.exists(Filter.eq("sn", rowMap.get("sn").toString()))) {

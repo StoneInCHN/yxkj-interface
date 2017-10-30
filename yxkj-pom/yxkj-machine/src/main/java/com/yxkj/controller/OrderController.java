@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alipay.api.internal.util.AlipaySignature;
-import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.beans.Message;
 import com.yxkj.common.log.LogUtil;
@@ -86,7 +85,7 @@ public class OrderController extends MobileBaseController {
   @RequestMapping(value = "/pay", method = RequestMethod.POST)
   @ApiOperation(value = "商品支付", httpMethod = "POST", response = ResponseOne.class, notes = "商品支付")
   @ApiResponses({@ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
-  @UserValidCheck
+  // @UserValidCheck
   public @ResponseBody ResponseOne<Map<String, Object>> pay(@ApiParam(name = "请求参数(json)",
       value = "ip:客户端ip|gInfo:下单商品信息 |userName:用户标识|imei:中控标识imei|type:支付方式|header token",
       required = true) @RequestBody OrderInfoReq req, HttpServletResponse httpResponse) {

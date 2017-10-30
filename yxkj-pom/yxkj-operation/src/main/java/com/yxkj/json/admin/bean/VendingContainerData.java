@@ -1,14 +1,13 @@
 package com.yxkj.json.admin.bean;
 
+import java.math.BigDecimal;
+
 import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 
 public class VendingContainerData {  
 	
 	/**所属场景Id*/
 	private Long sceneId;
-	
-	/**是否中控*/
-	private boolean center;
 	
 	/** 货柜类型Id */
 	private Long categoryId;
@@ -18,17 +17,11 @@ public class VendingContainerData {
 	
 	/** 货柜状态 */
 	private CommonStatus status;
-	
-    /** 货道总数 */
-    private Integer totalChannel;
-
-	public boolean isCenter() {
-		return center;
-	}
-
-	public void setCenter(boolean center) {
-		this.center = center;
-	}
+    
+    /**
+     * 货柜预警比例
+     */
+    private BigDecimal warningPer;  
 
 	public Long getCategoryId() {
 		return categoryId;
@@ -54,20 +47,20 @@ public class VendingContainerData {
 		this.status = status;
 	}
 
-	public Integer getTotalChannel() {
-		return totalChannel;
-	}
-
-	public void setTotalChannel(Integer totalChannel) {
-		this.totalChannel = totalChannel;
-	}
-
 	public Long getSceneId() {
 		return sceneId;
 	}
 
 	public void setSceneId(Long sceneId) {
 		this.sceneId = sceneId;
+	}
+
+	public BigDecimal getWarningPer() {
+		return warningPer;
+	}
+
+	public void setWarningPer(BigDecimal warningPer) {
+		this.warningPer = warningPer;
 	}
     
 }
