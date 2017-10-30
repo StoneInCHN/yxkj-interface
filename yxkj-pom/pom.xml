@@ -477,9 +477,9 @@
 	<modules>
 		<module>yxkj-entity</module>
 		<module>yxkj-app</module>
-		<module>yxkj-operation</module>
+		<!-- <module>yxkj-operation</module>
 		<module>yxkj-machine</module>
 		<module>yxkj-shelf-operation</module>
-		<module>yxkj-service</module>
+		<module>yxkj-service</module> -->
 	</modules>
 </project>
