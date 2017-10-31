@@ -40,7 +40,7 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
   			keeper = new PropertyKeeper();
   			keeper.setAccountStatus(AccountStatus.ACTIVED);
   			keeper.setCellPhoneNum(request.getCellPhoneNum());
-  			keeper.setFenRunPoint(request.getFenRunPoint());
+  			//keeper.setFenRunPoint(request.getFenRunPoint());
   			boolean exists = false;
   		    do {
   			    String newUserName = new GenerateRandom().createPassWord(13);//生成随机用户名
@@ -62,7 +62,7 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
   				keeper.setAccountStatus(AccountStatus.ACTIVED);
   				keeper.setCellPhoneNum(request.getCellPhoneNum());
   				keeper.setRealName(request.getRealName());
-  				keeper.setFenRunPoint(request.getFenRunPoint());
+  				//keeper.setFenRunPoint(request.getFenRunPoint());
   				keeper.setScenes(new HashSet<Scene>());
   				for (Long sceneId : request.getSceneIds()) {
   					Scene scene = sceneService.find(sceneId);
@@ -89,7 +89,7 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
 		keeper.setAccountStatus(AccountStatus.ACTIVED);
 		keeper.setCellPhoneNum(request.getCellPhoneNum());
 		keeper.setRealName(request.getRealName());
-		keeper.setFenRunPoint(request.getFenRunPoint());
+		//keeper.setFenRunPoint(request.getFenRunPoint());
 		if (keeper != null) {
 			if (keeper.getScenes() != null && keeper.getScenes().size() > 0) {
 				for (Scene scene : keeper.getScenes()) {

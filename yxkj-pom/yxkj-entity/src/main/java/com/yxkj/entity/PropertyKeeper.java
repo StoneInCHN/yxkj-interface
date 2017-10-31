@@ -54,12 +54,7 @@ public class PropertyKeeper extends BaseEntity {
   /**
    * 账号状态
    */
-  private AccountStatus accountStatus;
-  
-  /**
-   * 分润点(物业)
-   */
-  private BigDecimal fenRunPoint;
+  private AccountStatus accountStatus;  
 
   /**
    * 地址
@@ -147,15 +142,6 @@ public class PropertyKeeper extends BaseEntity {
 
   public void setRealName(String realName) {
 	this.realName = realName;
-  }
-  
-  @Column(scale = 4, precision = 10)
-  public BigDecimal getFenRunPoint() {
-	return fenRunPoint;
-  }
-
-  public void setFenRunPoint(BigDecimal fenRunPoint) {
-	this.fenRunPoint = fenRunPoint;
-  }
+  }  
 
 }
