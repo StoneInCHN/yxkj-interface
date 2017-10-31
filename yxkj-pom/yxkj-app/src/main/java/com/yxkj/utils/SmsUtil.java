@@ -28,11 +28,11 @@ public class SmsUtil {
 		//调用短信平台发送短信
 		sendMessage(cellPhoneNum, message);
 		
-		LogUtil.debug(SmsUtil.class, "sendVerificationCode","向手机用户%s发送验证码:%s", cellPhoneNum, verificationCode);
+		LogUtil.debug(SmsUtil.class, "sendVerificationCode","向手机用户%s 发送验证码:%s", cellPhoneNum, verificationCode);
 		return verificationCode;
 	}
 	
-    public static void sendMessage(String phoneNum, String message) throws Exception{
+    public static String sendMessage(String phoneNum, String message) throws Exception{
         String url = setting.getSmsUrl();
         String queryString = "Id="+setting.getSmsOrgId()
                 +"&Name="+setting.getSmsUserName()
@@ -54,7 +54,7 @@ public class SmsUtil {
             } 
             reader.close(); 
         }
-        System.out.println(response.toString());
+        return response.toString();
     } 
 	
 	public static String getRandNum(int charCount) {

@@ -3,7 +3,7 @@ package com.yxkj.json.bean;
 public class WaitSupplyContainerGoods {
   
   /**
-   * id
+   * 待补清单id
    */
   private Long id;
   
@@ -37,7 +37,7 @@ public class WaitSupplyContainerGoods {
    */
   private Integer remainCount;
 
-  public WaitSupplyContainerGoods(Long id, String channelSn, String goodsSn, String goodsName, 
+  public WaitSupplyContainerGoods(Long id, String goodsSn, String goodsName, String channelSn, 
       Integer waitSupplyCount, Integer remainCount) {
     this.id = id;
     this.channelSn = channelSn;

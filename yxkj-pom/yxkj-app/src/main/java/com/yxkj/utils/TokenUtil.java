@@ -54,7 +54,7 @@ public class TokenUtil {
   public static Claims parseJWT(String jwt) {
     try {
       Claims claims =
-          Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary("secret"))
+          Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(setting.getTokenSecret()))
               .parseClaimsJws(jwt).getBody();
       // This line will throw an exception if it is not a signed JWS (as expected)
 

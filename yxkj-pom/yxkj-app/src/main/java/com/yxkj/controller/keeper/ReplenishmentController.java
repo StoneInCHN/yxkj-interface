@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.json.base.BaseResponse;
@@ -54,7 +56,7 @@ public class ReplenishmentController extends MobileBaseController {
   @Resource(name = "fileServiceImpl")
   private FileService fileService;
 
-
+  @UserValidCheck
   @RequestMapping(value = "/getWaitSupplyState", method = RequestMethod.POST)
   @ApiOperation(value = "获取货柜待补情况", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取货柜待补情况")
@@ -70,6 +72,7 @@ public class ReplenishmentController extends MobileBaseController {
               waitSupplyListRequest.getPageNo(),
               Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyState", "获取货柜待补情况失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -80,7 +83,8 @@ public class ReplenishmentController extends MobileBaseController {
     response.setMsg(waitSupplyList);
     return response;
   }
-
+  
+  @UserValidCheck
   @RequestMapping(value = "/getWaitSupplySceneList", method = RequestMethod.POST)
   @ApiOperation(value = "获取待补优享空间", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取待补优享空间")
@@ -94,6 +98,7 @@ public class ReplenishmentController extends MobileBaseController {
       sceneList = supplementListService.getWaitSupplySceneList(waitSupplyListRequest.getUserId());
       sceneMap.put("groups", sceneList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplySceneList", "获取待补优享空间失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -105,6 +110,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
+  @UserValidCheck
   @RequestMapping(value = "/getWaitSupplyGoodsCategoryList", method = RequestMethod.POST)
   @ApiOperation(value = "获取待补商品类别", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取待补商品类别")
@@ -119,6 +125,7 @@ public class ReplenishmentController extends MobileBaseController {
           supplementListService.getWaitSupplyGoodsCategoryList(waitSupplyListRequest.getUserId());
       cateMap.put("groups", goodsCategoryList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyGoodsCategoryList", "获取待补商品类别失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -130,6 +137,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
+  @UserValidCheck
   @RequestMapping(value = "/getWaitSupplyGoodsList", method = RequestMethod.POST)
   @ApiOperation(value = "获取待补商品清单", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取待补商品清单")
@@ -149,6 +157,7 @@ public class ReplenishmentController extends MobileBaseController {
               Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
       goodsMap.put("groups", waitSupplyGoodsList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyGoodsList", "获取待补商品清单失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -160,6 +169,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
+  @UserValidCheck
   @RequestMapping(value = "/getWaitSupplyGoodsDetails", method = RequestMethod.POST)
   @ApiOperation(value = "获取待补商品详情", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取待补商品详情")
@@ -173,6 +183,7 @@ public class ReplenishmentController extends MobileBaseController {
           supplementListService.getWaitSupplyGoodsDetails(waitSupplyListRequest.getUserId(),
               waitSupplyListRequest.getGoodsSn());
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyGoodsDetails", "获取待补商品详情失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -184,6 +195,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
+  @UserValidCheck
   @RequestMapping(value = "/startSupplyGoods", method = RequestMethod.POST)
   @ApiOperation(value = "开始补货", httpMethod = "POST", response = ResponseOne.class, notes = "开始补货")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -201,6 +213,7 @@ public class ReplenishmentController extends MobileBaseController {
         response.setMsg(map);
       }
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "startSupplyGoods", "开始补货失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -210,7 +223,8 @@ public class ReplenishmentController extends MobileBaseController {
     response.setDesc(message("yxkj.request.success"));
     return response;
   }
-
+  
+  @UserValidCheck
   @RequestMapping(value = "/getWaitSupplyContainerGoodsList", method = RequestMethod.POST)
   @ApiOperation(value = "获取货柜待补商品清单", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取货柜待补商品清单")
@@ -228,6 +242,7 @@ public class ReplenishmentController extends MobileBaseController {
                   .valueOf(waitSupplyListRequest.getPageSize()).intValue());
       goodsMap.put("groups", waitSupplyContainerGoodsList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyContainerGoodsList", "获取货柜待补商品清单失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -239,6 +254,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
+  @UserValidCheck
   @RequestMapping(value = "/getContainerGoodsList", method = RequestMethod.POST)
   @ApiOperation(value = "获取货柜全部商品清单", httpMethod = "POST", response = ResponseOne.class,
       notes = "获取货柜待补商品清单")
@@ -256,6 +272,7 @@ public class ReplenishmentController extends MobileBaseController {
               Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
       goodsMap.put("groups", waitSupplyContainerGoodsList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getContainerGoodsList", "获取货柜全部商品清单失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -267,6 +284,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
+  @UserValidCheck
   @RequestMapping(value = "/commitSupplementRecord", method = RequestMethod.POST)
   @ApiOperation(value = "提交补货记录", httpMethod = "POST", response = ResponseOne.class,
       notes = "提交补货记录")
@@ -279,6 +297,7 @@ public class ReplenishmentController extends MobileBaseController {
       supplementListService.commitSupplyRecords(request.getUserId(), request.getSceneSn(),
           request.getSupplementRecords());
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "commitSupplementRecord", "提交补货记录失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));
@@ -289,7 +308,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
-
+  @UserValidCheck
   @RequestMapping(value = "/uploadSupplementPic", method = RequestMethod.POST)
   @ApiOperation(value = "上传补货照片", httpMethod = "POST", response = ResponseOne.class,
       notes = "上传补货照片")
@@ -303,47 +322,20 @@ public class ReplenishmentController extends MobileBaseController {
       if (suppPic != null) {
         String picUrl = fileService.saveImage(suppPic, ImageType.KEEPER_SUPP_IMG);
         supplementListService.uploadSupplementPic(req.getUserId(), req.getCntrId(), picUrl);
+        response.setCode(CommonAttributes.SUCCESS);
+        response.setDesc(message("yxkj.request.success"));
+        return response;
       }
-    } catch (Exception e) {
-      e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));
+    } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "uploadSupplementPic", "上传补货照片失败");
       return response;
     }
-
-    response.setCode(CommonAttributes.SUCCESS);
-    response.setDesc(message("yxkj.request.success"));
     return response;
   }
 
-  // @RequestMapping(value="/uploadSupplementPic", method=RequestMethod.POST)
-  // @ApiOperation(value = "上传补货照片", httpMethod = "POST", response = ResponseOne.class, notes =
-  // "上传补货照片")
-  // @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-  // public @ResponseBody BaseResponse uploadSupplementPic(
-  // @ApiParam(name = "请求参数(json)", value = "{userId:管家Id, cntrId:货柜id}", required = true)
-  // @RequestBody SupplementRecordRequest req, HttpServletRequest request) {
-  // BaseResponse response = new BaseResponse();
-  // MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-  // try {
-  // Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-  // for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
-  // MultipartFile mf = entity.getValue();
-  // String path = fileService.saveImage(mf, ImageType.KEEPER_SUPP_IMG);
-  // supplementListService.uploadSupplementPic(req.getUserId(), req.getCntrId(), path);
-  // break;
-  // }
-  // } catch (Exception e) {
-  // e.printStackTrace();
-  // response.setCode(CommonAttributes.FAIL_COMMON);
-  // response.setDesc(message("yxkj.request.failed"));
-  // return response;
-  // }
-  // response.setCode(CommonAttributes.SUCCESS);
-  // response.setDesc(message("yxkj.request.success"));
-  // return response;
-  // }
-
+  @UserValidCheck
   @RequestMapping(value = "/finishSupplyGoods", method = RequestMethod.POST)
   @ApiOperation(value = "完成补货", httpMethod = "POST", response = ResponseOne.class, notes = "完成补货")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -361,6 +353,7 @@ public class ReplenishmentController extends MobileBaseController {
         response.setMsg(map);
       }
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "finishSupplyGoods", "完成补货失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -370,7 +363,8 @@ public class ReplenishmentController extends MobileBaseController {
     response.setDesc(message("yxkj.request.success"));
     return response;
   }
-
+  
+  @UserValidCheck
   @RequestMapping(value = "/getSupplementSumRecord", method = RequestMethod.POST)
   @ApiOperation(value = "查看总补货记录", httpMethod = "POST", response = ResponseOne.class,
       notes = "查看总补货记录")
@@ -385,6 +379,7 @@ public class ReplenishmentController extends MobileBaseController {
           request.getPageNo(), Integer.valueOf(request.getPageSize()).intValue());
       supplyRecordMap.put("groups", records);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getSupplementSumRecord", "查看总补货记录失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));
@@ -396,6 +391,7 @@ public class ReplenishmentController extends MobileBaseController {
     return response;
   }
 
+  @UserValidCheck
   @RequestMapping(value = "/getSupplementRecordDetails", method = RequestMethod.POST)
   @ApiOperation(value = "查看补货记录详情", httpMethod = "POST", response = ResponseOne.class,
       notes = "查看补货记录详情")
@@ -410,6 +406,7 @@ public class ReplenishmentController extends MobileBaseController {
               request.getSceneSn());
       supplyRecordMap.put("groups", recordlist);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getSupplementRecordDetails", "查看补货记录详情失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));

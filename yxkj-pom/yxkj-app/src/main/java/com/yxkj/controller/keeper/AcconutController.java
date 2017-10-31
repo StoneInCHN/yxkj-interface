@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.MobileBaseController;
@@ -133,6 +134,7 @@ public class AcconutController extends MobileBaseController {
       return response;
     }
     String password = KeyGenerator.decrypt(keeperAccountRequest.getPassword(), privateKey);
+//    String password = keeperAccountRequest.getPassword();
     if (StringUtils.isEmpty(password)||!DigestUtils.md5Hex(password).equals(keeper.getLoginPwd())) {
       response.setCode(CommonAttributes.ERROR_PASS);
       response.setDesc(message("yxkj.keeper.password.error"));
@@ -183,23 +185,23 @@ public class AcconutController extends MobileBaseController {
       LogUtil.debug(this.getClass(), "getVerificationCode", "用户不存在");
       return response;
     }
-    String code;
+    String code = SmsUtil.getRandNum(6);
+    String stateInfo = "";
     try {
-      code = SmsUtil.getRandNum(6);
-      SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
+      stateInfo = SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
       redisTemplate.opsForValue().set(type+"_"+cellPhoneNum, code, setting.getSmsCodeTimeOut(), TimeUnit.SECONDS);
     } catch (Exception e) {
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_SMSTOKEN);
       response.setDesc(message("yxkj.keeper.getVerificationCode.fail"));
-      LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码失败");
+      LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码失败;Number:%s code:%s stateInfo:%s", cellPhoneNum, code, stateInfo);
       return response;
     }
     map.put("code", code);
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.keeper.getVerificationCode.success"));
     response.setMsg(map);
-    LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码成功");
+    LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码成功;Number:%s code:%s stateInfo:%s", cellPhoneNum, code, stateInfo);
     return response;
   }
 
@@ -269,6 +271,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
+  @UserValidCheck
   @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
   @ApiOperation(value = "修改密码", httpMethod = "POST", response = BaseResponse.class,
       notes = "通过旧密码修改密码")
@@ -347,7 +350,6 @@ public class AcconutController extends MobileBaseController {
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
     String inputCode = keeperAccountRequest.getVerificationCode();
     String code = redisTemplate.opsForValue().get("resetPwd_"+cellPhoneNum);
-    System.out.println(code);
     if (StringUtils.isEmpty(inputCode)) {
       response.setCode(CommonAttributes.MISSING_REQUIRE_PARAM);
       response.setDesc(message("yxkj.request.param.missing"));
@@ -391,7 +393,7 @@ public class AcconutController extends MobileBaseController {
     }
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
     String newPwd = KeyGenerator.decrypt(keeperAccountRequest.getNewPwd(), privateKey);
-    String pattern = "^[a-zA-Z0-9]{8,}&";
+    String pattern = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}";
     Pattern p = Pattern.compile(pattern);
     Matcher matcher = p.matcher(newPwd);
     if(!matcher.matches()){
@@ -402,8 +404,11 @@ public class AcconutController extends MobileBaseController {
     }
     try {
       containerKeeperService.resetPassword(cellPhoneNum, DigestUtils.md5Hex(newPwd));
+      ContainerKeeper keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.keeper.password.reset.success"));
+      response.setToken(TokenUtil.getJWTString(keeper.getId().toString(), ""));
+      response.setMsg(keeper);
       LogUtil.debug(this.getClass(), "resetPassword", "重置密码成功");
       return response;
     } catch (Exception e) {
@@ -420,6 +425,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
+  @UserValidCheck
   @RequestMapping(value = "/getMsg", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
@@ -448,6 +454,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
+  @UserValidCheck
   @RequestMapping(value = "/getMsgDetails", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息详情", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息详情")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
