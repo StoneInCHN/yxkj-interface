@@ -1,44 +1,37 @@
 package com.yxkj.controller;
 
-import com.yxkj.entity.commonenum.CommonEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
-
+import java.util.List;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-
-import com.yxkj.utils.KeyGenerator;
-import com.yxkj.utils.RSAHelper;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.beans.Setting.CaptchaType;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.BaseController;
 import com.yxkj.entity.Admin;
+import com.yxkj.entity.MenuAuthority;
+import com.yxkj.entity.PropertyKeeper;
+import com.yxkj.entity.Role;
 import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
-import com.yxkj.entity.commonenum.CommonEnum.ImageType;
+import com.yxkj.framework.filter.Filter;
 import com.yxkj.json.admin.request.LoginRequest;
 import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
@@ -47,6 +40,9 @@ import com.yxkj.service.AdminService;
 import com.yxkj.service.CaptchaService;
 import com.yxkj.service.CompanyService;
 import com.yxkj.service.FileService;
+import com.yxkj.service.PropertyKeeperService;
+import com.yxkj.utils.KeyGenerator;
+import com.yxkj.utils.RSAHelper;
 import com.yxkj.utils.TimeUtils;
 import com.yxkj.utils.TokenUtil;
 
@@ -73,6 +69,9 @@ public class CommonController extends BaseController {
   
   @Resource(name = "captchaServiceImpl")
   private CaptchaService captchaService;
+  
+  @Resource(name = "propertyKeeperServiceImpl")
+  private PropertyKeeperService propertyKeeperService;
 
   @RequestMapping(value = "/getRsa", method = RequestMethod.POST)
   @ApiOperation(value = "获取rsa密文，只供测试用", httpMethod = "POST", response = BaseResponse.class, notes = "获取rsa密文，只供测试用")
@@ -174,6 +173,39 @@ public class CommonController extends BaseController {
     Admin admin = adminService.findByUserName(userName);
 
     if (admin == null) {
+        //下个版本，物业有自己的登录平台后，这块代码需要移除 start
+  		List<Filter> filters = new ArrayList<Filter>();
+  		filters.add(Filter.eq("cellPhoneNum", userName));
+      	PropertyKeeper propertyKeeper = propertyKeeperService.findFirst(filters, null);
+      	if (propertyKeeper != null && DigestUtils.md5Hex(password).equals(propertyKeeper.getLoginPwd())) {
+  			Admin keeper = new Admin();
+  			keeper.setUserName(userName);
+  			keeper.setAdminStatus(AccountStatus.ACTIVED);
+  			keeper.setIsSystem(false);
+  		    if (request.getRemoteAddr() != null) {
+  		    	keeper.setLoginIp(request.getRemoteAddr());
+  		    	keeper.setLoginDate(new Date());
+  		    }    
+  		    /** 菜单权限列表 */
+  		    List<MenuAuthority> authorities = new ArrayList<MenuAuthority>();
+  		    MenuAuthority propertyKeeperMenu =
+  		        new MenuAuthority("物业平台", "/propertyKeeper", "speedometer", "PropertyKeeper", null, null, null);
+  		    authorities.add(propertyKeeperMenu);
+  		    /** 角色 */
+  		    Role role = new Role();
+  		    role.setName("物业");
+  		    role.setDescription("物业管理员");
+  		    role.setIsSystem(true);
+  		    role.setAuthorities(authorities);
+  		    keeper.getRoles().add(role);
+  		    response.setMsg(keeper);
+  		    response.setCode(CommonAttributes.SUCCESS);
+  		    response.setDesc(message("yxkj.admin.login.success"));
+  		    // JWT根据用户名生成token
+  		    response.setToken(TokenUtil.getJWTString(userName, ""));
+  		    return response;
+  		}   	
+        //下个版本，物业有自己的登录平台后，这块代码需要移除 end
       response.setCode(CommonAttributes.FAIL_LOGIN);
       response.setDesc(message("yxkj.admin.userName.password.error"));
       LogUtil.debug(this.getClass(), "login", "用户名或密码错误");
@@ -186,7 +218,7 @@ public class CommonController extends BaseController {
       return response;
     }
 
-    if (!DigestUtils.md5Hex(password).equals(admin.getPassword())) {
+    if (!DigestUtils.md5Hex(password).equals(admin.getPassword())) { 
       response.setCode(CommonAttributes.FAIL_LOGIN);
       response.setDesc(message("yxkj.admin.userName.password.error"));
       LogUtil.debug(this.getClass(), "login", "密码错误");

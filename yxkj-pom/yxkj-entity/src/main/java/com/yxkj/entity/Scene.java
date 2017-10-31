@@ -115,6 +115,11 @@ public class Scene extends BaseEntity {
    */
   private PropertyKeeper propertyKeeper; 
   
+  /**
+   * 分润点(物业)
+   */
+  private BigDecimal fenRunPoint;
+  
 
   @ManyToOne(fetch = FetchType.LAZY)
   public ContainerKeeper getCntrKeeper() {
@@ -267,5 +272,12 @@ public class Scene extends BaseEntity {
 	this.removeStatus = removeStatus;
   }
 
-  
+  @Column(scale = 4, precision = 10)
+  public BigDecimal getFenRunPoint() {
+	return fenRunPoint;
+  }
+
+  public void setFenRunPoint(BigDecimal fenRunPoint) {
+	this.fenRunPoint = fenRunPoint;
+  }
 }
