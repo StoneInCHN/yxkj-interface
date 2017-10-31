@@ -406,16 +406,23 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
                           (Date) filter.getValue()));
             }
       } else if (filter.getOperator() == Operator.ge && filter.getValue() != null) {
+    	
         if (filter.getValue() instanceof Number) {
+//          restrictions =
+//              criteriaBuilder.and(
+//                  restrictions,
+//                  criteriaBuilder.ge(root.<Number>get(filter.getProperty()),
+//                      (Number) filter.getValue()));
+          Path<Number> path = getPath(root, filter.getProperty());
           restrictions =
-              criteriaBuilder.and(
-                  restrictions,
-                  criteriaBuilder.ge(root.<Number>get(filter.getProperty()),
-                      (Number) filter.getValue()));
+                  criteriaBuilder.and(restrictions, criteriaBuilder.ge(path, (Number) filter.getValue()));
         } else if (filter.getValue() instanceof Date) {
+//          restrictions =
+//              criteriaBuilder.and(restrictions, criteriaBuilder.greaterThanOrEqualTo(
+//                  root.<Date>get(filter.getProperty()), (Date) filter.getValue()));
+          Path<Date> path = getPath(root, filter.getProperty());
           restrictions =
-              criteriaBuilder.and(restrictions, criteriaBuilder.greaterThanOrEqualTo(
-                  root.<Date>get(filter.getProperty()), (Date) filter.getValue()));
+                  criteriaBuilder.and(restrictions, criteriaBuilder.greaterThanOrEqualTo(path, (Date) filter.getValue()));
         }
       } else if (filter.getOperator() == Operator.le && filter.getValue() != null) {
         if (filter.getValue() instanceof Date) {
@@ -431,17 +438,23 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
         }
       } else if (filter.getOperator() == Operator.lt && filter.getValue() != null) {
           if (filter.getValue() instanceof Number) {
+//              restrictions =
+//                  criteriaBuilder.and(
+//                      restrictions,
+//                      criteriaBuilder.lt(root.<Number>get(filter.getProperty()),
+//                          (Number) filter.getValue()));
+              Path<Number> path = getPath(root, filter.getProperty());
               restrictions =
-                  criteriaBuilder.and(
-                      restrictions,
-                      criteriaBuilder.lt(root.<Number>get(filter.getProperty()),
-                          (Number) filter.getValue()));
+                      criteriaBuilder.and(restrictions, criteriaBuilder.lt(path, (Number) filter.getValue()));
             } else if (filter.getValue() instanceof Date) {
-              restrictions =
-                  criteriaBuilder.and(
-                      restrictions,
-                      criteriaBuilder.lessThan(root.<Date>get(filter.getProperty()),
-                          (Date) filter.getValue()));
+//              restrictions =
+//                  criteriaBuilder.and(
+//                      restrictions,
+//                      criteriaBuilder.lessThan(root.<Date>get(filter.getProperty()),
+//                          (Date) filter.getValue()));
+                Path<Date> path = getPath(root, filter.getProperty());
+                restrictions =
+                        criteriaBuilder.and(restrictions, criteriaBuilder.lessThan(path, (Date) filter.getValue()));
             }
       } else if (filter.getOperator() == Operator.like && filter.getValue() != null
           && filter.getValue() instanceof String) {
@@ -473,10 +486,14 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	        }
     	    //zhanglu:2017-10-13 end
       } else if (filter.getOperator() == Operator.isNull) {
-        restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
+//        restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
+        Path<Object> path = getPath(root, filter.getProperty());
+        restrictions = criteriaBuilder.and(restrictions, path.isNull());
       } else if (filter.getOperator() == Operator.isNotNull) {
-        restrictions =
-            criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNotNull());
+//        restrictions =
+//            criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNotNull());
+        Path<Object> path = getPath(root, filter.getProperty());
+        restrictions = criteriaBuilder.and(restrictions, path.isNotNull());
       }
     }
     criteriaQuery.where(restrictions);
@@ -571,17 +588,23 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
           }
         } else if (filter.getOperator() == Operator.lt && filter.getValue() != null) {
           if (filter.getValue() instanceof Number) {
-            restrictions =
-                criteriaBuilder.and(
-                    restrictions,
-                    criteriaBuilder.lt(root.<Number>get(filter.getProperty()),
-                        (Number) filter.getValue()));
+//            restrictions =
+//                criteriaBuilder.and(
+//                    restrictions,
+//                    criteriaBuilder.lt(root.<Number>get(filter.getProperty()),
+//                        (Number) filter.getValue()));
+              Path<Number> path = getPath(root, filter.getProperty());
+              restrictions =
+                      criteriaBuilder.and(restrictions, criteriaBuilder.lt(path, (Number) filter.getValue()));
           } else if (filter.getValue() instanceof Date) {
-            restrictions =
-                criteriaBuilder.and(
-                    restrictions,
-                    criteriaBuilder.lessThan(root.<Date>get(filter.getProperty()),
-                        (Date) filter.getValue()));
+//            restrictions =
+//                criteriaBuilder.and(
+//                    restrictions,
+//                    criteriaBuilder.lessThan(root.<Date>get(filter.getProperty()),
+//                        (Date) filter.getValue()));
+              Path<Date> path = getPath(root, filter.getProperty());
+              restrictions =
+                      criteriaBuilder.and(restrictions, criteriaBuilder.lessThan(path, (Date) filter.getValue()));	
           }
         } else if (filter.getOperator() == Operator.gt && filter.getValue() != null) {
             if (filter.getValue() instanceof Number) {
@@ -599,15 +622,21 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
               }
         } else if (filter.getOperator() == Operator.ge && filter.getValue() != null) {
           if (filter.getValue() instanceof Number) {
-            restrictions =
-                criteriaBuilder.and(
-                    restrictions,
-                    criteriaBuilder.ge(root.<Number>get(filter.getProperty()),
-                        (Number) filter.getValue()));
+//            restrictions =
+//                criteriaBuilder.and(
+//                    restrictions,
+//                    criteriaBuilder.ge(root.<Number>get(filter.getProperty()),
+//                        (Number) filter.getValue()));
+              Path<Number> path = getPath(root, filter.getProperty());
+              restrictions =
+                      criteriaBuilder.and(restrictions, criteriaBuilder.ge(path, (Number) filter.getValue()));
           } else if (filter.getValue() instanceof Date) {
-            restrictions =
-                criteriaBuilder.and(restrictions, criteriaBuilder.greaterThanOrEqualTo(
-                    root.<Date>get(filter.getProperty()), (Date) filter.getValue()));
+//            restrictions =
+//                criteriaBuilder.and(restrictions, criteriaBuilder.greaterThanOrEqualTo(
+//                    root.<Date>get(filter.getProperty()), (Date) filter.getValue()));
+              Path<Date> path = getPath(root, filter.getProperty());
+              restrictions =
+                      criteriaBuilder.and(restrictions, criteriaBuilder.greaterThanOrEqualTo(path, (Date) filter.getValue()));
           }
         } else if (filter.getOperator() == Operator.le && filter.getValue() != null) {
           if (filter.getValue() instanceof Date) {
@@ -651,10 +680,14 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	        }
     	    //zhanglu:2017-10-13 end
         } else if (filter.getOperator() == Operator.isNull) {
-          restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
+//          restrictions = criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNull());
+            Path<Object> path = getPath(root, filter.getProperty());
+            restrictions = criteriaBuilder.and(restrictions, path.isNull());
         } else if (filter.getOperator() == Operator.isNotNull) {
-          restrictions =
-              criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNotNull());
+//          restrictions =
+//              criteriaBuilder.and(restrictions, root.get(filter.getProperty()).isNotNull());
+    		Path<Object> path = getPath(root, filter.getProperty());
+            restrictions = criteriaBuilder.and(restrictions, path.isNotNull());
         }
       }
     }

@@ -51,7 +51,7 @@ public class SupplementRecord extends BaseEntity {
   private String goodsSn;
 
   /**
-   * 商品名称
+   * 商品全称(包括规格)
    */
   private String goodsName;
 

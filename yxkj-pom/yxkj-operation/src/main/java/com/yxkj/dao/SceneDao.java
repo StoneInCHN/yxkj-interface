@@ -12,5 +12,5 @@ public interface SceneDao extends BaseDao<Scene, Long> {
    * @param key
    * @return
    */
-  List<Scene> getByKey(String key);
+  List<Scene> getByKey(String key, Long pId);
 }

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.BaseController;
 import com.yxkj.entity.Order;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
@@ -33,6 +38,7 @@ import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.OrderItemService;
 import com.yxkj.service.OrderService;
 import com.yxkj.service.TouristService;
+import com.yxkj.utils.ExportHelper;
 import com.yxkj.utils.TimeUtils;
 
 /**
@@ -57,6 +63,8 @@ public class SalesReportController extends BaseController {
   @Resource(name = "touristServiceImpl")
   private TouristService touristService;
 
+  @Autowired
+  private ExportHelper exportHelper;
 
   /**
    * 数据概览
@@ -153,6 +161,9 @@ public class SalesReportController extends BaseController {
     Date startTime = request.getStartTime();
     Date endTime = request.getEndTime();
     Long sceneId = request.getSceneId();
+
+    LogUtil.debug(this.getClass(), "salesList",
+        "request param: startTime: %s, endTime: %s, sceneId: %s", startTime, endTime, sceneId);
 
     if (startTime != null) {
       startTime = TimeUtils.formatDate2Day0(startTime);
@@ -255,5 +266,47 @@ public class SalesReportController extends BaseController {
     return response;
   }
 
+  /**
+   * 导出数据概览Excel
+   * 
+   * @throws IOException
+   */
+  @RequestMapping(value = "/dataExport", method = {RequestMethod.GET, RequestMethod.POST})
+  public void dataExport(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    String startTimeStr = request.getParameter("startTime");
+    String endTimeStr = request.getParameter("endTime");
+    String sceneIdStr = request.getParameter("sceneId");
+    Date startTime = null;
+    Date endTime = null;
+    Long sceneId = null;
 
+    LogUtil.debug(this.getClass(), "dataExport",
+        "request param: startTime: %s, endTime: %s, sceneId: %s", startTime, endTime, sceneId);
+
+    if (sceneIdStr != null) {
+      sceneId = Long.valueOf(sceneIdStr);
+    }
+    if (startTimeStr != null) {
+      startTime = TimeUtils.formatDate2Day0(new Date(Long.valueOf(startTimeStr)));
+    }
+    if (endTimeStr != null) {
+      endTime = TimeUtils.formatDate2Day59(new Date(Long.valueOf(endTimeStr)));
+    }
+    ResponseMultiple<Map<String, Object>> maps =
+        orderService.salesListDataMap(sceneId, startTime, endTime, null, null);
+    String title = "Scene Sales List"; // 工作簿标题，同时也是excel文件名前缀
+    String[] headers =
+        {"tSn", "tName", "userCount", "orderCount", "saleIncome", "saleCost", "profitRate",
+            "avgUnitPrice"}; // 需要导出的字段
+    String[] headersName = {"编号", "优享空间", "总用户数", "总订单数", "总销售额", "总成本", "毛利率", "平均客单价"}; // 字段对应列的列名
+    List<Map<String, String>> mapList = null;
+    if (maps.getMsg() != null && maps.getMsg().size() > 0) {
+      mapList = exportHelper.convertMaps(maps.getMsg());
+      exportListToExcel(response, mapList, title, headers, headersName);
+    } else {
+      mapList = new ArrayList<Map<String, String>>();
+      exportListToExcel(response, mapList, title, headers, headersName);
+    }
+  }
 }

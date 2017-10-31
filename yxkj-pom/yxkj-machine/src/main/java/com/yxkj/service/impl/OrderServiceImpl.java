@@ -12,20 +12,15 @@ import com.yxkj.common.client.ReceiverClient;
 import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.common.entity.CmdMsg;
 import com.yxkj.dao.*;
+import com.yxkj.entity.*;
+import com.yxkj.service.RefundHistoryService;
 import com.yxkj.utils.PayUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yxkj.common.log.LogUtil;
-import com.yxkj.entity.ContainerChannel;
-import com.yxkj.entity.Goods;
-import com.yxkj.entity.Order;
-import com.yxkj.entity.OrderItem;
-import com.yxkj.entity.Scene;
 import com.yxkj.entity.Sn.Type;
-import com.yxkj.entity.Tourist;
-import com.yxkj.entity.VendingContainer;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 import com.yxkj.entity.commonenum.CommonEnum.PickupStatus;
 import com.yxkj.entity.commonenum.CommonEnum.PurMethod;
@@ -36,6 +31,7 @@ import com.yxkj.service.CmdService;
 import com.yxkj.service.OrderService;
 
 import static com.yxkj.entity.commonenum.CommonEnum.PickupStatus.LACK;
+import static com.yxkj.entity.commonenum.CommonEnum.RefundStatus.NOT_REFUND;
 
 @Service("orderServiceImpl")
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -57,8 +53,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   @Resource(name = "containerChannelDaoImpl")
   private ContainerChannelDao containerChannelDao;
 
-  @Resource(name = "receiverClient")
-  private ReceiverClient receiverClient;
+  @Resource(name = "refundHistoryServiceImpl")
+  private RefundHistoryService refundHistoryService;
 
   @Resource(name = "orderDaoImpl")
   public void setBaseDao(OrderDao orderDao) {
@@ -147,7 +143,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     for (OrderItem orderItem : orderItemSet) {
       ContainerChannel containerChannel = containerChannelDao.find(orderItem.getCntrId());
       // 更新库存
-      if (containerChannel.getSurplus() > 1) {
+      if (containerChannel.getSurplus() > 0) {
         containerChannel.setSurplus(containerChannel.getSurplus() - 1);
         switch (order.getPurMethod()) {
           case CONTROLL_MACHINE:
@@ -160,12 +156,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         }
       } else {
         orderItem.setPickupStatus(LACK);
+        orderItem.setRefundStatus(NOT_REFUND);
         refundOrderItemList.add(orderItem);
+        LogUtil.debug(this.getClass(), "callbackAfterPay", "商品缺货:%s;货道：%s", orderItem.getgName(),
+            orderItem.getChannelSn());
       }
     }
-    //如果缺货，自动退款流程
-    if (!refundOrderItemList.isEmpty())
-      refund(order,refundOrderItemList);
+    // 如果缺货，自动退款流程
+    if (!refundOrderItemList.isEmpty()) {
+      refund(order, refundOrderItemList);
+    }
     orderDao.merge(order);
     cmdService.notificationCmd(order.getDeviceNo(), CommonEnum.CmdType.PAYMENT_SUCCESS);
     cmdService.salesOut(order.getId());
@@ -196,20 +196,30 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
    * 
    * @param refundOrderItemList
    */
-  private void refund(Order order, List<OrderItem> refundOrderItemList) {
-    double refundFee = 0;
+  // @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void refund(Order order, List<OrderItem> refundOrderItemList) {
+    double refundFeeDouble = 0;
     for (OrderItem orderItem : refundOrderItemList) {
-      refundFee += orderItem.getPrice().doubleValue();
+      refundFeeDouble += orderItem.getPrice().doubleValue();
     }
     String orderSn = order.getSn();
     boolean refundResponse = false;
-    if ("wx".equals(order.getPaymentType())) {
-      refundResponse = PayUtil.aliRefund(orderSn, String.valueOf(refundFee));
-    } else if ("alipay".equals(order.getPaymentType())) {
-      refundResponse =
-          PayUtil.weRefund(orderSn, String.valueOf(order.getAmount()), String.valueOf(refundFee));
+    RefundHistory history = new RefundHistory();
+    history.setRefundOrder(order);
+    history.setPaymentType(order.getPaymentType());
+    history.setRefundAmount(String.valueOf(refundFeeDouble));
+    history.setRefundSn(snDao.generate(Type.REFUND));
+
+    if ("alipay".equals(order.getPaymentType())) {
+      refundResponse = PayUtil.aliRefund(orderSn, String.valueOf(refundFeeDouble));
+    } else if ("wx".equals(order.getPaymentType())) {
+      String totalFee =
+          String.valueOf((order.getAmount().multiply(new BigDecimal(100)).intValue()));
+      String refundFee = String.valueOf((int) (refundFeeDouble * 100));
+      refundResponse = PayUtil.weRefund(orderSn, totalFee, refundFee, history.getRefundSn());
     }
 
+    refundHistoryService.save(history);
     if (refundResponse) {
       // 退款成功，更新退款状态
       for (OrderItem orderItem : refundOrderItemList) {

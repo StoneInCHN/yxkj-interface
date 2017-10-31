@@ -248,10 +248,12 @@ public class OrderDaoImpl extends BaseDaoImpl<Order, Long> implements OrderDao {
       sqlPage.append(sceneId);
     }
     sqlPage.append(" order by torder.saleIncome desc");
-    sqlPage.append(" limit ");
-    sqlPage.append((pageNum - 1) * pageSize);
-    sqlPage.append(",");
-    sqlPage.append(pageSize);
+    if (pageNum != null && pageSize != null) {
+      sqlPage.append(" limit ");
+      sqlPage.append((pageNum - 1) * pageSize);
+      sqlPage.append(",");
+      sqlPage.append(pageSize);
+    }
 
     List list =
         entityManager.createNativeQuery(sqlPage.toString()).setFlushMode(FlushModeType.COMMIT)

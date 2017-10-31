@@ -1,17 +1,11 @@
 package com.yxkj.utils.wxpay;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.KeyManagementException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
@@ -31,6 +25,18 @@ import com.yxkj.beans.Setting;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.utils.PayUtil;
 import com.yxkj.utils.SettingUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 
 /**
@@ -71,6 +77,61 @@ public class WeixinUtil {
   /**
    * 发送https请求
    * 
+   * @param requestUrl //提交的URL
+   * @param outputStr //ID
+   * @return
+   */
+  public static String httpsRequestWithCert(String requestUrl, String outputStr, String password,
+      String pkcs12Path) throws Exception {
+    StringBuilder responseUrl = new StringBuilder();
+    KeyStore keyStore = KeyStore.getInstance("PKCS12");
+    FileInputStream instream = new FileInputStream(new File(pkcs12Path));
+    try {
+      keyStore.load(instream, password.toCharArray());
+    } finally {
+      instream.close();
+    }
+
+    // Trust own CA and all self-signed certs
+    SSLContext sslcontext =
+        SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
+    // Allow TLSv1 protocol only
+    SSLConnectionSocketFactory sslsf =
+        new SSLConnectionSocketFactory(sslcontext, new String[] {"TLSv1"}, null,
+            SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+    CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+    try {
+      StringEntity se = new StringEntity(outputStr);
+      HttpPost httpPost = new HttpPost(requestUrl);
+      httpPost.setEntity(se);
+      LogUtil.debug(WeixinUtil.class, "refund", "request:%s", httpPost.getRequestLine().toString());
+      CloseableHttpResponse response = httpclient.execute(httpPost);
+      try {
+        HttpEntity entity = response.getEntity();
+        LogUtil.debug(WeixinUtil.class, "refund", "response:%s", response.getStatusLine());
+        if (entity != null) {
+          System.out.println("Response content length: " + entity.getContentLength());
+          BufferedReader bufferedReader =
+              new BufferedReader(new InputStreamReader(entity.getContent()));
+          String text;
+          while ((text = bufferedReader.readLine()) != null) {
+            responseUrl.append(text);
+          }
+
+        }
+        EntityUtils.consume(entity);
+      } finally {
+        response.close();
+      }
+    } finally {
+      httpclient.close();
+    }
+    return responseUrl.toString();
+  }
+
+  /**
+   * 发送https请求
+   *
    * @param requestUrl //提交的URL
    * @param requestMethod //提交方式
    * @param outputStr //ID
@@ -173,17 +234,15 @@ public class WeixinUtil {
   /**
    * 获取jsapi ticket 过期时间7200s
    * 
-   * @param token
+   * @param accessToken
    * @return
    * @throws IOException
-   * @throws
-   * @throws
+   * @throws @throws
    */
   public static String getJsapiTicket(String accessToken) {
     try {
-      String requestUrl =
-          "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + accessToken
-              + "&type=jsapi";
+      String requestUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="
+          + accessToken + "&type=jsapi";
       String Str = httpsRequest(requestUrl, "GET", null);
       // 转JSON
       ObjectMapper mapper = new ObjectMapper();
@@ -211,9 +270,8 @@ public class WeixinUtil {
     String signature = "";
 
     // 注意这里参数名必须全部小写，且必须有序
-    string1 =
-        "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str + "&timestamp=" + timestamp
-            + "&url=" + url;
+    string1 = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str + "&timestamp=" + timestamp
+        + "&url=" + url;
     System.out.println(string1);
 
     try {
@@ -278,7 +336,7 @@ public class WeixinUtil {
 
   /**
    * url编码
-   * */
+   */
   public static String urlEncodeUTF8(String source) {
     String str = null;
     try {

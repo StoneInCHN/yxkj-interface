@@ -41,7 +41,8 @@ public class PayUtil {
   public static final String wechat_notify_url = setting.getWechatNotifyUrl();
   // 微信下订单接口
   public static final String wechat_AddOrderUrl = setting.getWechatAddOrderUrl();
-
+  // 微信退款接口
+  public static final String wechat_RefundUrl = setting.getWechatRefundUrl();
 
   // 支付宝手机网站支付参数
   // 支付宝公钥
@@ -205,29 +206,34 @@ public class PayUtil {
    * @param order_sn 商户订单号
    * @param total_fee 订单总金额
    * @param refund_fee 退款金额
+   * @param refundSn
    * @return 退款成功或者失败
    */
-  public static Boolean weRefund(String order_sn, String total_fee, String refund_fee) {
-
+  public static Boolean weRefund(String order_sn, String total_fee, String refund_fee,
+      String refundSn) {
+    LogUtil.debug(PayUtil.class, "weRefund", "orderSn:%s,total_fee:%s,refund_fee:%s,refundSn:%s",
+        order_sn, total_fee, refund_fee, refundSn);
     // 随机字符串，不长于32位。推荐随机数生成算法
     String nonce_str = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
     String stringSignTemp = "appid=" + wechat_appid + "&mch_id=" + wechat_mch_id + "&nonce_str="
-        + nonce_str + "&notify_url=" + wechat_notify_url + "&out_trade_no=" + order_sn
-        + "&total_fee=" + total_fee + "&refund_fee=" + refund_fee + "&key=" + wechat_Key;
+        + nonce_str + "&out_refund_no=" + refundSn + "&out_trade_no=" + order_sn + "&refund_fee="
+        + refund_fee + "&total_fee=" + total_fee + "&key=" + wechat_Key;
     // System.out.println(stringSignTemp);
     String sign = WeixinUtil.MD5(stringSignTemp);
     // System.out.println(sign);
     String xml = "<xml>" + "<appid>" + wechat_appid + "</appid>" + "<mch_id>" + wechat_mch_id
-        + "</mch_id>" + "<nonce_str>" + nonce_str + "</nonce_str>" + "<sign>" + sign + "</sign>"
-        + "<notify_url>" + wechat_notify_url + "</notify_url>" + "<out_trade_no>" + order_sn
+        + "</mch_id>" + "<nonce_str>" + nonce_str + "</nonce_str>" + "<out_trade_no>" + order_sn
         + "</out_trade_no>" + "<total_fee>" + total_fee + "</total_fee>" + "<refund_fee>"
-        + refund_fee + "</refund_fee>" + "</xml>";
+        + refund_fee + "</refund_fee>" + "<out_refund_no>" + refundSn + "</out_refund_no>"
+        + " <transaction_id></transaction_id>" + "<sign>" + sign + "</sign>" + "</xml>";
     // 调接口
     System.out.println(xml);
-    String xmlString = WeixinUtil.httpsRequest(wechat_AddOrderUrl, "POST", xml);
+
     // 解析xml
     boolean response = false;
     try {
+      String xmlString = WeixinUtil.httpsRequestWithCert(wechat_RefundUrl, xml, wechat_mch_id,
+          setting.getPkcs12Path());
       Document dom = DocumentHelper.parseText(xmlString);
       Element root = dom.getRootElement();
       String return_code = root.elementText("return_code");
@@ -237,7 +243,7 @@ public class PayUtil {
         response = false;
         LogUtil.debug(PayUtil.class, "weRefund", "Refund Failed:" + root.elementText("return_msg"));
       }
-    } catch (DocumentException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
 

@@ -6,11 +6,17 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +24,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.BaseController;
 import com.yxkj.json.admin.request.GoodsReportRequest;
 import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.GoodsSaleInfoService;
+import com.yxkj.utils.ExportHelper;
 import com.yxkj.utils.TimeUtils;
 
 /**
@@ -39,6 +47,8 @@ public class GoodsReportController extends BaseController {
   @Resource(name = "goodsSaleInfoServiceImpl")
   private GoodsSaleInfoService goodsSaleInfoService;
 
+  @Autowired
+  private ExportHelper exportHelper;
 
   /**
    * 运营管理-商品收入
@@ -46,7 +56,7 @@ public class GoodsReportController extends BaseController {
    * @param request
    * @return
    */
-  @RequestMapping(value = "/salesGoods", method = RequestMethod.POST)
+  @RequestMapping(value = "/salesList", method = RequestMethod.POST)
   @ApiOperation(value = "运营管理-商品收入", httpMethod = "POST", response = ResponseOne.class,
       notes = "运营管理-商品收入")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -57,6 +67,10 @@ public class GoodsReportController extends BaseController {
           required = false) @RequestBody GoodsReportRequest request) {
     Date startTime = request.getStartTime();
     Date endTime = request.getEndTime();
+    LogUtil.debug(this.getClass(), "salesList",
+        "request param: startTime: %s, endTime: %s, sceneId: %s,gCateId: %s,gCode: %s,gName: %s",
+        startTime, endTime, request.getSceneId(), request.getgCateId(), request.getgCode(),
+        request.getgName());
     if (endTime != null) {
       endTime = TimeUtils.formatDate2Day59(request.getEndTime());
     }
@@ -71,4 +85,55 @@ public class GoodsReportController extends BaseController {
     return response;
   }
 
+
+  /**
+   * 导出数据概览Excel
+   * 
+   * @throws IOException
+   */
+  @RequestMapping(value = "/dataExport", method = {RequestMethod.GET, RequestMethod.POST})
+  public void dataExport(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    String startTimeStr = request.getParameter("startTime");
+    String endTimeStr = request.getParameter("endTime");
+    String sceneIdStr = request.getParameter("sceneId");
+    String gCateIdStr = request.getParameter("gCateId");
+    String gCode = request.getParameter("gCode");
+    String gName = request.getParameter("gName");
+
+    Date startTime = null;
+    Date endTime = null;
+    Long sceneId = null;
+    Long gCateId = null;
+
+    LogUtil.debug(this.getClass(), "dataExport",
+        "request param: startTime: %s, endTime: %s, sceneId: %s,gCateId: %s,gCode: %s,gName: %s",
+        startTime, endTime, sceneId, gCateId, gCode, gName);
+    if (sceneIdStr != null) {
+      sceneId = Long.valueOf(sceneIdStr);
+    }
+    if (gCateIdStr != null) {
+      gCateId = Long.valueOf(gCateIdStr);
+    }
+    if (startTimeStr != null) {
+      startTime = TimeUtils.formatDate2Day0(new Date(Long.valueOf(startTimeStr)));
+    }
+    if (endTimeStr != null) {
+      endTime = TimeUtils.formatDate2Day59(new Date(Long.valueOf(endTimeStr)));
+    }
+    ResponseMultiple<Map<String, Object>> maps =
+        goodsSaleInfoService.salesGoodsInfo(startTime, endTime, gCateId, sceneId, gName, gName,
+            null, null);
+    String title = "Goods Sales List"; // 工作簿标题，同时也是excel文件名前缀
+    String[] headers = {"gSn", "gName", "gSpec", "gPrice", "gCate", "salesCount", "salesAmount"}; // 需要导出的字段
+    String[] headersName = {"商品条码", "商品名称", "净含量", "商品种类", "默认售价", "商品销量", "商品销售额"}; // 字段对应列的列名
+    List<Map<String, String>> mapList = null;
+    if (maps.getMsg() != null && maps.getMsg().size() > 0) {
+      mapList = exportHelper.convertMaps(maps.getMsg());
+      exportListToExcel(response, mapList, title, headers, headersName);
+    } else {
+      mapList = new ArrayList<Map<String, String>>();
+      exportListToExcel(response, mapList, title, headers, headersName);
+    }
+  }
 }
