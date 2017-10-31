@@ -13,12 +13,13 @@ import com.yxkj.dao.SupplementListDao;
 @Repository("supplementListDaoImpl")
 public class SupplementListDaoImpl extends  BaseDaoImpl<SupplementList,Long> implements SupplementListDao {
 
+  @SuppressWarnings("unchecked")
   @Override
-  public Integer findWaitSupplyCountByCntrId(Long cntrId) {
+  public List<Object> findWaitSupplyCountByCntrId(Long cntrId) {
     String jpql = "SELECT s.waitSupplyCount FROM SupplementList s WHERE s.cntrId = :cntrId";
     Query query = entityManager.createQuery(jpql).setParameter("cntrId", cntrId);
     
-    return (Integer) query.getSingleResult();
+    return query.getResultList();
   }
   
   @SuppressWarnings("unchecked")

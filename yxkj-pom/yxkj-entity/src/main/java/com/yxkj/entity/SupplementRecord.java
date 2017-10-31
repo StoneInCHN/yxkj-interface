@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -152,6 +153,7 @@ public class SupplementRecord extends BaseEntity {
   }
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name="supp_pic")
   public SupplementPic getSuppPic() {
     return suppPic;
   }

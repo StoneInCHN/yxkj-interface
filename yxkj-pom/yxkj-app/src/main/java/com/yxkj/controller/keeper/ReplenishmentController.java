@@ -25,8 +25,8 @@ import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.ResponseOne;
+import com.yxkj.json.bean.DailySumSupplementRecord;
 import com.yxkj.json.bean.SceneSupplementRecord;
-import com.yxkj.json.bean.SumSupplementRecord;
 import com.yxkj.json.bean.WaitSupplyContainerGoods;
 import com.yxkj.json.bean.WaitSupplyGoods;
 import com.yxkj.json.bean.WaitSupplyGoodsDetails;
@@ -49,7 +49,7 @@ public class ReplenishmentController extends MobileBaseController {
   private SupplementRecordService supplementRecordService;
 
   @Resource(name = "supplementSumRecServiceImpl")
-  private SupplementSumRecService SupplementSumRecService;
+  private SupplementSumRecService supplementSumRecService;
 
   @Resource(name = "fileServiceImpl")
   private FileService fileService;
@@ -198,10 +198,7 @@ public class ReplenishmentController extends MobileBaseController {
       if (sceneObjs != null) {
         map.put("sceneSn", (String) sceneObjs[0]);
         map.put("sceneName", (String) sceneObjs[1]);
-        response.setCode(CommonAttributes.FAIL_COMMON);
-        response.setDesc(message("yxkj.request.fail"));
         response.setMsg(map);
-        return response;
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -361,10 +358,7 @@ public class ReplenishmentController extends MobileBaseController {
       if (sceneObjs != null) {
         map.put("sceneSn", (String) sceneObjs[0]);
         map.put("sceneName", (String) sceneObjs[1]);
-        response.setCode(CommonAttributes.FAIL_COMMON);
-        response.setDesc(message("yxkj.request.fail"));
         response.setMsg(map);
-        return response;
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -383,14 +377,12 @@ public class ReplenishmentController extends MobileBaseController {
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
   public @ResponseBody ResponseOne<Map<String, Object>> getSupplementSumRecord(
       @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,pageNo:页码,pageSize:页记录数",
-          required = true) @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
+          required = true) @RequestBody WaitSupplyListRequest request) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<>();
     Map<String, Object> supplyRecordMap = new HashMap<>();
     try {
-      List<SumSupplementRecord> records =
-          SupplementSumRecService.findSupplySumRecord(waitSupplyListRequest.getUserId(),
-              waitSupplyListRequest.getPageNo(),
-              Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
+      List<DailySumSupplementRecord> records =supplementSumRecService.findSupplySumRecord(request.getUserId(),
+          request.getPageNo(), Integer.valueOf(request.getPageSize()).intValue());
       supplyRecordMap.put("groups", records);
     } catch (Exception e) {
       e.printStackTrace();

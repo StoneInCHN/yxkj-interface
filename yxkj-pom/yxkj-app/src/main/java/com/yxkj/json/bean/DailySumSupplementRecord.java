@@ -1,19 +1,19 @@
 package com.yxkj.json.bean;
 
-import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DailySumSupplementRecord {
 
-  private Date date;
+  private String date;
   
-  private Integer SumWaitSupplyCount;
+  private Integer SumWaitSupplyCount = 0;
   
-  private Integer SumSupplyCount;
+  private Integer SumSupplyCount = 0;
   
-  private List<SupplyRecord> supplementList;
+  private List<SceneSumSupplementRecord> supplementList;
   
-  public class SupplyRecord {
+  public class SceneSumSupplementRecord {
     
     private String sceneSn;
     
@@ -25,7 +25,18 @@ public class DailySumSupplementRecord {
     
     private Integer lackCount;
     
-    private Date supplyTime;
+    private String supplyTime;
+    
+    public SceneSumSupplementRecord(String sceneSn, String sceneName, Integer waitSupplyCount,
+        Integer supplyCount, Integer lackCount, String supplyTime) {
+      super();
+      this.sceneSn = sceneSn;
+      this.sceneName = sceneName;
+      this.waitSupplyCount = waitSupplyCount;
+      this.supplyCount = supplyCount;
+      this.lackCount = lackCount;
+      this.supplyTime = supplyTime;
+    }
 
     public String getSceneSn() {
       return sceneSn;
@@ -67,21 +78,21 @@ public class DailySumSupplementRecord {
       this.lackCount = lackCount;
     }
 
-    public Date getSupplyTime() {
+    public String getSupplyTime() {
       return supplyTime;
     }
 
-    public void setSupplyTime(Date supplyTime) {
+    public void setSupplyTime(String supplyTime) {
       this.supplyTime = supplyTime;
     }
     
   }
 
-  public Date getDate() {
+  public String getDate() {
     return date;
   }
 
-  public void setDate(Date date) {
+  public void setDate(String date) {
     this.date = date;
   }
 
@@ -101,11 +112,11 @@ public class DailySumSupplementRecord {
     SumSupplyCount = sumSupplyCount;
   }
 
-  public List<SupplyRecord> getSupplementList() {
+  public List<SceneSumSupplementRecord> getSupplementList() {
     return supplementList;
   }
 
-  public void setSupplementList(List<SupplyRecord> supplementList) {
+  public void setSupplementList(List<SceneSumSupplementRecord> supplementList) {
     this.supplementList = supplementList;
   }
   

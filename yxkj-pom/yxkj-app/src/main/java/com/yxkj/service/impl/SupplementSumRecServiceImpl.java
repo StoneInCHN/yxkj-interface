@@ -1,19 +1,18 @@
 package com.yxkj.service.impl; 
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Resource; 
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service; 
 
 import com.yxkj.entity.SupplementSumRec;
-import com.ibm.icu.text.SimpleDateFormat;
 import com.yxkj.dao.SupplementSumRecDao;
 import com.yxkj.service.SupplementSumRecService;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
-import com.yxkj.json.bean.SumSupplementRecord;
+import com.yxkj.json.bean.DailySumSupplementRecord;
+import com.yxkj.json.bean.DailySumSupplementRecord.SceneSumSupplementRecord;
 
 @Service("supplementSumRecServiceImpl")
 public class SupplementSumRecServiceImpl extends BaseServiceImpl<SupplementSumRec,Long> implements SupplementSumRecService {
@@ -27,12 +26,25 @@ public class SupplementSumRecServiceImpl extends BaseServiceImpl<SupplementSumRe
       }
 
       @Override
-      public List<SumSupplementRecord> findSupplySumRecord(Long suppId, String pageNo, int pageSize) {
-        List<SumSupplementRecord> records = new LinkedList<>();
-        List<Object[]> sumRecords = supplementSumRecDao.findSupplementSumRecord(suppId, Integer.valueOf(pageNo), pageSize);
-        for (Object[] sumRecord : sumRecords) {
-          SumSupplementRecord record = new SumSupplementRecord((String)sumRecord[0], (String)sumRecord[1], (Integer)sumRecord[2], 
-              (Integer)sumRecord[3], (Integer)sumRecord[4], new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format((Date)sumRecord[5]));
+      public List<DailySumSupplementRecord> findSupplySumRecord(Long suppId, String pageNo, int pageSize) {
+        List<DailySumSupplementRecord> records = new LinkedList<>();
+        List<Object> dateObjs = null;
+        try {
+          dateObjs = supplementSumRecDao.findSupplyDate(suppId, Integer.valueOf(pageNo).intValue(), pageSize);
+        } catch (Exception e) {}
+        for (Object date : dateObjs) {
+          DailySumSupplementRecord record = new DailySumSupplementRecord();
+          record.setDate((String)date);
+          List<Object[]> supplementSumRecords = supplementSumRecDao.findSupplementSumRecord(suppId, (String)date);
+          List<SceneSumSupplementRecord> sceneSumSupplementRecords = new LinkedList<>();
+          for (Object[] supplyRecordObj : supplementSumRecords) {
+            SceneSumSupplementRecord sceneSumSupplementRecord = record.new SceneSumSupplementRecord((String)supplyRecordObj[0], (String)supplyRecordObj[1],
+                (Integer)supplyRecordObj[2], (Integer)supplyRecordObj[3], (Integer)supplyRecordObj[4], (String)supplyRecordObj[5]);
+            sceneSumSupplementRecords.add(sceneSumSupplementRecord);
+            record.setSumSupplyCount(record.getSumSupplyCount().intValue() + (Integer)supplyRecordObj[2]);
+            record.setSumWaitSupplyCount(record.getSumWaitSupplyCount().intValue() + (Integer)supplyRecordObj[3]);
+          }
+          record.setSupplementList(sceneSumSupplementRecords);
           records.add(record);
         }
         return records;

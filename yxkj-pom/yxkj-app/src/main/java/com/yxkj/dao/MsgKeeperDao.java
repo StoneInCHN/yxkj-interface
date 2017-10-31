@@ -8,5 +8,5 @@ public interface MsgKeeperDao extends  BaseDao<MsgKeeper,Long>{
 
   List<Object[]> countKeeperMsgType(Long userId);
   
-  List<Object[]> getKeeperMsgByType(Long userId, String type);
+  List<Object[]> getKeeperMsgByType(Long userId, String msgType);
 }

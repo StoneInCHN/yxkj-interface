@@ -466,6 +466,15 @@
 			<artifactId>xstream</artifactId>
 			<version>1.4.1</version>
 		</dependency> -->
+		<dependency>
+            <groupId>com.yxkj</groupId>
+            <artifactId>receiver-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.yxkj</groupId>
+            <artifactId>yxkj-receiver</artifactId>
+            <type>pom</type>
+        </dependency>
   </dependencies>
   
     <properties> 

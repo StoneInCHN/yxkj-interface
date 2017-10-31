@@ -24,7 +24,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
@@ -426,11 +425,11 @@ public class AcconutController extends MobileBaseController {
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
   public @ResponseBody ResponseOne<Map<String, Object>> getMsg(
       @ApiParam(name = "请求参数(json)", value = "{userId:管家Id}", required = true)
-      @RequestParam("userId")Long userId) {
+      @RequestBody KeeperAccountRequest request) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<>();
     Map<String, Object> map = new HashMap<>();
     try {
-      List<KeeperNotice> notices= msgKeeperService.getKeeperNotices(userId);
+      List<KeeperNotice> notices= msgKeeperService.getKeeperNotices(request.getUserId());
       map.put("groups", notices);
       response.setMsg(map);
     } catch (Exception e) {
@@ -454,11 +453,11 @@ public class AcconutController extends MobileBaseController {
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
   public @ResponseBody ResponseOne<Map<String, Object>> getMsgDetails(
       @ApiParam(name = "请求参数(json)", value = "{userId:管家Id}", required = true)
-      @RequestParam("userId")Long userId, @RequestParam("type")String type) {
+      @RequestBody KeeperAccountRequest request) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<>();
     Map<String, Object> map = new HashMap<>();
     try {
-      List<KeeperNoticeItem> items = msgKeeperService.getTypeNotices(userId, type);
+      List<KeeperNoticeItem> items = msgKeeperService.getTypeNotices(request.getUserId(), request.getMsgType());
       map.put("groups", items);
       response.setMsg(map);
     } catch (Exception e) {

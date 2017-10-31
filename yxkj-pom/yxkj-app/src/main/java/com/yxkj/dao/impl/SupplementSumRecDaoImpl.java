@@ -29,13 +29,23 @@ public class SupplementSumRecDaoImpl extends  BaseDaoImpl<SupplementSumRec,Long>
   }
 
   @SuppressWarnings("unchecked")
-  @Override
-  public List<Object[]> findSupplementSumRecord(Long suppId, int pageNo, int pageSize) {
-    String jpql = "SELECT s.sceneSn, s.sceneName, s.waitSuppTotalCount, s.suppTotalCount, s.lackCount, s.suppEndTime"
-        + " FROM SupplementSumRec s"
-        + " WHERE s.suppId = :suppId AND s.suppEndTime is not NULL ORDER BY s.suppEndTime ASC";
-    Query query = entityManager.createQuery(jpql).setParameter("suppId", suppId)
+  public List<Object> findSupplyDate(Long suppId, int pageNo, int pageSize) {
+    String sql = "SELECT DISTINCT DATE_FORMAT(supp_end_time,'%m.%d')"
+        + " FROM t_supp_sum_rec WHERE supp_id = :suppId AND supp_end_time is not NULL";
+    Query query = entityManager.createNativeQuery(sql).setParameter("suppId", suppId)
         .setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
+    
+    return query.getResultList();
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<Object[]> findSupplementSumRecord(Long suppId, String date) {
+    String sql = "SELECT scene_sn, scene_name, wait_supp_total_count, supp_total_count, lack_count, DATE_FORMAT(supp_end_time,'%T')"
+        + " FROM t_supp_sum_rec"
+        + " WHERE supp_id = :suppId AND DATE_FORMAT(supp_end_time,'%m.%d') = :date AND supp_end_time is not NULL"
+        + " ORDER BY supp_end_time ASC";
+    Query query = entityManager.createNativeQuery(sql).setParameter("suppId", suppId).setParameter("date", date);
     
     return query.getResultList();
   }

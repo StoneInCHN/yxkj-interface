@@ -55,7 +55,7 @@ public class SupplementPic implements Serializable, Comparable<SupplementPic> {
   private Set<SupplementRecord> supplementRecords = new HashSet<SupplementRecord>();
 
 
-  @OneToMany(cascade = CascadeType.PERSIST)
+  @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "suppPic")
   public Set<SupplementRecord> getSupplementRecords() {
     return supplementRecords;
   }

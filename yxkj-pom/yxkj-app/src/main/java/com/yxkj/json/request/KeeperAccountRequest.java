@@ -31,8 +31,35 @@ public class KeeperAccountRequest {
 	 * 新密码
 	 */
 	private String newPwd;
+	
+	/**
+	 * 用户id
+	 */
+	private Long userId;
+	
+	/**
+	 * 消息类型
+	 */
+	private String msgType;
+	
+	
+  public Long getUserId() {
+    return userId;
+  }
 
-	public String getPassword() {
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
+
+  public String getMsgType() {
+    return msgType;
+  }
+
+  public void setMsgType(String msgType) {
+    this.msgType = msgType;
+  }
+
+  public String getPassword() {
 		return password;
 	}
 

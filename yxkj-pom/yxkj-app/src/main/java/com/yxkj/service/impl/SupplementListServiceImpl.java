@@ -3,9 +3,11 @@ package com.yxkj.service.impl;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -105,9 +107,10 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
               WaitSupplyList.WaitSupplyScene.VendingContainerGroup.WaitSupplyVendingContainer child = group
                   .new WaitSupplyVendingContainer(((BigInteger)childContainer[0]).longValue(), (String)childContainer[1]);
               int count = 0;
-              try{
-                  count = supplementListDao.findWaitSupplyCountByCntrId(((BigInteger)childContainer[0]).longValue());
-              }catch (Exception e) {}
+              List<Object> list = supplementListDao.findWaitSupplyCountByCntrId(((BigInteger)childContainer[0]).longValue());
+              for (Object object : list) {
+                count += (Integer)object;
+              }
               child.setWaitSupplyCount(count);
               containerList.add(child);
             }
@@ -248,8 +251,9 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         for (Object[] goodsObj : objects) {
           String goodsSn = (String)goodsObj[2];
           WaitSupplyContainerGoods goods = new WaitSupplyContainerGoods((Long)goodsObj[0], (String)goodsObj[1],
-              (String)goodsObj[2], (String)goodsObj[3], (Integer)goodsObj[5], (Integer)goodsObj[6]);
+              (String)goodsObj[2], (String)goodsObj[3], (Integer)goodsObj[4], (Integer)goodsObj[5]);
           goods.setGoodsPic((String)goodsPicDao.findGoodsPicByGoodsSn(goodsSn));
+          goodsList.add(goods);
         }
         return goodsList;
       }
@@ -264,7 +268,7 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         for (SupplyRecord record : records) {
           SupplementList supplementList = supplementListDao.find(record.getSupplementId());
           SupplementRecord supplementRecord = new SupplementRecord();
-//          supplementRecord.setChannel(supplementList.getChannel());
+          supplementRecord.setChannel(supplementList.getChannel());
           supplementRecord.setCntrId(supplementList.getCntrId());
           supplementRecord.setCntrSn(supplementList.getCntrSn());
           supplementRecord.setSceneId(supplementList.getSceneId());
@@ -302,13 +306,14 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
       public void uploadSupplementPic(Long suppId, Long cntrId, String picPath) {
         SupplementPic supplementPic = new SupplementPic();
         supplementPic.setSource(picPath);
-        supplementPicDao.persist(supplementPic);
         List<SupplementRecord> records = supplementRecordDao.findRecordByCntrId(suppId, cntrId);
-        System.out.println(records.size());
         for (SupplementRecord supplementRecord : records) {
           supplementRecord.setSuppPic(supplementPic);
-          supplementRecordDao.merge(supplementRecord);
         }
+        Set<SupplementRecord> recordSet = new HashSet<>();
+        recordSet.addAll(records);
+        supplementPic.setSupplementRecords(recordSet);
+        supplementPicDao.persist(supplementPic);
       }
 
       //完成补货

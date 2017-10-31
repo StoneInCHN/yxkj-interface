@@ -47,9 +47,9 @@ public class MsgKeeperServiceImpl extends BaseServiceImpl<MsgKeeper,Long> implem
       }
       
       @Override
-      public List<KeeperNoticeItem> getTypeNotices(Long userId, String type) {
+      public List<KeeperNoticeItem> getTypeNotices(Long userId, String msgType) {
         List<KeeperNoticeItem> items = new LinkedList<>();
-        List<Object[]> contents = msgKeeperDao.getKeeperMsgByType(userId, type);
+        List<Object[]> contents = msgKeeperDao.getKeeperMsgByType(userId, msgType);
         for (Object[] content : contents) {
           KeeperNoticeItem noticeItem = new KeeperNoticeItem();
           noticeItem.setTitle((String)content[0]);

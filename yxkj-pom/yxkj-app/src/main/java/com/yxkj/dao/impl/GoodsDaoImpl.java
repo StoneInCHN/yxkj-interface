@@ -15,7 +15,7 @@ public class GoodsDaoImpl extends  BaseDaoImpl<Goods,Long> implements GoodsDao {
   @SuppressWarnings("unchecked")
   @Override
   public List<Object[]> getContainerGoodsList(Long cntrId, int pageNo, int pageSize) {
-    String jpql = "SELECT c.id, c.Sn, c.goods.sn, c.goods.name , c.surplus, (c.capacity-c.surplus)"
+    String jpql = "SELECT c.id, c.sn, c.goods.sn, c.goods.name , c.surplus, (c.capacity-c.surplus)"
         + " FROM ContainerChannel c WHERE c.cntr.id = :cntrId";
     Query query = entityManager.createQuery(jpql).setParameter("cntrId", cntrId)
         .setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);

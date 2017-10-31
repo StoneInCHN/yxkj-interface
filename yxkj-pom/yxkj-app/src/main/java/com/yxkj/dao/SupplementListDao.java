@@ -7,7 +7,7 @@ import com.yxkj.framework.dao.BaseDao;
 
 public interface SupplementListDao extends  BaseDao<SupplementList,Long>{
   
-  Integer findWaitSupplyCountByCntrId(Long cntrId);
+  List<Object> findWaitSupplyCountByCntrId(Long cntrId);
   
   List<Object> findWaitSupplyCountBySuppId(Long suppId);
   
