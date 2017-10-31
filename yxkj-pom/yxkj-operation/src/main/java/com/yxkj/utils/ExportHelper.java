@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.GoodsPic;
+import com.yxkj.entity.Order;
 import com.yxkj.entity.SupplementList;
 import com.yxkj.entity.SupplementRecord;
 import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
+import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 
 /**
  * 准备导出数据
@@ -111,6 +113,38 @@ public class ExportHelper {
     }
     return mapList;
   }
+
+  public List<Map<String, String>> prepareExportProKeeperOrderList(List<Order> lists) {
+    List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
+    for (Order record : lists) {
+      Map<String, String> map = new HashMap<String, String>();
+      map.put("sceneName", record.getSceneName());
+      map.put("sn", record.getSn());
+      map.put("amount", record.getAmount().toString());
+      map.put("itemCount", record.getItemCount().toString());
+      if (record.getStatus() != null) {
+        if (record.getStatus() == OrderStatus.FINISHED) {
+          map.put("status", "已完成");
+        }
+        if (record.getStatus() == OrderStatus.PAID) {
+          map.put("status", "已支付");
+        }
+      }
+      map.put("createDate",
+          TimeUtils.format("yyyy-MM-dd HH:mm:ss", record.getCreateDate().getTime()));
+      map.put("fenRunPoint", "0");
+      if (record.getFenRunPoint() != null) {
+        map.put("fenRunPoint", record.getFenRunPoint().toString());
+      }
+      map.put("fenRunAmount", "0");
+      if (record.getFenRunAmount() != null) {
+        map.put("fenRunAmount", record.getFenRunAmount().toString());
+      }
+      mapList.add(map);
+    }
+    return mapList;
+  }
+
 
   public List<Map<String, String>> prepareExportSupplementList(List<SupplementList> lists) {
     List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();

@@ -341,7 +341,7 @@ public class CommonEnum {
 
 
   /**
-   * 通知类型
+   * 管家通知类型
    *
    */
   public enum RemindType {
@@ -349,6 +349,19 @@ public class CommonEnum {
     SUPPLY,
     /** 缺货通知 1 */
     LACK
+  }
+
+  /**
+   * 其他消息类型
+   *
+   */
+  public enum OtherMsgType {
+    /** 出货异常 0 */
+    SHIPMENTEXCEPTION,
+    /** 用户反馈 1 */
+    USERFEEDBACK,
+    /** 系统消息 2 */
+    SYSTEM
   }
 
   /**
