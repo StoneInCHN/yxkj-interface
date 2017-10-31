@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
 import com.yxkj.json.base.BaseResponse;
@@ -71,6 +72,7 @@ public class ReplenishmentController extends MobileBaseController {
               waitSupplyListRequest.getPageNo(),
               Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyState", "获取货柜待补情况失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -96,6 +98,7 @@ public class ReplenishmentController extends MobileBaseController {
       sceneList = supplementListService.getWaitSupplySceneList(waitSupplyListRequest.getUserId());
       sceneMap.put("groups", sceneList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplySceneList", "获取待补优享空间失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -122,6 +125,7 @@ public class ReplenishmentController extends MobileBaseController {
           supplementListService.getWaitSupplyGoodsCategoryList(waitSupplyListRequest.getUserId());
       cateMap.put("groups", goodsCategoryList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyGoodsCategoryList", "获取待补商品类别失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -153,6 +157,7 @@ public class ReplenishmentController extends MobileBaseController {
               Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
       goodsMap.put("groups", waitSupplyGoodsList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyGoodsList", "获取待补商品清单失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -178,6 +183,7 @@ public class ReplenishmentController extends MobileBaseController {
           supplementListService.getWaitSupplyGoodsDetails(waitSupplyListRequest.getUserId(),
               waitSupplyListRequest.getGoodsSn());
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyGoodsDetails", "获取待补商品详情失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -207,6 +213,7 @@ public class ReplenishmentController extends MobileBaseController {
         response.setMsg(map);
       }
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "startSupplyGoods", "开始补货失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -235,6 +242,7 @@ public class ReplenishmentController extends MobileBaseController {
                   .valueOf(waitSupplyListRequest.getPageSize()).intValue());
       goodsMap.put("groups", waitSupplyContainerGoodsList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getWaitSupplyContainerGoodsList", "获取货柜待补商品清单失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -264,6 +272,7 @@ public class ReplenishmentController extends MobileBaseController {
               Integer.valueOf(waitSupplyListRequest.getPageSize()).intValue());
       goodsMap.put("groups", waitSupplyContainerGoodsList);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getContainerGoodsList", "获取货柜全部商品清单失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -288,6 +297,7 @@ public class ReplenishmentController extends MobileBaseController {
       supplementListService.commitSupplyRecords(request.getUserId(), request.getSceneSn(),
           request.getSupplementRecords());
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "commitSupplementRecord", "提交补货记录失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));
@@ -319,6 +329,7 @@ public class ReplenishmentController extends MobileBaseController {
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "uploadSupplementPic", "上传补货照片失败");
       return response;
     }
     return response;
@@ -342,6 +353,7 @@ public class ReplenishmentController extends MobileBaseController {
         response.setMsg(map);
       }
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "finishSupplyGoods", "完成补货失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.fail"));
@@ -367,6 +379,7 @@ public class ReplenishmentController extends MobileBaseController {
           request.getPageNo(), Integer.valueOf(request.getPageSize()).intValue());
       supplyRecordMap.put("groups", records);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getSupplementSumRecord", "查看总补货记录失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));
@@ -393,6 +406,7 @@ public class ReplenishmentController extends MobileBaseController {
               request.getSceneSn());
       supplyRecordMap.put("groups", recordlist);
     } catch (Exception e) {
+      LogUtil.debug(this.getClass(), "getSupplementRecordDetails", "查看补货记录详情失败");
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_COMMON);
       response.setDesc(message("yxkj.request.failed"));

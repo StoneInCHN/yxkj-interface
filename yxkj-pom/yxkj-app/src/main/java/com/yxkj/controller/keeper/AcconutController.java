@@ -185,23 +185,23 @@ public class AcconutController extends MobileBaseController {
       LogUtil.debug(this.getClass(), "getVerificationCode", "用户不存在");
       return response;
     }
-    String code;
+    String code = SmsUtil.getRandNum(6);
+    String stateInfo = "";
     try {
-      code = SmsUtil.getRandNum(6);
-      SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
+      stateInfo = SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
       redisTemplate.opsForValue().set(type+"_"+cellPhoneNum, code, setting.getSmsCodeTimeOut(), TimeUnit.SECONDS);
     } catch (Exception e) {
       e.printStackTrace();
       response.setCode(CommonAttributes.FAIL_SMSTOKEN);
       response.setDesc(message("yxkj.keeper.getVerificationCode.fail"));
-      LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码失败");
+      LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码失败;Number:%s code:%s stateInfo:%s", cellPhoneNum, code, stateInfo);
       return response;
     }
     map.put("code", code);
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.keeper.getVerificationCode.success"));
     response.setMsg(map);
-    LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码成功");
+    LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码成功;Number:%s code:%s stateInfo:%s", cellPhoneNum, code, stateInfo);
     return response;
   }
 
@@ -393,7 +393,7 @@ public class AcconutController extends MobileBaseController {
     }
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
     String newPwd = KeyGenerator.decrypt(keeperAccountRequest.getNewPwd(), privateKey);
-    String pattern = "^[a-zA-Z0-9]{8,}&";
+    String pattern = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}";
     Pattern p = Pattern.compile(pattern);
     Matcher matcher = p.matcher(newPwd);
     if(!matcher.matches()){

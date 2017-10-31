@@ -15,7 +15,7 @@
 		
 		<!-- 短信平台-->
 		<!-- 发送短信URL -->
-		<setting name="smsUrl" value="http://124.172.234.157:8180/Service.asmx/SendMessage" />
+		<setting name="smsUrl" value="http://124.172.234.157:8180/Service.asmx/SendMessageStr" />
 		<!-- 机构代码 -->
 		<setting name="smsOrgId" value="300" />
 		<!-- 用户名 -->
