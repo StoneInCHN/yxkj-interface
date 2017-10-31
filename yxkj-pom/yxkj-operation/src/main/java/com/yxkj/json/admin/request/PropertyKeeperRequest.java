@@ -1,6 +1,8 @@
 package com.yxkj.json.admin.request;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import com.yxkj.json.base.BaseRequest;
 
@@ -15,16 +17,18 @@ public class PropertyKeeperRequest extends BaseRequest{
 	 * 手机号
 	 */
 	private String cellPhoneNum;
-	
-	/**
-	 * 分润点(物业)
-	 */
-	private BigDecimal fenRunPoint;
-
+		
 	/**
 	 * 管家管理的优享空间IDs
 	 */
 	private Long[] sceneIds = null;
+
+	/**
+	 * 物业 所选优享空间对应分润点 列表 
+	 * 例如 [{"id":1},{"point":10}]
+	 */
+	private List<Map<String, Object>> idPoints = new ArrayList<Map<String, Object>>();
+	
 
 	public String getRealName() {
 		return realName;
@@ -50,13 +54,12 @@ public class PropertyKeeperRequest extends BaseRequest{
 		this.sceneIds = sceneIds;
 	}
 
-	public BigDecimal getFenRunPoint() {
-		return fenRunPoint;
+	public List<Map<String, Object>> getIdPoints() {
+		return idPoints;
 	}
 
-	public void setFenRunPoint(BigDecimal fenRunPoint) {
-		this.fenRunPoint = fenRunPoint;
+	public void setIdPoints(List<Map<String, Object>> idPoints) {
+		this.idPoints = idPoints;
 	}
-	
-	
+
 }

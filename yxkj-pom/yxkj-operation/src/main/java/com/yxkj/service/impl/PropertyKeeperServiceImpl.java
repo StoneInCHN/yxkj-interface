@@ -1,6 +1,8 @@
 package com.yxkj.service.impl; 
 
+import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -40,7 +42,6 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
   			keeper = new PropertyKeeper();
   			keeper.setAccountStatus(AccountStatus.ACTIVED);
   			keeper.setCellPhoneNum(request.getCellPhoneNum());
-  			//keeper.setFenRunPoint(request.getFenRunPoint());
   			boolean exists = false;
   		    do {
   			    String newUserName = new GenerateRandom().createPassWord(13);//生成随机用户名
@@ -52,9 +53,14 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
   		    keeper.setLoginPwd(newPwd);
   		    keeper.setRealName(request.getRealName());
 
-  			for (Long sceneId : request.getSceneIds()) {
-  				Scene scene = sceneService.find(sceneId);
-  				keeper.getScenes().add(scene);
+  			for (Map<String, Object> idPoint : request.getIdPoints()) {
+  				if (idPoint.get("id") != null && idPoint.get("point") != null) {
+  	  				Long sceneId = Long.parseLong(idPoint.get("id").toString());
+  	  				Scene scene = sceneService.find(sceneId);
+  	  				BigDecimal fenRunPoint = new BigDecimal(idPoint.get("point").toString());
+  	  			    scene.setFenRunPoint(fenRunPoint);
+  	  				keeper.getScenes().add(scene);
+				}
   			}
   		}else {
   			keeper = find(id);
@@ -62,12 +68,16 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
   				keeper.setAccountStatus(AccountStatus.ACTIVED);
   				keeper.setCellPhoneNum(request.getCellPhoneNum());
   				keeper.setRealName(request.getRealName());
-  				//keeper.setFenRunPoint(request.getFenRunPoint());
   				keeper.setScenes(new HashSet<Scene>());
-  				for (Long sceneId : request.getSceneIds()) {
-  					Scene scene = sceneService.find(sceneId);
-  					keeper.getScenes().add(scene);
-  				}
+  	  			for (Map<String, Object> idPoint : request.getIdPoints()) {
+  	  				if (idPoint.get("id") != null && idPoint.get("point") != null) {
+  	  	  				Long sceneId = Long.parseLong(idPoint.get("id").toString());
+  	  	  				Scene scene = sceneService.find(sceneId);
+  	  	  				BigDecimal fenRunPoint = new BigDecimal(idPoint.get("point").toString());
+  	  	  			    scene.setFenRunPoint(fenRunPoint);
+  	  	  				keeper.getScenes().add(scene);
+  					}
+  	  			}
   			}
   		}
   		return keeper;
@@ -89,23 +99,26 @@ public class PropertyKeeperServiceImpl extends BaseServiceImpl<PropertyKeeper,Lo
 		keeper.setAccountStatus(AccountStatus.ACTIVED);
 		keeper.setCellPhoneNum(request.getCellPhoneNum());
 		keeper.setRealName(request.getRealName());
-		//keeper.setFenRunPoint(request.getFenRunPoint());
 		if (keeper != null) {
 			if (keeper.getScenes() != null && keeper.getScenes().size() > 0) {
 				for (Scene scene : keeper.getScenes()) {
 					scene.setPropertyKeeper(null);
+					scene.setFenRunPoint(null);
 					sceneService.update(scene);
 				}
 			}
 			keeper.setScenes(new HashSet<Scene>());
 			update(keeper);
-			if (request.getSceneIds() != null) {
-				for (Long sceneId : request.getSceneIds()) {
-					Scene scene = sceneService.find(sceneId);
-					scene.setPropertyKeeper(keeper);
-					sceneService.update(scene);
-				}
-			}
+	  		for (Map<String, Object> idPoint : request.getIdPoints()) {
+  	  				if (idPoint.get("id") != null && idPoint.get("point") != null) {
+  	  	  				Long sceneId = Long.parseLong(idPoint.get("id").toString());
+  	  	  				Scene scene = sceneService.find(sceneId);
+  	  	  				BigDecimal fenRunPoint = new BigDecimal(idPoint.get("point").toString());
+  	  	  			    scene.setFenRunPoint(fenRunPoint);
+  	  	  			    scene.setPropertyKeeper(keeper);
+  	  	  			    sceneService.update(scene);
+  					}
+  	  		}
 		}
 	}
 

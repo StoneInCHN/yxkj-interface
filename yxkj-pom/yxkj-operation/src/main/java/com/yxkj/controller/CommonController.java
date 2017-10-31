@@ -175,7 +175,7 @@ public class CommonController extends BaseController {
     if (admin == null) {
         //下个版本，物业有自己的登录平台后，这块代码需要移除 start
   		List<Filter> filters = new ArrayList<Filter>();
-  		filters.add(Filter.eq("userName", userName));
+  		filters.add(Filter.eq("cellPhoneNum", userName));
       	PropertyKeeper propertyKeeper = propertyKeeperService.findFirst(filters, null);
       	if (propertyKeeper != null && DigestUtils.md5Hex(password).equals(propertyKeeper.getLoginPwd())) {
   			Admin keeper = new Admin();
