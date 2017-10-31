@@ -112,6 +112,38 @@ public class Order extends BaseEntity {
    */
   private String deviceNo;
 
+  /**
+   * 分润点(物业)
+   */
+  private BigDecimal fenRunPoint;
+
+  /**
+   * 物业分成
+   */
+  private BigDecimal fenRunAmount;
+
+  @Column(scale = 4, precision = 10)
+  public BigDecimal getFenRunPoint() {
+    return fenRunPoint;
+  }
+
+  public void setFenRunPoint(BigDecimal fenRunPoint) {
+    this.fenRunPoint = fenRunPoint;
+  }
+
+  @Column(scale = 6, precision = 16)
+  public BigDecimal getFenRunAmount() {
+    return fenRunAmount;
+  }
+
+
+
+  public void setFenRunAmount(BigDecimal fenRunAmount) {
+    this.fenRunAmount = fenRunAmount;
+  }
+
+
+
   @Column(length = 50)
   public String getSceneName() {
     return sceneName;
