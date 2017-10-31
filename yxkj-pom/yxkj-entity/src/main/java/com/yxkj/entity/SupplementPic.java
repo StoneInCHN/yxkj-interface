@@ -1,14 +1,11 @@
 package com.yxkj.entity;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -16,6 +13,8 @@ import javax.validation.constraints.Min;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.validator.constraints.Length;
+
+import com.yxkj.entity.base.BaseEntity;
 
 /**
  * Entity - 管家上传的补货图片
@@ -26,12 +25,9 @@ import org.hibernate.validator.constraints.Length;
 @Entity
 @Table(name = "t_supp_goods_image")
 @SequenceGenerator(name = "sequenceGenerator", sequenceName = "t_supp_goods_image_sequence")
-public class SupplementPic implements Serializable, Comparable<SupplementPic> {
-
+public class SupplementPic extends BaseEntity {
 
   private static final long serialVersionUID = -673883300094536107L;
-
-  private Long id;
 
   /** 标题 */
   private String title;
@@ -64,25 +60,6 @@ public class SupplementPic implements Serializable, Comparable<SupplementPic> {
     this.supplementRecords = supplementRecords;
   }
 
-  /**
-   * 获取Id
-   * 
-   * @return Id
-   */
-  @Id
-  @GeneratedValue
-  public Long getId() {
-    return id;
-  }
-
-  /**
-   * 获取Id
-   * 
-   * @return Id
-   */
-  public void setId(Long id) {
-    this.id = id;
-  }
 
   /**
    * 获取标题

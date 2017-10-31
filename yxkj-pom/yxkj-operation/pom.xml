@@ -386,7 +386,7 @@
 		</dependency>
 		
 		<!-- jpush -->
-		<!-- <dependency>
+		<dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
        	</dependency>
@@ -401,7 +401,7 @@
         <dependency>
 	    	<groupId>cn.jpush.api</groupId>
 	   	    <artifactId>jpush-client</artifactId>
-		</dependency> -->
+		</dependency>
 		<!-- http://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
 		<dependency>
 		    <groupId>commons-httpclient</groupId>
