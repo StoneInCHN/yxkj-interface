@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yxkj.aspect.UserValidCheck;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.MobileBaseController;
@@ -133,6 +134,7 @@ public class AcconutController extends MobileBaseController {
       return response;
     }
     String password = KeyGenerator.decrypt(keeperAccountRequest.getPassword(), privateKey);
+//    String password = keeperAccountRequest.getPassword();
     if (StringUtils.isEmpty(password)||!DigestUtils.md5Hex(password).equals(keeper.getLoginPwd())) {
       response.setCode(CommonAttributes.ERROR_PASS);
       response.setDesc(message("yxkj.keeper.password.error"));
@@ -269,6 +271,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
+  @UserValidCheck
   @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
   @ApiOperation(value = "修改密码", httpMethod = "POST", response = BaseResponse.class,
       notes = "通过旧密码修改密码")
@@ -347,7 +350,6 @@ public class AcconutController extends MobileBaseController {
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
     String inputCode = keeperAccountRequest.getVerificationCode();
     String code = redisTemplate.opsForValue().get("resetPwd_"+cellPhoneNum);
-    System.out.println(code);
     if (StringUtils.isEmpty(inputCode)) {
       response.setCode(CommonAttributes.MISSING_REQUIRE_PARAM);
       response.setDesc(message("yxkj.request.param.missing"));
@@ -402,8 +404,11 @@ public class AcconutController extends MobileBaseController {
     }
     try {
       containerKeeperService.resetPassword(cellPhoneNum, DigestUtils.md5Hex(newPwd));
+      ContainerKeeper keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.keeper.password.reset.success"));
+      response.setToken(TokenUtil.getJWTString(keeper.getId().toString(), ""));
+      response.setMsg(keeper);
       LogUtil.debug(this.getClass(), "resetPassword", "重置密码成功");
       return response;
     } catch (Exception e) {
@@ -420,6 +425,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
+  @UserValidCheck
   @RequestMapping(value = "/getMsg", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
@@ -448,6 +454,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
+  @UserValidCheck
   @RequestMapping(value = "/getMsgDetails", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息详情", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息详情")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
