@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 
+import com.yxkj.service.VendingContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,8 @@ import com.yxkj.entity.VendingContainer;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
 import com.yxkj.service.CmdService;
 import com.yxkj.service.ContainerChannelService;
-import com.yxkj.service.OrderService;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author huyong
@@ -31,6 +33,9 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
 
   @Resource(name = "containerChannelServiceImpl")
   private ContainerChannelService containerChannelService;
+
+  @Resource(name = "vendingContainerServiceImpl")
+  private VendingContainerService vendingContainerService;
   private ReceiverClient receiverClient;
 
   @Autowired
@@ -63,7 +68,7 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
     StringBuilder content = new StringBuilder();
     content.append("channelId:");
     content.append(channelId);
-    Long recordId = saveCommandRecord(deviceNo, CommonEnum.CmdType.SELL_OUT, content.toString());
+    Long recordId = saveCommandRecord(deviceNo, CommonEnum.CmdType.SELL_OUT_TEST, content.toString());
     try {
       receiverClient.sellOutTest(deviceNo, recordId, address, addressType,
           containerChannel.getSn());
@@ -74,11 +79,16 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
 
 
   @Override
-  public void updateAudioVolume(String deviceNo, float volume) {
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void updateAudioVolume(String deviceNo, String volume) {
     try {
       Long recordId =
           saveCommandRecord(deviceNo, CommonEnum.CmdType.VOLUME, String.valueOf(volume));
-      CmdMsg cmdMsg = receiverClient.updateAudioVolume(deviceNo, volume, recordId);
+      CmdMsg cmdMsg =
+          receiverClient.updateAudioVolume(deviceNo, Float.parseFloat(volume), recordId);
+      VendingContainer vendingContainer = vendingContainerService.getByImei(deviceNo);
+      vendingContainer.setVolume(volume);
+      vendingContainerService.update(vendingContainer);
       LogUtil.debug(this.getClass(), "updateAudioVolume", "CmdMsg = %s", cmdMsg.toString());
     } catch (IOException e) {
       e.printStackTrace();

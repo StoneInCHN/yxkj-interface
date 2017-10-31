@@ -15,7 +15,7 @@ public interface CmdService extends BaseService<CommandRecord, Long> {
   void salesOutTest(Long cntrId);
 
 
-  void updateAudioVolume(String deviceNo, float volume);
+  void updateAudioVolume(String deviceNo, String volume);
 
 
   void appReboot(String deviceNo);

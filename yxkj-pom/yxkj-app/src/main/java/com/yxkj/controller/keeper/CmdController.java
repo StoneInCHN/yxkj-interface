@@ -54,7 +54,7 @@ public class CmdController extends MobileBaseController {
   public BaseResponse updateAudioVolume(@ApiParam(name = "请求参数(json)", value = "deviceNo:设备号；volume:音量（0-100）",
       required = true) @RequestBody CmdRequest request) {
     BaseResponse response = new BaseResponse();
-    cmdService.updateAudioVolume(request.getDeviceNo(), Float.parseFloat(request.getVolume()));
+    cmdService.updateAudioVolume(request.getDeviceNo(), request.getVolume());
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }

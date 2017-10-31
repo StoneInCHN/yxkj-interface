@@ -5,11 +5,13 @@ import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.CommandRecord;
 import com.yxkj.json.base.BaseResponse;
+import com.yxkj.json.request.MachineInfoRequest;
 import com.yxkj.service.CmdService;
 import com.yxkj.service.CommandRecordService;
-import com.yxkj.service.OrderService;
+import com.yxkj.service.VendingContainerService;
 import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -31,8 +33,8 @@ public class CommandRecordController extends MobileBaseController {
   @Resource(name = "cmdServiceImpl")
   private CmdService cmdService;
 
-  @Resource(name = "orderServiceImpl")
-  private OrderService orderService;
+  @Resource(name = "vendingContainerServiceImpl")
+  private VendingContainerService vendingContainerService;
 
   /**
    * 更新命令状态
@@ -82,5 +84,23 @@ public class CommandRecordController extends MobileBaseController {
     return response;
   }
 
+  /**
+   * 设备开机上传初始数据
+   */
+  @RequestMapping("initStatus")
+  @ApiOperation(value = "设备开机上传初始数据", httpMethod = "POST", response = BaseResponse.class,
+      notes = "设备开机上传初始数据")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
+  @ResponseBody
+  public BaseResponse initStatus(
+      @ApiParam(name = "请求参数(json)", value = "deviceNo:设备编号 | volume:音量（0-100）",
+          required = true) @RequestBody MachineInfoRequest request) {
+
+    BaseResponse response = new BaseResponse();
+    vendingContainerService.initMachineStatus(request);
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
 
 }

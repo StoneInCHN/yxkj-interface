@@ -2,6 +2,8 @@ package com.yxkj.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.FlushModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository; 
@@ -29,5 +31,17 @@ public class VendingContainerDaoImpl extends  BaseDaoImpl<VendingContainer,Long>
     
     return query.getResultList();
   }
-  
+  @Override
+  public VendingContainer getByImei(String imei) {
+    if (imei == null) {
+      return null;
+    }
+    try {
+      String jpql = "select vc from VendingContainer vc where vc.sn = :imei";
+      return entityManager.createQuery(jpql, VendingContainer.class)
+          .setFlushMode(FlushModeType.COMMIT).setParameter("imei", imei).getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
+  }
 }

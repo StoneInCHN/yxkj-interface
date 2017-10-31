@@ -5,4 +5,5 @@ import com.yxkj.framework.service.BaseService;
 
 public interface VendingContainerService extends BaseService<VendingContainer,Long>{
 
+		VendingContainer getByImei(String deviceNo);
 }

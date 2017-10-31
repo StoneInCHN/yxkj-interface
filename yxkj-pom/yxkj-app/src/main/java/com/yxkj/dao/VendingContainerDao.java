@@ -9,4 +9,6 @@ public interface VendingContainerDao extends  BaseDao<VendingContainer,Long>{
   List<Object[]> findCentralVendingContainer(String sceneSn);
   
   List<Object[]> findChildrenVendingContainer(Long id);
+
+  VendingContainer getByImei(String imei);
 }

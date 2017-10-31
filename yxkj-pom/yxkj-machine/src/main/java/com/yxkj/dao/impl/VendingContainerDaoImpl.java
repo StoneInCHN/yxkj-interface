@@ -19,7 +19,7 @@ public class VendingContainerDaoImpl extends BaseDaoImpl<VendingContainer, Long>
       return null;
     }
     try {
-      String jpql = "select vc from VendingContainer where vc.sn = :imei";
+      String jpql = "select vc from VendingContainer vc where vc.sn = :imei";
       return entityManager.createQuery(jpql, VendingContainer.class)
           .setFlushMode(FlushModeType.COMMIT).setParameter("imei", imei).getSingleResult();
     } catch (NoResultException e) {
