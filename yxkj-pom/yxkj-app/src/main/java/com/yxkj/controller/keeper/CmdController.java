@@ -2,6 +2,8 @@ package com.yxkj.controller.keeper;
 
 import javax.annotation.Resource;
 
+import com.yxkj.entity.VendingContainer;
+import com.yxkj.service.VendingContainerService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +27,9 @@ public class CmdController extends MobileBaseController {
   @Resource(name = "cmdServiceImpl")
   private CmdService cmdService;
 
+  @Resource(name = "vendingContainerServiceImpl")
+  private VendingContainerService vendingContainerService;
+
   /**
    * 测试出货
    */
@@ -35,7 +40,7 @@ public class CmdController extends MobileBaseController {
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
   public BaseResponse salesOutTest(@ApiParam(name = "请求参数(json)", value = "channelId:货道ID",
-      required = true)@RequestBody CmdRequest request) {
+      required = true) @RequestBody CmdRequest request) {
     BaseResponse response = new BaseResponse();
     cmdService.salesOutTest(request.getChannelId());
     response.setCode(CommonAttributes.SUCCESS);
@@ -51,13 +56,14 @@ public class CmdController extends MobileBaseController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
-  public BaseResponse updateAudioVolume(@ApiParam(name = "请求参数(json)", value = "deviceNo:设备号；volume:音量（0-100）",
-      required = true) @RequestBody CmdRequest request) {
+  public BaseResponse updateAudioVolume(@ApiParam(name = "请求参数(json)",
+      value = "deviceNo:设备号；volume:音量（0-100）", required = true) @RequestBody CmdRequest request) {
     BaseResponse response = new BaseResponse();
     cmdService.updateAudioVolume(request.getDeviceNo(), request.getVolume());
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
+
   /**
    * 重启设备
    */
@@ -68,10 +74,28 @@ public class CmdController extends MobileBaseController {
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
   public BaseResponse rebootSystem(@ApiParam(name = "请求参数(json)", value = "deviceNo:设备号",
-      required = true)@RequestBody CmdRequest request) {
+      required = true) @RequestBody CmdRequest request) {
     BaseResponse response = new BaseResponse();
     cmdService.appReboot(request.getDeviceNo());
     response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+
+  /**
+   * 重启设备
+   */
+  @RequestMapping("getCurrentVolume")
+  @ApiOperation(value = "getCurrentVolume", httpMethod = "POST", response = BaseResponse.class,
+      notes = "getCurrentVolume", tags = "CmdController")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
+  @ResponseBody
+  public BaseResponse getCurrentVolume(@ApiParam(name = "请求参数(json)", value = "deviceNo:设备号",
+      required = true) @RequestBody CmdRequest request) {
+    BaseResponse response = new BaseResponse();
+    VendingContainer vendingContainer = vendingContainerService.getByImei(request.getDeviceNo());
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(vendingContainer.getVolume());
     return response;
   }
 }
