@@ -25,8 +25,8 @@ public class MsgKeeperDaoImpl extends  BaseDaoImpl<MsgKeeper,Long> implements Ms
   @SuppressWarnings("unchecked")
   @Override
   public List<Object[]> getKeeperMsgByType(Long userId, String msgType) {
-    String jpql = "SELECT k.title, k.content, k.remark, k.sendDate FROM KeeperRemindMsg k, MsgKeeper m"
-        + " WHERE m.message = k AND k.type = :msgType AND m.keeper.id = :userId ORDER BY k.sendDate ASC";
+    String jpql = "SELECT k.title, k.content, k.remark, k.createDate FROM KeeperRemindMsg k, MsgKeeper m"
+        + " WHERE m.message = k AND k.type = :msgType AND m.keeper.id = :userId ORDER BY k.createDate ASC";
     Query query = entityManager.createQuery(jpql).setParameter("userId", userId)
         .setParameter("msgType", CommonEnum.RemindType.valueOf(msgType));
     return query.getResultList();
