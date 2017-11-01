@@ -31,7 +31,8 @@ public class SupplementSumRecDaoImpl extends  BaseDaoImpl<SupplementSumRec,Long>
   @SuppressWarnings("unchecked")
   public List<Object> findSupplyDate(Long suppId, int pageNo, int pageSize) {
     String sql = "SELECT DISTINCT DATE_FORMAT(supp_end_time,'%m.%d')"
-        + " FROM t_supp_sum_rec WHERE supp_id = :suppId AND supp_end_time is not NULL";
+        + " FROM t_supp_sum_rec WHERE supp_id = :suppId AND supp_end_time is not NULL"
+        + " ORDER BY supp_end_time ASC";
     Query query = entityManager.createNativeQuery(sql).setParameter("suppId", suppId)
         .setFirstResult((pageNo-1)*pageSize).setMaxResults(pageSize);
     
