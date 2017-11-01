@@ -5,5 +5,5 @@ import com.yxkj.framework.service.BaseService;
 
 public interface CommandRecordService extends BaseService<CommandRecord, Long> {
 
-  CommandRecord updateCmdStatus(Long recordId, boolean isSuccess);
+  CommandRecord updateCmdStatus(Long recordId, boolean isSuccess,String extMap);
 }

@@ -5,6 +5,7 @@ import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.controller.base.MobileBaseController;
 import com.yxkj.entity.CommandRecord;
 import com.yxkj.json.base.BaseResponse;
+import com.yxkj.json.request.CommandRequest;
 import com.yxkj.json.request.MachineInfoRequest;
 import com.yxkj.service.CmdService;
 import com.yxkj.service.CommandRecordService;
@@ -67,16 +68,14 @@ public class CommandRecordController extends MobileBaseController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
-  @ApiImplicitParams({
-      @ApiImplicitParam(paramType = "query", name = "commandId", value = "命令记录ID号", required = true,
-          dataType = "Long"),
-      @ApiImplicitParam(paramType = "query", name = "isSuccess", value = "操作是否成功", required = true,
-          dataType = "Boolean")})
-  public BaseResponse finishCmdStatus(Long commandId, Boolean isSuccess) {
+  public BaseResponse finishCmdStatus(
+      @ApiParam(value = "commandId:指令Id号，isSuccess:指令是否执行成功，extMsg:附加信息",
+          required = true) @RequestBody CommandRequest request) {
 
     BaseResponse response = new BaseResponse();
 
-    CommandRecord record = commandRecordService.updateCmdStatus(commandId, isSuccess);
+    CommandRecord record = commandRecordService.updateCmdStatus(request.getCommandId(),
+        request.getSuccess(), request.getExtMsg());
     if (record.getCmdStatus().equals(CommonEnum.CmdStatus.Finished))
       response.setCode(CommonAttributes.SUCCESS);
     else

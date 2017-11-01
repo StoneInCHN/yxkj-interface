@@ -65,10 +65,8 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
     String deviceNo = vendingContainer.getSn();
     String address = containerChannel.getCntr().getSn();
     int addressType = containerChannel.getCntr().getCategory().getCntrType().ordinal();
-    StringBuilder content = new StringBuilder();
-    content.append("channelId:");
-    content.append(channelId);
-    Long recordId = saveCommandRecord(deviceNo, CommonEnum.CmdType.SELL_OUT_TEST, content.toString());
+    Long recordId =
+        saveCommandRecord(deviceNo, CommonEnum.CmdType.SELL_OUT_TEST, channelId.toString());
     try {
       receiverClient.sellOutTest(deviceNo, recordId, address, addressType,
           containerChannel.getSn());

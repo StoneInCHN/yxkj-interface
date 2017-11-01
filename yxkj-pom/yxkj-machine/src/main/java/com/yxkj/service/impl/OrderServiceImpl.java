@@ -166,6 +166,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     if (!refundOrderItemList.isEmpty()) {
       refund(order, refundOrderItemList);
     }
+    //设置物业提成
+    Scene scene = sceneDao.find(order.getSceneId());
+    BigDecimal fenRunPoint = scene.getFenRunPoint();
+    if (fenRunPoint != null) {
+      order.setFenRunPoint(fenRunPoint);
+      order.setFenRunAmount(fenRunPoint.multiply(order.getAmount()));
+    }
     orderDao.merge(order);
     cmdService.notificationCmd(order.getDeviceNo(), CommonEnum.CmdType.PAYMENT_SUCCESS);
     cmdService.salesOut(order.getId());
