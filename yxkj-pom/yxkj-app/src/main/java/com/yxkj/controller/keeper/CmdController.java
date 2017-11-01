@@ -3,6 +3,7 @@ package com.yxkj.controller.keeper;
 import javax.annotation.Resource;
 
 import com.yxkj.entity.VendingContainer;
+import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.VendingContainerService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,9 @@ import com.yxkj.service.CmdService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller("CmdController")
 @RequestMapping("/cmd")
@@ -90,12 +94,14 @@ public class CmdController extends MobileBaseController {
   @ApiResponses({
       @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
   @ResponseBody
-  public BaseResponse getCurrentVolume(@ApiParam(name = "请求参数(json)", value = "deviceNo:设备号",
-      required = true) @RequestBody CmdRequest request) {
-    BaseResponse response = new BaseResponse();
+  public ResponseOne<Map<String, String>> getCurrentVolume(@ApiParam(name = "请求参数(json)",
+      value = "deviceNo:设备号", required = true) @RequestBody CmdRequest request) {
+    ResponseOne<Map<String, String>> response = new ResponseOne<Map<String, String>>();
     VendingContainer vendingContainer = vendingContainerService.getByImei(request.getDeviceNo());
+    Map<String, String> map = new HashMap<>();
+    map.put("volume", vendingContainer.getVolume());
+    response.setMsg(map);
     response.setCode(CommonAttributes.SUCCESS);
-    response.setDesc(vendingContainer.getVolume());
     return response;
   }
 }
