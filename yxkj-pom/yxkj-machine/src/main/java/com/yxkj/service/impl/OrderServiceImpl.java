@@ -8,11 +8,11 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.yxkj.common.client.ReceiverClient;
 import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.common.entity.CmdMsg;
 import com.yxkj.dao.*;
 import com.yxkj.entity.*;
+import com.yxkj.service.OrderItemTmpService;
 import com.yxkj.service.RefundHistoryService;
 import com.yxkj.utils.PayUtil;
 import org.springframework.stereotype.Service;
@@ -50,6 +50,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   @Resource(name = "cmdServiceImpl")
   private CmdService cmdService;
 
+  @Resource(name = "orderItemTmpServiceImpl")
+  private OrderItemTmpService orderItemTmpService;
   @Resource(name = "containerChannelDaoImpl")
   private ContainerChannelDao containerChannelDao;
 
@@ -145,15 +147,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
       // 更新库存
       if (containerChannel.getSurplus() > 0) {
         containerChannel.setSurplus(containerChannel.getSurplus() - 1);
-        switch (order.getPurMethod()) {
-          case CONTROLL_MACHINE:
-            containerChannel.setOfflineLocalLock(containerChannel.getOfflineLocalLock() - 1);
-            break;
-          case SCAN_CODE:
-          case INPUT_CODE:
-            containerChannel.setOfflineRemoteLock(containerChannel.getOfflineRemoteLock() - 1);
-            break;
-        }
+        orderItemTmpService.updateAfterPay(orderItem,containerChannel);
+
       } else {
         orderItem.setPickupStatus(LACK);
         orderItem.setRefundStatus(NOT_REFUND);
