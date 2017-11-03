@@ -32,10 +32,10 @@ public class Setting implements Serializable {
     /** 其它 */
     other
   }
-  
+
   /** 验证码类型 */
   private CaptchaType[] captchaTypes;
-  
+
   /** 缓存名称 */
   public static final String CACHE_NAME = "setting";
 
@@ -76,8 +76,6 @@ public class Setting implements Serializable {
   /** 短信平台密码 */
   private String smsPwd;
 
-  /** 登录验证码消息内容 */
-  private String smsContentTemp;
 
 
   /** 邮箱正则表达式 */
@@ -150,147 +148,22 @@ public class Setting implements Serializable {
   private String wechatMchId;
 
   /**
-   * 通知地址
+   * 微信退款接口
    */
-  private String wechatNotifyUrl;
+  private String wechatRefundUrl;
 
   /**
-   * 微信下订单接口
+   * 微信证书地址
    */
-  private String wechatAddOrderUrl;
-
-  /**
-   * 微信Token接口
-   */
-  private String wechatTokenUrl;
+  private String pkcs12Path;
 
 
-
-  /**
-   * 百度API坐标转换
-   */
-  private String convertMapUrl;
-
-  /**
-   * 百度API地址转坐标
-   */
-  private String convertAddressUrl;
-
-  /**
-   * 百度地图api key
-   */
-  private String mapAk;
-
-  /**
-   * 百度车联网api url
-   */
-  private String bdCarMapUrl;
-
-  /**
-   * 百度车联网api key
-   */
-  private String bdCarMapAk;
-
-  /**
-   * 百度车联网api mcode
-   */
-  private String bdCarMcode;
-
-  /**
-   * 百度车联网api 分页 每页记录数
-   */
-  private String bdNumber;
-
-  /**
-   * 百度车联网api 分页 页数
-   */
-  private String bdPage;
-
-  /**
-   * 百度API Store api key
-   */
-  private String bdApiStoreKey;
-
-  /**
-   * 百度API Store api 汉字转拼音
-   */
-  private String bdApiStoreHz2PyUrl;
-
-  /**
-   * 百度API Store api 获取生活指数
-   */
-  private String bdApiStoreWeatherUrl;
-
-  /**
-   * 百度车联网API 坐标修正
-   */
-  private String bdCarConvert;
-
-
-  /**
-   * 对外接口APIKEY
-   */
-  private String intfApiKey;
-
-  /**
-   * 新闻详情url
-   */
-  private String newsDetailsUrl;
-
-  /**
-   * 商品订单过期间隔时间(分钟)
-   */
-  private Integer orderTimeOut;
-
-  /**
-   * 商品订单默认自动收货天数(从发货日期计算)
-   */
-  private Integer orderReceiveTimeOut;
-
-  /**
-   * 商品订单默认自动收货天数(从发货日期计算)
-   */
-  private Integer orderCompleteTimeOut;
-
-  /**
-   * 授权跳转url
-   */
-  private String authRedirectUrl;
-
-  /**
-   * 下载页面
-   */
-  private String downloadPage;
-
-  /**
-   * 下载链接
-   */
-  private String downloadUrl;
-
-  /**
-   * 短信后缀
-   */
-  private String smsPostfix;
 
   /**
    * 应用APPID
    */
   private String alipayAppId;
 
-  /**
-   * 支付宝合作身份者ID
-   */
-  private String alipayPartner;
-
-  // /**
-  // * 开发者私钥(合作伙伴密钥)
-  // */
-  // private String alipayPartnerPrivateKey;
-  //
-  // /**
-  // * 支付宝的公钥(合作伙伴密钥)
-  // */
-  // private String alipayPartnerPublicKey;
 
   /**
    * 支付宝商户的私钥
@@ -302,53 +175,27 @@ public class Setting implements Serializable {
    */
   private String alipayPublicKey;
 
-  /**
-   * 支付宝异步通知接口
-   */
-  private String alipayNotifyUrl;
-
-  /**
-   * 支付宝同步通知接口
-   */
-  private String alipayReturnUrl;
-
-
-  /**
-   * 签约卖家支付宝账号
-   */
-  private String alipaySellerId;
-
-
-
-  /**
-   * 聚合数据 银行卡四元素验证URL
-   */
-  private String juheVerifyBankcard4;
-  /**
-   * 聚合数据 申请的key
-   */
-  private String juheKey;
-
-  /**
-   * 聚合数据 证件识别URL
-   */
-  private String juheVerifyCertificates;
-  /**
-   * 聚合数据 证件识别key
-   */
-  private String juheKeyCertificates;
 
   /**
    * jwt token key
    */
   private String tokenKey;
 
-  public String getAlipayReturnUrl() {
-    return alipayReturnUrl;
+
+  public String getWechatRefundUrl() {
+    return wechatRefundUrl;
   }
 
-  public void setAlipayReturnUrl(String alipayReturnUrl) {
-    this.alipayReturnUrl = alipayReturnUrl;
+  public void setWechatRefundUrl(String wechatRefundUrl) {
+    this.wechatRefundUrl = wechatRefundUrl;
+  }
+
+  public String getPkcs12Path() {
+    return pkcs12Path;
+  }
+
+  public void setPkcs12Path(String pkcs12Path) {
+    this.pkcs12Path = pkcs12Path;
   }
 
   public String getWxPublicAppId() {
@@ -383,54 +230,6 @@ public class Setting implements Serializable {
     this.tokenKey = tokenKey;
   }
 
-  public String getJuheVerifyCertificates() {
-    return juheVerifyCertificates;
-  }
-
-  public void setJuheVerifyCertificates(String juheVerifyCertificates) {
-    this.juheVerifyCertificates = juheVerifyCertificates;
-  }
-
-  public String getJuheKeyCertificates() {
-    return juheKeyCertificates;
-  }
-
-  public void setJuheKeyCertificates(String juheKeyCertificates) {
-    this.juheKeyCertificates = juheKeyCertificates;
-  }
-
-  public String getDownloadPage() {
-    return downloadPage;
-  }
-
-  public void setDownloadPage(String downloadPage) {
-    this.downloadPage = downloadPage;
-  }
-
-  public String getDownloadUrl() {
-    return downloadUrl;
-  }
-
-  public void setDownloadUrl(String downloadUrl) {
-    this.downloadUrl = downloadUrl;
-  }
-
-
-  public String getAlipaySellerId() {
-    return alipaySellerId;
-  }
-
-  public void setAlipaySellerId(String alipaySellerId) {
-    this.alipaySellerId = alipaySellerId;
-  }
-
-  public String getAlipayPartner() {
-    return alipayPartner;
-  }
-
-  public void setAlipayPartner(String alipayPartner) {
-    this.alipayPartner = alipayPartner;
-  }
 
   public String getAlipayPrivateKey() {
     return alipayPrivateKey;
@@ -448,29 +247,6 @@ public class Setting implements Serializable {
     this.alipayPublicKey = alipayPublicKey;
   }
 
-  public String getAlipayNotifyUrl() {
-    return alipayNotifyUrl;
-  }
-
-  public void setAlipayNotifyUrl(String alipayNotifyUrl) {
-    this.alipayNotifyUrl = alipayNotifyUrl;
-  }
-
-  public String getSmsPostfix() {
-    return smsPostfix;
-  }
-
-  public void setSmsPostfix(String smsPostfix) {
-    this.smsPostfix = smsPostfix;
-  }
-
-  public String getSmsContentTemp() {
-    return smsContentTemp;
-  }
-
-  public void setSmsContentTemp(String smsContentTemp) {
-    this.smsContentTemp = smsContentTemp;
-  }
 
   public String getSmsUrl() {
     return smsUrl;
@@ -505,142 +281,6 @@ public class Setting implements Serializable {
   }
 
 
-  public Integer getOrderReceiveTimeOut() {
-    return orderReceiveTimeOut;
-  }
-
-  public void setOrderReceiveTimeOut(Integer orderReceiveTimeOut) {
-    this.orderReceiveTimeOut = orderReceiveTimeOut;
-  }
-
-  public Integer getOrderCompleteTimeOut() {
-    return orderCompleteTimeOut;
-  }
-
-  public void setOrderCompleteTimeOut(Integer orderCompleteTimeOut) {
-    this.orderCompleteTimeOut = orderCompleteTimeOut;
-  }
-
-  public Integer getOrderTimeOut() {
-    return orderTimeOut;
-  }
-
-  public void setOrderTimeOut(Integer orderTimeOut) {
-    this.orderTimeOut = orderTimeOut;
-  }
-
-  public String getNewsDetailsUrl() {
-    return newsDetailsUrl;
-  }
-
-  public void setNewsDetailsUrl(String newsDetailsUrl) {
-    this.newsDetailsUrl = newsDetailsUrl;
-  }
-
-  public String getIntfApiKey() {
-    return intfApiKey;
-  }
-
-  public void setIntfApiKey(String intfApiKey) {
-    this.intfApiKey = intfApiKey;
-  }
-
-  public String getBdApiStoreKey() {
-    return bdApiStoreKey;
-  }
-
-  public void setBdApiStoreKey(String bdApiStoreKey) {
-    this.bdApiStoreKey = bdApiStoreKey;
-  }
-
-  public String getBdApiStoreHz2PyUrl() {
-    return bdApiStoreHz2PyUrl;
-  }
-
-  public void setBdApiStoreHz2PyUrl(String bdApiStoreHz2PyUrl) {
-    this.bdApiStoreHz2PyUrl = bdApiStoreHz2PyUrl;
-  }
-
-  public String getBdApiStoreWeatherUrl() {
-    return bdApiStoreWeatherUrl;
-  }
-
-  public void setBdApiStoreWeatherUrl(String bdApiStoreWeatherUrl) {
-    this.bdApiStoreWeatherUrl = bdApiStoreWeatherUrl;
-  }
-
-  public String getBdCarConvert() {
-    return bdCarConvert;
-  }
-
-  public void setBdCarConvert(String bdCarConvert) {
-    this.bdCarConvert = bdCarConvert;
-  }
-
-  public String getBdCarMapUrl() {
-    return bdCarMapUrl;
-  }
-
-  public void setBdCarMapUrl(String bdCarMapUrl) {
-    this.bdCarMapUrl = bdCarMapUrl;
-  }
-
-  public String getBdCarMapAk() {
-    return bdCarMapAk;
-  }
-
-  public void setBdCarMapAk(String bdCarMapAk) {
-    this.bdCarMapAk = bdCarMapAk;
-  }
-
-  public String getBdCarMcode() {
-    return bdCarMcode;
-  }
-
-  public void setBdCarMcode(String bdCarMcode) {
-    this.bdCarMcode = bdCarMcode;
-  }
-
-  public String getBdNumber() {
-    return bdNumber;
-  }
-
-  public void setBdNumber(String bdNumber) {
-    this.bdNumber = bdNumber;
-  }
-
-  public String getBdPage() {
-    return bdPage;
-  }
-
-  public void setBdPage(String bdPage) {
-    this.bdPage = bdPage;
-  }
-
-  public String getMapAk() {
-    return mapAk;
-  }
-
-  public void setMapAk(String mapAk) {
-    this.mapAk = mapAk;
-  }
-
-  public String getConvertAddressUrl() {
-    return convertAddressUrl;
-  }
-
-  public void setConvertAddressUrl(String convertAddressUrl) {
-    this.convertAddressUrl = convertAddressUrl;
-  }
-
-
-  public String getConvertMapUrl() {
-    return convertMapUrl;
-  }
-
-  public void setConvertMapUrl(String convertMapUrl) {
-    this.convertMapUrl = convertMapUrl;
-  }
 
   public String getWechatKey() {
     return wechatKey;
@@ -666,29 +306,6 @@ public class Setting implements Serializable {
     this.wechatMchId = wechatMchId;
   }
 
-  public String getWechatNotifyUrl() {
-    return wechatNotifyUrl;
-  }
-
-  public void setWechatNotifyUrl(String wechatNotifyUrl) {
-    this.wechatNotifyUrl = wechatNotifyUrl;
-  }
-
-  public String getWechatAddOrderUrl() {
-    return wechatAddOrderUrl;
-  }
-
-  public void setWechatAddOrderUrl(String wechatAddOrderUrl) {
-    this.wechatAddOrderUrl = wechatAddOrderUrl;
-  }
-
-  public String getWechatTokenUrl() {
-    return wechatTokenUrl;
-  }
-
-  public void setWechatTokenUrl(String wechatTokenUrl) {
-    this.wechatTokenUrl = wechatTokenUrl;
-  }
 
   public Long getInsuranceId() {
     return insuranceId;
@@ -905,34 +522,11 @@ public class Setting implements Serializable {
     this.siteUrl = siteUrl;
   }
 
-  public String getJuheVerifyBankcard4() {
-    return juheVerifyBankcard4;
-  }
-
-  public void setJuheVerifyBankcard4(String juheVerifyBankcard4) {
-    this.juheVerifyBankcard4 = juheVerifyBankcard4;
-  }
-
-  public String getJuheKey() {
-    return juheKey;
-  }
-
-  public void setJuheKey(String juheKey) {
-    this.juheKey = juheKey;
-  }
-
-  public String getAuthRedirectUrl() {
-    return authRedirectUrl;
-  }
-
-  public void setAuthRedirectUrl(String authRedirectUrl) {
-    this.authRedirectUrl = authRedirectUrl;
-  }
   public CaptchaType[] getCaptchaTypes() {
-	 return captchaTypes;
+    return captchaTypes;
   }
 
   public void setCaptchaTypes(CaptchaType[] captchaTypes) {
-	 this.captchaTypes = captchaTypes;
+    this.captchaTypes = captchaTypes;
   }
 }

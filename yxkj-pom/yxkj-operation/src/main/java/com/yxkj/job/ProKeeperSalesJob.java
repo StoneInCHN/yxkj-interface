@@ -22,9 +22,9 @@ public class ProKeeperSalesJob {
 
 
 
-  // @Scheduled(cron = "${job.daily_proKeeper_salesReport.cron}")
+  @Scheduled(cron = "${job.daily_proKeeper_salesReport.cron}")
   // 每天2点0分0秒执行 0 0 2 * * ?
-  @Scheduled(cron = "0/60 * * * * ?")
+  // @Scheduled(cron = "0/60 * * * * ?")
   public void proKeeperSalesInfoReport() {
 
     Calendar startTime = Calendar.getInstance();

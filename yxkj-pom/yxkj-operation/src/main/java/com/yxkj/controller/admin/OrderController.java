@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.BaseController;
 import com.yxkj.entity.DictConfig;
 import com.yxkj.entity.Order;
@@ -36,6 +37,7 @@ import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.OrderRequest;
 import com.yxkj.json.base.BaseRequest;
+import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.PageResponse;
 import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
@@ -188,6 +190,28 @@ public class OrderController extends BaseController {
     List<Map<String, Object>> result = FieldFilterUtils.filterCollection(propertys, items);
     response.setMsg(result);
 
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+
+
+  /**
+   * 订单详情页退款操作
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/refundItem", method = RequestMethod.POST)
+  @ApiOperation(value = "订单项退款", httpMethod = "POST", response = BaseResponse.class,
+      notes = "订单项退款")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse refundItem(@ApiParam(name = "请求参数(json)",
+      value = "参数[userName:登录用户名; id:订单项ID]", required = true) @RequestBody BaseRequest request) {
+    BaseResponse response = new BaseResponse();
+    LogUtil.debug(this.getClass(), "refundItem", "request param: refund order itemId: %s",
+        request.getId());
+    OrderItem item = orderItemService.find(request.getId());
+    orderItemService.refund(item);
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }

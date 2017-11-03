@@ -13,6 +13,29 @@
 		<setting name="mobilePattern" value="^1[3|4|5|7|8][0-9]\d{8}$" />
 		<setting name="emailPattern" value="^[a-z0-9A-Z]+([-_.][a-z0-9A-Z]+)*@([a-z0-9A-Z]+[-.])+[a-zA-Z]{2,5}$" />
 		
+		<!-- 微信公众平台 -->
+		<!-- 秘钥 -->
+		<setting name="wechatKey" value="4gmxVgfLMWn8UPXb3HB7XZTKa0oGFCdn" />
+		<!-- 微信分配的公众账号ID(企业号corpid即为此appId) -->
+		<setting name="wechatAppid" value="wx938f128bee69530c" />
+		<!-- 商户ID -->
+		<setting name="wechatMchId" value="1491090182" />
+		<!-- 微信退款接口-->
+		<setting name="wechatRefundUrl" value="https://api.mch.weixin.qq.com/secapi/pay/refund" />
+		<!-- 微信证书地址-->
+		<setting name="pkcs12Path" value="/mnt/machine/cert/apiclient_cert.p12" />
+		<!-- 微信公众平台 -->
+		
+		
+		<!-- 支付宝平台 -->
+		<!-- 应用APPID -->
+		<setting name="alipayAppId" value="2017102609533532" />
+		<!-- 开发者私钥(开放平台密钥用于授权和手机网页支付) -->
+		<setting name="alipayPrivateKey" value="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJ2BJiTs+F4FIlLy9ycNDLF4U2yAxh5sGhLE6ybFRCMvn4MD2Ioyy+4XUOl1o4Tib+0FcPJ3XwwgW3fGLb5AvDyewa3WFQJIhj7dYJ1kLoqCAfELoEeEMiJie2DRPM5eSO4zMqzBvt8+Hp0uiXeN1+FIDqf7pFeBE07ZnHlz0f8tAgMBAAECgYBDzJtR29wSBN3AnSv82GY1YtluZIRkBh63I6Mh3lq1VsOwTxCAdNtKEylWRbhs9Fg/zE7RYMc+XhNhnKKGOjGMrdeeuMzt7G8DW0xEVyrHsvX98j/6F+8jzXFMy6aX1d8Yk2QCyDhJE2vnPjUxKAvlwE/VVRMft88ksSXIrO+OFQJBAMw1UxCXg6mvmHHRfRMGxQQLUlaLRFdzpguOU7v8oQENOcPkk3QUIXUPCaG+8pX5YNEzHvdCoEkIEXbsJAMrPa8CQQDFc3nwPkQkKUZrIH5XwFwmGRg/qLk8nPwxkMChid3ZdE6tpDIlryhuaDNjAh2LVoN5oQkKZyvc4gvTwJ/A4sPjAkAVKQVld73N7IMocCO8v/vUUnQCwcWgJjyzf9kPZrssR7mPofThl2BsJ9XAq++pOMEejGSODJpdVvewUgHdTjLDAkEAs7PbYNlqrvaZzlnuYvMBavMf7KAkppPBu2KgzuRo8sY17TcpJL77rzBKxGtidDQyyHnVfpBTjV51oS0IuEYqPQJAQF9C8C/PPyvyWjHhSu27RsRenO9F0qYv4E/suCaPE/PzB3RODLg/Hl6DB6bubjCT2tR3BsXVCnjZ5itfA2XEQQ==" />
+		<!-- 支付宝的公钥(开放平台密钥用于授权和手机网页支付)-->
+		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB" />
+		<!-- 支付宝平台 -->
+		
 		<!-- 短信平台-->
 		<!-- 发送短信URL -->
 		<setting name="smsUrl" value="http://124.172.234.157:8180/Service.asmx/SendMessage" />
