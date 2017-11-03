@@ -22,97 +22,9 @@
 		<setting name="smsUserName" value="ybj" />
 		<!-- 密码 -->
 		<setting name="smsPwd" value="123456" />
-		
-		<!-- 验证码消息内容 -->
-		<setting name="smsContentTemp" value="【优比家】您的验证码是" />
-		
-		<!-- 验证码消息内容后缀  -->
-		<setting name="smsPostfix" value="，如非本人操作请忽略。" />
-		
+			
 		<setting name="siteName" value="优比家" />
-		<setting name="defaultPageSize" value="5" />
-		
-		<!-- auth Redirect url -->
-		<setting name="authRedirectUrl" value="http://test.ybjcq.com/shelfH5/item.jsp" />
-		<!-- download page -->
-		<setting name="downloadPage" value="http://120.27.26.85:10001/rebate-interface/share/down_app.html" />
-		<!-- download url -->
-		<setting name="downloadUrl" value="http://120.27.26.85:8080/upload/apkversion/天飞翼享生活.apk" />
-
-		<!-- 极光推送Key -->
-		<setting name="appKey" value="185adad8b0cb08eb9a2e6354" />
-		<setting name="masterSecret" value="0d1228989af3072885a5cd47" />
-		
-		<!-- 微信公众平台 -->
-		<!-- 公众平台appid -->
-		<setting name="wxPublicAppId" value="wx3598eb401cb80f00" />
-		<!-- 公众平台appsecret -->
-		<setting name="wxPublicAppSecret" value="d61d05e5e7842d318a98fe5ff7596dfb" />
-		
-		<!-- 微信支付平台 -->
-		<!-- 秘钥 -->
-		<setting name="wechatKey" value="RlT05X9mxmZhzHWCm9V9GzDR25Adn5sa" />
-		<!-- 微信分配的公众账号ID(企业号corpid即为此appId) -->
-		<setting name="wechatAppid" value="wx3598eb401cb80f00" />
-		<!-- 商户ID -->
-		<setting name="wechatMchId" value="1483176522" />
-		<!-- 通知地址 -->
-		<setting name="wechatNotifyUrl" value="http://shelf.ybjcq.com/yxkj-shelf/h5/shelf/pay/notify_wechat" />
-		<!-- 微信下订单接口 -->
-		<setting name="wechatAddOrderUrl" value="https://api.mch.weixin.qq.com/pay/unifiedorder" />
-		<!-- 微信Token接口 -->
-		<setting name="wechatTokenUrl" value="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=APPID&amp;secret=APPSECRET" />
-		
-		
-		
-		<!-- 支付宝平台 -->
-		<!-- 应用APPID -->
-		<setting name="alipayAppId" value="2017061707509713" />
-		<!-- 合作身份者ID，以2088开头由16位纯数字组成的字符串 -->
-		<setting name="alipayPartner" value="2088721238041253" />
-		<!-- 签约卖家支付宝账号 -->
-		<setting name="alipaySellerId" value="market@ybjstore.com" />
-		<!-- 开发者私钥(开放平台密钥用于授权和手机网页支付) -->
-		<setting name="alipayPrivateKey" value="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAOMxuS9UaqHXumI9ohwFdSNOvPvXbNmNInKOr9Kwrb6jAORJUXdvmkgzA3Xb9pyE5RFPCQgg/ItFSIVzSo+Z4TPLI6xrT58cu9NAXa2wFJLZH3csn75O+iwVcg34uAc5VphG0zg2+vMCvKJArZWObj1FrE57piFW3UtBFyW+09FvAgMBAAECgYBy1wR7VxlbW3dcBzl1HpEaWseOKVNdGEkMTPG09xer4CsoOaNTUvdSfW7HWXtrnIVJXYD8OehN4aSJyEAtHCRHnRxu5fFJgG1S4kiazkgWN2ldl8gVNNyqDzvwMODZ1f46eb5cSKG7rbqj9Sb5ErQOSoUEyTWfuKigGWHTLErtWQJBAPIJFHnhE0n/ITtQ6j1k9zVKQE1ilTrm7uTLVUZniyM7M8hcPwMPUoJ9pKSR37uI3mIFrRPF4nMRfxCVWAAPkHMCQQDwTW9UlhQPNXC+6ILx0zy3EhgdNf8xqIak1trY5i7NLc3q11bfOSR5LitqDjsthuvNSL4e4iWx5Q/Q0lLNWSgVAkEAo6U+AfYLS7HDr05TQjV867wLZAcurQetKGbOfm7N5YFGzsaIGDKI8A+xfU/f/PVant4FmuPl6zU+O2EugcQEPwJAH5pfeOVf7/wcPs8/YWRhiMYVa8oNLM+4HXewQnRLVWqfuTHm1+ag+FrtFL6YY81pt47IijE9ud6hLNpsT1tZXQJAB890lLxoTob81mnyl+KNMi/mNFQFU6NXfvjfmeq7Ic2d1+TzaCYeTbAD6ZULWRpJxYoZCZMAlOxWtqFDaNw8rw==" />
-		<!-- 支付宝的公钥(开放平台密钥用于授权和手机网页支付)-->
-		<setting name="alipayPublicKey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB" />
-		<!-- 支付宝异步通知接口 -->
-		<setting name="alipayNotifyUrl" value="http://shelf.ybjcq.com/yxkj-shelf/h5/shelf/pay/notify_alipay" />
-		<!-- 支付宝同步通知接口 -->
-		<setting name="alipayReturnUrl" value="http://shelf.ybjcq.com/yxkj-shelf/shelfH5/index.html#/payResult" />
-		
-		
-		<!-- 百度API:GPS坐标转百度坐标 -->
-		<setting name="convertMapUrl" value="http://api.map.baidu.com/ag/coord/convert"/>
-		<!-- 百度API:地址转坐标 -->
-		<setting name="convertAddressUrl" value="http://api.map.baidu.com/geocoder/v2/"/>
-		<!-- 百度API ak -->
-		<setting name="mapAk" value="ulsOtfMZcNc4D6aQnBwwnOTt6ZKohflO"/>
-		
-		<!-- 百度车联网API-->
-		<setting name="bdCarConvert" value="http://api.map.baidu.com/geoconv/v1/?"/>
-		<setting name="bdCarMapUrl" value="http://api.map.baidu.com/telematics/v3/local"/>
-		<setting name="bdCarMapAk" value="ulsOtfMZcNc4D6aQnBwwnOTt6ZKohflO"/>
-		<setting name="bdCarMcode" value="B5:86:45:55:F7:63:3F:C4:7F:24:3D:55:17:D7:00:83:7E:72:89:A2;com.cheweishi.android"/>
-		<setting name="bdNumber" value="15"/>
-		<setting name="bdPage" value="0"/>
-		
-		<!-- 百度API Store api key -->
-		<setting name="bdApiStoreKey" value="ceeb59919cd08c4086abba8d08ae5eb5"/>
-		<!-- 百度API Store api 获取生活指数 -->
-		<setting name="bdApiStoreWeatherUrl" value="http://apis.baidu.com/thinkpage/weather_api/daily"/>
-		<!-- 百度API Store api 汉字转拼音 -->
-		<setting name="bdApiStoreHz2PyUrl" value="http://apis.baidu.com/sillystudio/service/topy"/>
-		
-		<!-- 聚合数据 银行卡四元素验证URL -->
-		<setting name="juheVerifyBankcard4" value="http://v.juhe.cn/verifybankcard4/query"/>		
-		<!-- 聚合数据 申请的key -->
-		<setting name="juheKey" value="f79edf87ef4384ce64eb53bad54b415f"/>
-		
-		<!-- 聚合数据 证件识别URL -->
-		<setting name="juheVerifyCertificates" value="http://v.juhe.cn/certificates/query.php"/>		
-		<!-- 聚合数据 证件识别key -->
-		<setting name="juheKeyCertificates" value="2d9d7b151bac90697359a1677414fb66"/>		
+		<setting name="defaultPageSize" value="5" />	
 		
 	</yxkj>	
 	
