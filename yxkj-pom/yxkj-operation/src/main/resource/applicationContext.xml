@@ -128,8 +128,10 @@
 		<property name="maxPoolSize" value="${task.max_pool_size}" />
 		<property name="queueCapacity" value="${task.queue_capacity}" />
 		<property name="keepAliveSeconds" value="${task.keep_alive_seconds}" />
-	</bean>  
-
+	</bean> 
+	
+	<task:annotation-driven />
+	
 	<bean id="freeMarkerConfigurer"
 		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPaths" value="${template.loader_path}" />
