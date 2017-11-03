@@ -121,6 +121,7 @@ public class OrderItemController extends MobileBaseController {
             map.put("pic", goodsPic.getSource());
           }
         }
+        map.put("price", orderItem.getPrice());
         map.put("pickUpStatus", orderItem.getPickupStatus());
         map.put("refundStatus", orderItem.getRefundStatus());
         map.put("cntrSn", containerChannel.getCntr().getSn());
