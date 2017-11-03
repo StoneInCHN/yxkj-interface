@@ -35,4 +35,6 @@ public interface SupplementListService extends BaseService<SupplementList,Long>{
   
   Object[] finishSupplyGoods(Long suppId, String sceneSn);
   
+  void createSupplyRecordList();
+  
 }

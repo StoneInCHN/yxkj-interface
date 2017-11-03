@@ -28,21 +28,22 @@ public class SupplementSumRecServiceImpl extends BaseServiceImpl<SupplementSumRe
       @Override
       public List<DailySumSupplementRecord> findSupplySumRecord(Long suppId, String pageNo, int pageSize) {
         List<DailySumSupplementRecord> records = new LinkedList<>();
-        List<Object> dateObjs = null;
-        try {
-          dateObjs = supplementSumRecDao.findSupplyDate(suppId, Integer.valueOf(pageNo).intValue(), pageSize);
-        } catch (Exception e) {}
+        
+        List<Object> dateObjs = supplementSumRecDao.findSupplyDate(suppId, Integer.valueOf(pageNo).intValue(), pageSize);
+        if (dateObjs == null)
+          return records;
         for (Object date : dateObjs) {
           DailySumSupplementRecord record = new DailySumSupplementRecord();
           record.setDate((String)date);
-          List<Object[]> supplementSumRecords = supplementSumRecDao.findSupplementSumRecord(suppId, (String)date);
           List<SceneSumSupplementRecord> sceneSumSupplementRecords = new LinkedList<>();
+          
+          List<Object[]> supplementSumRecords = supplementSumRecDao.findSupplementSumRecord(suppId, (String)date);
           for (Object[] supplyRecordObj : supplementSumRecords) {
-            SceneSumSupplementRecord sceneSumSupplementRecord = record.new SceneSumSupplementRecord((String)supplyRecordObj[0], (String)supplyRecordObj[1],
-                (Integer)supplyRecordObj[2], (Integer)supplyRecordObj[3], (Integer)supplyRecordObj[4], (String)supplyRecordObj[5]);
+            SceneSumSupplementRecord sceneSumSupplementRecord = record.new SceneSumSupplementRecord((String)supplyRecordObj[0],
+                (String)supplyRecordObj[1], (Integer)supplyRecordObj[2], (Integer)supplyRecordObj[3], (String)supplyRecordObj[4]);
             sceneSumSupplementRecords.add(sceneSumSupplementRecord);
-            record.setSumSupplyCount(record.getSumSupplyCount().intValue() + (Integer)supplyRecordObj[2]);
-            record.setSumWaitSupplyCount(record.getSumWaitSupplyCount().intValue() + (Integer)supplyRecordObj[3]);
+            record.setSumWaitSupplyCount(record.getSumWaitSupplyCount().intValue() + (Integer)supplyRecordObj[2]);
+            record.setSumSupplyCount(record.getSumSupplyCount().intValue() + (Integer)supplyRecordObj[3]);
           }
           record.setSupplementList(sceneSumSupplementRecords);
           records.add(record);

@@ -1,5 +1,6 @@
 package com.yxkj.dao.impl; 
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository; 
@@ -15,7 +16,11 @@ public class ContainerKeeperDaoImpl extends  BaseDaoImpl<ContainerKeeper,Long> i
     public ContainerKeeper findByCellPhoneNum(String cellPhoneNum) {
       String jpql = "FROM ContainerKeeper c WHERE c.cellPhoneNum = :cellPhoneNum";
       Query query = entityManager.createQuery(jpql).setParameter("cellPhoneNum", cellPhoneNum);
-      return (ContainerKeeper) query.getSingleResult();
+      try {
+        return (ContainerKeeper) query.getSingleResult();
+      } catch (NoResultException e) {
+        return null;
+      }
     }
 
 	@Override

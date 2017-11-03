@@ -4,20 +4,41 @@ import java.util.List;
 
 public class SceneSupplementRecord {
   
+  /**
+   * 货柜编号
+   */
   private String cntrSn;
   
+  /**
+   * 补货记录
+   */
   private List<CntrSupplementRecord> cntrSupplementRecords;
   
   public class CntrSupplementRecord {
     
+    /**
+     * 货道编号
+     */
     private String channelSn;
     
+    /**
+     * 商品名
+     */
     private String goodsName;
     
+    /**
+     * 商品图片
+     */
     private String goodsPic;
     
+    /**
+     * 待补货数
+     */
     private Integer waitSupplyCount;
     
+    /**
+     * 补货数
+     */
     private Integer supplyCount;
 
     public String getChannelSn() {

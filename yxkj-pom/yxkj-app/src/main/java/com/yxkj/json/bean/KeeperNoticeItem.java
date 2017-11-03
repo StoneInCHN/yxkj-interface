@@ -2,12 +2,24 @@ package com.yxkj.json.bean;
 
 public class KeeperNoticeItem {
   
+  /**
+   * 优享空间编号
+   */
   private String sceneSn;
   
+  /**
+   * 消息标题
+   */
   private String title;
   
+  /**
+   * 消息内容
+   */
   private String content;
   
+  /**
+   * 发送时间
+   */
   private String sendDate;
 
   public String getSceneSn() {

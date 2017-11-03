@@ -2,8 +2,14 @@ package com.yxkj.json.bean;
 
 public class SupplyRecord {
   
+  /**
+   * 待补货清单id
+   */
   private  Long supplementId;
   
+  /**
+   * 补货数量
+   */
   private Integer supplyCount;
 
   public Long getSupplementId() {

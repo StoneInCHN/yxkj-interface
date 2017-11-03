@@ -79,7 +79,7 @@ public class AcconutController extends MobileBaseController {
       response.setDesc(message("yxkj.request.failed"));
       return response;
     }
-    LogUtil.debug(this.getClass(), "getPublicKey", "获取公钥");
+    LogUtil.debug(this.getClass(), "getPublicKey", "获取公钥成功");
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.keeper.publickey.success"));
     return response;
@@ -107,7 +107,6 @@ public class AcconutController extends MobileBaseController {
     } catch (Exception e) {
       response.setCode(CommonAttributes.FAIL_LOGIN);
       response.setDesc(message("yxkj.keeper.password.analysis.error"));
-      LogUtil.debug(this.getClass(), "login", "密码解析错误");
       return response;
     }
     if (StringUtils.isEmpty(cellPhoneNum) || StringUtils.isEmpty(keeperAccountRequest.getPassword())) {
@@ -116,29 +115,33 @@ public class AcconutController extends MobileBaseController {
       return response;
     }
 
-    LogUtil.debug(this.getClass(), "login", "登录管家手机号:%s", cellPhoneNum);
-    ContainerKeeper keeper = null;
-
-    try{
-      keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
-    }catch (Exception e) {
+    LogUtil.debug(this.getClass(), "loginByPwd", "登录管家手机号:%s", cellPhoneNum);
+    ContainerKeeper keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
+    String password = KeyGenerator.decrypt(keeperAccountRequest.getPassword(), privateKey);
+    if(keeper == null){
+      LogUtil
+      .debug(this.getClass(), "loginByPwd", "用户不存在, cellPhoneNum: %s",
+          cellPhoneNum);
+      
       response.setCode(CommonAttributes.ERROR_ACCOUNT);
       response.setDesc(message("yxkj.keeper.user.undefined"));
-      LogUtil.debug(this.getClass(), "login", "用户不存在");
       return response;
     }
     if (!keeper.getAccountStatus().equals(AccountStatus.ACTIVED)) {
+      LogUtil
+      .debug(this.getClass(), "loginByPwd", "管家账号无效, cellPhoneNum: %s",
+          cellPhoneNum);
+      
       response.setCode(CommonAttributes.ERROR_ACCOUNT);
       response.setDesc(message("yxkj.keeper.accountStatus.invalid"));
-      LogUtil.debug(this.getClass(), "login", "账号无效");
       return response;
     }
-    String password = KeyGenerator.decrypt(keeperAccountRequest.getPassword(), privateKey);
-//    String password = keeperAccountRequest.getPassword();
     if (StringUtils.isEmpty(password)||!DigestUtils.md5Hex(password).equals(keeper.getLoginPwd())) {
+      LogUtil
+          .debug(this.getClass(), "loginByPwd", "密码错误, cellPhoneNum: %s",
+              cellPhoneNum);
       response.setCode(CommonAttributes.ERROR_PASS);
       response.setDesc(message("yxkj.keeper.password.error"));
-      LogUtil.debug(this.getClass(), "login", "密码错误");
       return response;
     }
     if (request.getRemoteAddr() != null) {
@@ -177,12 +180,14 @@ public class AcconutController extends MobileBaseController {
       response.setDesc(message("yxkj.request.param.missing"));
       return response;
     }
-    try{
-      containerKeeperService.findByCellPhoneNum(cellPhoneNum);
-    }catch (Exception e) {
+    ContainerKeeper keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
+    if(keeper == null) {
+      LogUtil
+      .debug(this.getClass(), "getVerificationCode", "用户不存在, cellPhoneNum: %s",
+          cellPhoneNum);
+      
       response.setCode(CommonAttributes.ERROR_ACCOUNT);
       response.setDesc(message("yxkj.keeper.user.undefined"));
-      LogUtil.debug(this.getClass(), "getVerificationCode", "用户不存在");
       return response;
     }
     String code = SmsUtil.getRandNum(6);
@@ -190,18 +195,23 @@ public class AcconutController extends MobileBaseController {
     try {
       stateInfo = SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
       redisTemplate.opsForValue().set(type+"_"+cellPhoneNum, code, setting.getSmsCodeTimeOut(), TimeUnit.SECONDS);
+      map.put("code", code);
     } catch (Exception e) {
-      e.printStackTrace();
+      LogUtil
+          .debug(this.getClass(), "getVerificationCode", "获取验证码失败, Number:%s, code:%s, stateInfo:%s",
+              cellPhoneNum, code, stateInfo);
+      
       response.setCode(CommonAttributes.FAIL_SMSTOKEN);
       response.setDesc(message("yxkj.keeper.getVerificationCode.fail"));
-      LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码失败;Number:%s code:%s stateInfo:%s", cellPhoneNum, code, stateInfo);
       return response;
     }
-    map.put("code", code);
+    LogUtil
+        .debug(this.getClass(), "getVerificationCode", "获取验证码成功, Number:%s, code:%s, stateInfo:%s",
+            cellPhoneNum, code, stateInfo);
+    
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.keeper.getVerificationCode.success"));
     response.setMsg(map);
-    LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码成功;Number:%s code:%s stateInfo:%s", cellPhoneNum, code, stateInfo);
     return response;
   }
 
@@ -220,37 +230,33 @@ public class AcconutController extends MobileBaseController {
       @ApiParam(name = "请求参数(json)", value = "{cellPhoneNum:手机号,verificationCode:验证码}",required = true)
       @RequestBody KeeperAccountRequest keeperAccountRequest, HttpServletRequest request) {
     ResponseOne<ContainerKeeper> response = new ResponseOne<ContainerKeeper>();
-
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
     String inputCode = keeperAccountRequest.getVerificationCode();
     String code = redisTemplate.opsForValue().get("login_"+cellPhoneNum);
-
-    if (StringUtils.isEmpty(cellPhoneNum) || StringUtils.isEmpty(inputCode)) {
-      response.setCode(CommonAttributes.MISSING_REQUIRE_PARAM);
-      response.setDesc(message("yxkj.request.param.missing"));
-      return response;
-    }
-
+    
     LogUtil.debug(this.getClass(), "login", "登录手机号:%s", cellPhoneNum);
-    ContainerKeeper keeper = null;
-    try{
-      keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
-    }catch (Exception e) {
+    ContainerKeeper keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
+    if(keeper == null) {
+      LogUtil
+      .debug(this.getClass(), "loginByVft", "用户不存在, cellPhoneNum: %s",
+          cellPhoneNum);
+      
       response.setCode(CommonAttributes.ERROR_ACCOUNT);
       response.setDesc(message("yxkj.keeper.user.undefined"));
-      LogUtil.debug(this.getClass(), "login", "用户不存在");
       return response;
     }
     if (!keeper.getAccountStatus().equals(AccountStatus.ACTIVED)) {
+      LogUtil
+      .debug(this.getClass(), "loginByVft", "管家账号无效, cellPhoneNum: %s",
+          cellPhoneNum);
+      
       response.setCode(CommonAttributes.ERROR_ACCOUNT);
       response.setDesc(message("yxkj.keeper.accountStatus.invalid"));
-      LogUtil.debug(this.getClass(), "login", "管家账号无效");
       return response;
     }
-
     if (code != null && code.equals(inputCode)) {
       if (request.getRemoteAddr() != null)
-        LogUtil.debug(this.getClass(), "login", "登录IP:%s  登录时间:%s", request.getRemoteAddr(),
+        LogUtil.debug(this.getClass(), "loginByVft", "登录IP:%s  登录时间:%s", request.getRemoteAddr(),
             TimeUtils.getDateFormatString("yyyy-MM-dd hh:mm:ss", new Date()));
       response.setMsg(keeper);
       response.setCode(CommonAttributes.SUCCESS);
@@ -258,9 +264,12 @@ public class AcconutController extends MobileBaseController {
       response.setToken(TokenUtil.getJWTString(keeper.getId().toString(), ""));
       return response;
     } else {
+      LogUtil
+      .debug(this.getClass(), "loginByVft", "验证码错误, cellPhoneNum: %s",
+          cellPhoneNum);
+      
       response.setCode(CommonAttributes.ERROR_VFT);
       response.setDesc(message("yxkj.keeper.verificationCode.error"));
-      LogUtil.debug(this.getClass(), "login", "验证码错误");
       return response;
     }
   }
@@ -293,20 +302,19 @@ public class AcconutController extends MobileBaseController {
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
     String newPwd = KeyGenerator.decrypt(keeperAccountRequest.getNewPwd(), privateKey);
     String oldPwd = KeyGenerator.decrypt(keeperAccountRequest.getOldPwd(), privateKey);
-
     if (StringUtils.isEmpty(cellPhoneNum) && StringUtils.isEmpty(newPwd)
         && StringUtils.isEmpty(oldPwd)) {
       response.setCode(CommonAttributes.MISSING_REQUIRE_PARAM);
       response.setDesc(message("yxkj.request.param.missing"));
       return response;
     }
-    String pattern = "^[a-zA-Z0-9]{8,}&";
+    
+    String pattern = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}";
     Pattern p = Pattern.compile(pattern);
     Matcher matcher = p.matcher(newPwd);
     if(!matcher.matches()){
       response.setCode(CommonAttributes.ERROR_FORMAL);
       response.setDesc(message("yxkj.keeper.password.formal.error"));
-      LogUtil.debug(this.getClass(), "resetPassword", "新密码格式错误");
       return response;
     }
     if (containerKeeperService.findByCellPhoneNum(cellPhoneNum).getLoginPwd()
@@ -315,12 +323,18 @@ public class AcconutController extends MobileBaseController {
         containerKeeperService.resetPassword(cellPhoneNum, DigestUtils.md5Hex(newPwd));
         response.setCode(CommonAttributes.SUCCESS);
         response.setDesc(message("yxkj.keeper.password.reset.success"));
-        LogUtil.debug(this.getClass(), "resetPassword", "重置密码成功");
+        LogUtil
+        .debug(this.getClass(), "updatePwd", "修改密码成功,cellPhoneNum: %s",
+            cellPhoneNum);
+        
         return response;
       } catch (Exception e) {
+        LogUtil
+        .debug(this.getClass(), "updatePwd", "修改密码失败,cellPhoneNum: %s",
+            cellPhoneNum);
+        
         response.setCode(CommonAttributes.FAIL_RESET_PWD);
         response.setDesc(message("yxkj.keeper.password.reset.fail"));
-        LogUtil.debug(this.getClass(), "resetPassword", "重置密码失败");
         return response;
       }
     } else {
@@ -357,14 +371,20 @@ public class AcconutController extends MobileBaseController {
     }
 
     if (code != null && code.equals(inputCode)) {
+      LogUtil
+          .debug(this.getClass(), "forgetPwd", "验证成功, cellPhoneNum: %s",
+              cellPhoneNum);
+      
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.keeper.verification.success"));
-      LogUtil.debug(this.getClass(), "login", "验证成功");
       return response;
     } else {
+      LogUtil
+          .debug(this.getClass(), "forgetPwd", "验证码错误", "cellPhoneNum: %s",
+              cellPhoneNum);
+      
       response.setCode(CommonAttributes.ERROR_VFT);
       response.setDesc(message("yxkj.keeper.verificationCode.error"));
-      LogUtil.debug(this.getClass(), "login", "验证码错误");
       return response;
     }
   }
@@ -391,6 +411,7 @@ public class AcconutController extends MobileBaseController {
       LogUtil.debug(this.getClass(), "resetPassword", "密码解析错误");
       return response;
     }
+    
     String cellPhoneNum = keeperAccountRequest.getCellPhoneNum();
     String newPwd = KeyGenerator.decrypt(keeperAccountRequest.getNewPwd(), privateKey);
     String pattern = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}";
@@ -399,22 +420,27 @@ public class AcconutController extends MobileBaseController {
     if(!matcher.matches()){
       response.setCode(CommonAttributes.ERROR_FORMAL);
       response.setDesc(message("yxkj.keeper.password.formal.error"));
-      LogUtil.debug(this.getClass(), "resetPassword", "新密码格式错误");
       return response;
     }
     try {
       containerKeeperService.resetPassword(cellPhoneNum, DigestUtils.md5Hex(newPwd));
       ContainerKeeper keeper = containerKeeperService.findByCellPhoneNum(cellPhoneNum);
+      LogUtil
+          .debug(this.getClass(), "resetPassword", "重置密码成功,cellPhoneNum: %s",
+              cellPhoneNum);
+      
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.keeper.password.reset.success"));
       response.setToken(TokenUtil.getJWTString(keeper.getId().toString(), ""));
       response.setMsg(keeper);
-      LogUtil.debug(this.getClass(), "resetPassword", "重置密码成功");
       return response;
     } catch (Exception e) {
+      LogUtil
+      .debug(this.getClass(), "resetPassword", "重置密码失败,cellPhoneNum: %s",
+          cellPhoneNum);
+      
       response.setCode(CommonAttributes.FAIL_RESET_PWD);
       response.setDesc(message("yxkj.keeper.password.reset.fail"));
-      LogUtil.debug(this.getClass(), "resetPassword", "重置密码失败");
       return response;
     }
   }
@@ -425,7 +451,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
-  @UserValidCheck
+//  @UserValidCheck
   @RequestMapping(value = "/getMsg", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
@@ -434,15 +460,13 @@ public class AcconutController extends MobileBaseController {
       @RequestBody KeeperAccountRequest request) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<>();
     Map<String, Object> map = new HashMap<>();
-    try {
-      List<KeeperNotice> notices= msgKeeperService.getKeeperNotices(request.getUserId());
-      map.put("groups", notices);
-      response.setMsg(map);
-    } catch (Exception e) {
-      e.printStackTrace();
-      response.setCode(CommonAttributes.FAIL_COMMON);
-      response.setDesc(message("yxkj.request.failed"));
-    }
+    List<KeeperNotice> notices= msgKeeperService.getKeeperNotices(request.getUserId());
+    map.put("groups", notices);
+    LogUtil
+        .debug(this.getClass(), "getMsg", "查看消息成功, userId: %s",
+            request.getUserId());
+    
+    response.setMsg(map);
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.request.success"));
     return response;
@@ -454,7 +478,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
-  @UserValidCheck
+//  @UserValidCheck
   @RequestMapping(value = "/getMsgDetails", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息详情", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息详情")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
@@ -463,15 +487,13 @@ public class AcconutController extends MobileBaseController {
       @RequestBody KeeperAccountRequest request) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<>();
     Map<String, Object> map = new HashMap<>();
-    try {
-      List<KeeperNoticeItem> items = msgKeeperService.getTypeNotices(request.getUserId(), request.getMsgType());
-      map.put("groups", items);
-      response.setMsg(map);
-    } catch (Exception e) {
-      e.printStackTrace();
-      response.setCode(CommonAttributes.FAIL_COMMON);
-      response.setDesc(message("yxkj.request.failed"));
-    }
+    List<KeeperNoticeItem> items = msgKeeperService.getTypeNotices(request.getUserId(), request.getMsgType());
+    map.put("groups", items);
+    LogUtil
+        .debug(this.getClass(), "getMsgDetails", "查看消息详情成功, userId: %s",
+            request.getUserId());
+    
+    response.setMsg(map);
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.request.success"));
     return response;

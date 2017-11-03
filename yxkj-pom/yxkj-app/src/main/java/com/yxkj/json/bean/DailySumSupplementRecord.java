@@ -1,40 +1,63 @@
 package com.yxkj.json.bean;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class DailySumSupplementRecord {
 
+  /**
+   * 补货日期
+   */
   private String date;
   
+  /**
+   * 总待补数
+   */
   private Integer SumWaitSupplyCount = 0;
   
+  /**
+   * 总补货数
+   */
   private Integer SumSupplyCount = 0;
   
+  /**
+   * 补货记录
+   */
   private List<SceneSumSupplementRecord> supplementList;
   
   public class SceneSumSupplementRecord {
     
+    /**
+     * 优享空间编号
+     */
     private String sceneSn;
     
+    /**
+     * 优享空间名称
+     */
     private String sceneName;
     
+    /**
+     * 待补数
+     */
     private Integer waitSupplyCount;
     
+    /**
+     * 补货数
+     */
     private Integer supplyCount;
     
-    private Integer lackCount;
-    
+    /**
+     * 补货时间
+     */
     private String supplyTime;
     
     public SceneSumSupplementRecord(String sceneSn, String sceneName, Integer waitSupplyCount,
-        Integer supplyCount, Integer lackCount, String supplyTime) {
+        Integer supplyCount, String supplyTime) {
       super();
       this.sceneSn = sceneSn;
       this.sceneName = sceneName;
       this.waitSupplyCount = waitSupplyCount;
       this.supplyCount = supplyCount;
-      this.lackCount = lackCount;
       this.supplyTime = supplyTime;
     }
 
@@ -68,14 +91,6 @@ public class DailySumSupplementRecord {
 
     public void setSupplyCount(Integer supplyCount) {
       this.supplyCount = supplyCount;
-    }
-
-    public Integer getLackCount() {
-      return lackCount;
-    }
-
-    public void setLackCount(Integer lackCount) {
-      this.lackCount = lackCount;
     }
 
     public String getSupplyTime() {

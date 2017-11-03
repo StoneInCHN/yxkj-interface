@@ -37,8 +37,8 @@ public class WaitSupplyContainerGoods {
    */
   private Integer remainCount;
 
-  public WaitSupplyContainerGoods(Long id, String goodsSn, String goodsName, String channelSn, 
-      Integer waitSupplyCount, Integer remainCount) {
+  public WaitSupplyContainerGoods(Long id, String channelSn , String goodsSn, String goodsName, 
+      Integer remainCount, Integer waitSupplyCount) {
     this.id = id;
     this.channelSn = channelSn;
     this.goodsSn = goodsSn;

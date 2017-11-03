@@ -2,23 +2,25 @@ package com.yxkj.json.bean;
 
 public class KeeperNotice {
   
-  private String sceneSn;
-  
+  /**
+   * 消息类型
+   */
   private String type;
   
+  /**
+   * 未读消息数
+   */
   private Integer noticeCount;
   
+  /**
+   * 最新消息
+   */
   private String Content;
   
+  /**
+   * 通知时间
+   */
   private String noticeTime;
-
-  public String getSceneSn() {
-    return sceneSn;
-  }
-
-  public void setSceneSn(String sceneSn) {
-    this.sceneSn = sceneSn;
-  }
 
   public String getType() {
     return type;

@@ -20,7 +20,11 @@ public class VendingContainerDaoImpl extends  BaseDaoImpl<VendingContainer,Long>
     String sql = "SELECT v.id, v.sn FROM t_vending_container v WHERE v.parent is null AND v.scene = "
         + "(SELECT s.id FROM t_scene s WHERE s.sn = :sceneSn)";
     Query query = entityManager.createNativeQuery(sql).setParameter("sceneSn", sceneSn);
-    return query.getResultList();
+    try {
+      return query.getResultList();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
   
   @SuppressWarnings("unchecked")
@@ -28,9 +32,13 @@ public class VendingContainerDaoImpl extends  BaseDaoImpl<VendingContainer,Long>
   public List<Object[]> findChildrenVendingContainer(Long id){
     String sql = "SELECT v.id, v.sn FROM t_vending_container v WHERE v.parent = :id";
     Query query = entityManager.createNativeQuery(sql).setParameter("id", id);
-    
-    return query.getResultList();
+    try {
+      return query.getResultList();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
+  
   @Override
   public VendingContainer getByImei(String imei) {
     if (imei == null) {

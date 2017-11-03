@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.yxkj.entity.MsgKeeper;
@@ -30,16 +32,15 @@ public class MsgKeeperServiceImpl extends BaseServiceImpl<MsgKeeper,Long> implem
       @Override
       public List<KeeperNotice> getKeeperNotices(Long userId) {
         List<KeeperNotice> notices = new LinkedList<>();
-
         List<Object[]> typeCountlist = msgKeeperDao.countKeeperMsgType(userId);
+        if (typeCountlist == null) return notices;
         for (Object[] typeCount : typeCountlist) {
           KeeperNotice notice = new KeeperNotice();
           notice.setType(((CommonEnum.RemindType)typeCount[0]).toString());
           notice.setNoticeCount(((Long)typeCount[1]).intValue());
-          List<Object[]> contents = msgKeeperDao.getKeeperMsgByType(userId, ((CommonEnum.RemindType)typeCount[0]).toString());
-          Object[] firstMsg = contents.get(0);
+          List<Object[]> msgs = msgKeeperDao.getKeeperMsgByType(userId, ((CommonEnum.RemindType)typeCount[0]).toString());
+          Object[] firstMsg = msgs.get(0);
           notice.setContent((String)firstMsg[0]+(String)firstMsg[1]);
-          notice.setSceneSn((String)firstMsg[2]);
           notice.setNoticeTime(new SimpleDateFormat("yy/MM/dd hh:mm:ss").format((Date)firstMsg[3]));
           notices.add(notice);
         }
@@ -47,15 +48,24 @@ public class MsgKeeperServiceImpl extends BaseServiceImpl<MsgKeeper,Long> implem
       }
       
       @Override
+      @Transactional
       public List<KeeperNoticeItem> getTypeNotices(Long userId, String msgType) {
         List<KeeperNoticeItem> items = new LinkedList<>();
-        List<Object[]> contents = msgKeeperDao.getKeeperMsgByType(userId, msgType);
-        for (Object[] content : contents) {
+        List<MsgKeeper> msgKeepers = msgKeeperDao.getMsgKeeperByType(userId, msgType);
+        if (msgKeepers != null) {
+          for (MsgKeeper msgKeeper : msgKeepers) {
+            msgKeeper.setIsRead(true);
+          }
+          msgKeeperDao.persist(msgKeepers);
+        }
+        List<Object[]> msgs = msgKeeperDao.getKeeperMsgByType(userId, msgType);
+        if (msgs == null) return items;
+        for (Object[] msg : msgs) {
           KeeperNoticeItem noticeItem = new KeeperNoticeItem();
-          noticeItem.setTitle((String)content[0]);
-          noticeItem.setContent((String)content[1]);
-          noticeItem.setSceneSn((String)content[2]);
-          noticeItem.setSendDate(new SimpleDateFormat("yy/MM/dd hh:mm:ss").format((Date)content[3]));
+          noticeItem.setTitle((String)msg[0]);
+          noticeItem.setContent((String)msg[1]);
+          noticeItem.setSceneSn((String)msg[2]);
+          noticeItem.setSendDate(new SimpleDateFormat("yy/MM/dd hh:mm:ss").format((Date)msg[3]));
           items.add(noticeItem);
         }
         return items;

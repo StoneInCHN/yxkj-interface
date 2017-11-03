@@ -33,6 +33,8 @@ public class SupplementRecordServiceImpl extends BaseServiceImpl<SupplementRecor
       public List<SceneSupplementRecord> getSupplementRecordDetails(Long userId, String sceneSn) {
         List<SceneSupplementRecord> records = new LinkedList<>();
         List<Object[]> cntrObjs = supplementRecordDao.findSupplementVendingContainerBySceneSn(userId, sceneSn);
+        if (cntrObjs == null)
+          return records;
         for (Object[] objs : cntrObjs) {
           SceneSupplementRecord record = new SceneSupplementRecord();
           record.setCntrSn((String)objs[1]);
