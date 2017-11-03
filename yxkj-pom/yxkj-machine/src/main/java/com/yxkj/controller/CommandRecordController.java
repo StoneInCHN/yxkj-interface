@@ -101,5 +101,22 @@ public class CommandRecordController extends MobileBaseController {
     response.setCode(CommonAttributes.SUCCESS);
     return response;
   }
+  /**
+   * 设备开机上传初始数据
+   */
+  @RequestMapping("connectionStatusUpdate")
+  @ApiOperation(value = "更新连接状态", httpMethod = "POST", response = BaseResponse.class,
+      notes = "更新连接状态")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|code:1000-auth fail")})
+  @ResponseBody
+  public BaseResponse connectionStatusUpdate(
+      @ApiParam(name = "请求参数(json)", value = "deviceNo:设备编号 | volume:音量（0-100）",
+          required = true) @RequestBody MachineInfoRequest request) {
 
+    BaseResponse response = new BaseResponse();
+    vendingContainerService.updateConnectStatus(request);
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
 }

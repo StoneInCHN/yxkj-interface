@@ -28,8 +28,10 @@ public interface BaseService<T, ID extends Serializable> {
    * @return 实体对象，若不存在则返回null
    */
   T find(ID id);
+
   /**
    * 查找首个实体对象
+   * 
    * @param filters 筛选
    * @param orders 排序
    * @return 实体对象，若不存在则返回null
@@ -192,4 +194,12 @@ public interface BaseService<T, ID extends Serializable> {
    * 重建索引
    */
   void refreshIndex();
+
+
+  /**
+   * 调用存储过程
+   * 
+   * @param procName
+   */
+  void callProcedure(String procName, Object... param);
 }

@@ -166,6 +166,10 @@ public interface BaseDao<T, ID extends Serializable> {
 
   List<T> findListCustomized(String jpql, Map<String, ? extends Object> paramMap);
 
-  Page<T> findPageCustomized(Pageable pageable, String jpql,
-      Map<String, ? extends Object> paramMap);
+  Page<T> findPageCustomized(Pageable pageable, String jpql, Map<String, ? extends Object> paramMap);
+
+  /**
+   * 调用存储过程
+   */
+  void callProcedure(String procName, Object... args);
 }

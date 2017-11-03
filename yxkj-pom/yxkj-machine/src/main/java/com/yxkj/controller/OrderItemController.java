@@ -25,6 +25,8 @@ import com.yxkj.service.OrderService;
 
 import io.swagger.annotations.*;
 
+import static com.yxkj.entity.commonenum.CommonEnum.RefundStatus.REFUNDED;
+
 /**
  * Controller - 订单
  */
@@ -119,6 +121,7 @@ public class OrderItemController extends MobileBaseController {
             map.put("pic", goodsPic.getSource());
           }
         }
+        map.put("price", orderItem.getPrice());
         map.put("pickUpStatus", orderItem.getPickupStatus());
         map.put("refundStatus", orderItem.getRefundStatus());
         map.put("cntrSn", containerChannel.getCntr().getSn());
@@ -126,6 +129,61 @@ public class OrderItemController extends MobileBaseController {
         map.put("count", 1);
         map.put("goodName", orderItem.getgName());
         maps.add(map);
+      }
+    });
+    response.setMsg(maps);
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+
+
+  /**
+   * - 商品退款状态查询
+   *
+   * @return
+   */
+  @RequestMapping(value = "/getOrderItemRefundStatus", method = RequestMethod.POST)
+  @ApiOperation(value = "商品退款状态查询", httpMethod = "POST", response = ResponseOne.class,
+      notes = "商品退款状态查询")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "code:0000-request success|0004-token timeout")})
+  public @ResponseBody ResponseMultiple<Map<String, Object>> getOrderItemRefundStatus(
+      @RequestBody OrderInfoReq req) {
+    ResponseMultiple<Map<String, Object>> response = new ResponseMultiple<>();
+
+    Order order = orderService.getOrderBySn(req.getOrderSn());
+
+    Set<OrderItem> orderItemSet = order.getOrderItems();
+    List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+    orderItemSet.forEach(orderItem -> {
+      if (REFUNDED.equals(orderItem.getRefundStatus())) {
+        boolean isContain = false;
+        for (Map<String, Object> map : maps) {
+          Long cid = (Long) map.get("cId");
+          if (cid.equals(orderItem.getCntrId())) {
+            isContain = true;
+            map.put("count", (Integer) map.get("count") + 1);
+          }
+        }
+        if (!isContain) {
+
+          ContainerChannel containerChannel = containerChannelService.find(orderItem.getCntrId());
+
+          List<GoodsPic> goodsPics = containerChannel.getGoods().getGoodsPics();
+
+          Map<String, Object> map = new HashMap<>();
+          map.put("cId", orderItem.getCntrId());
+          for (GoodsPic goodsPic : goodsPics) {
+            if (goodsPic.getOrder() == 0) {
+              map.put("pic", goodsPic.getSource());
+            }
+          }
+          map.put("price", orderItem.getPrice());
+          map.put("cntrSn", containerChannel.getCntr().getSn());
+          map.put("count", 1);
+          map.put("goodName", orderItem.getgName());
+          maps.add(map);
+        }
       }
     });
     response.setMsg(maps);

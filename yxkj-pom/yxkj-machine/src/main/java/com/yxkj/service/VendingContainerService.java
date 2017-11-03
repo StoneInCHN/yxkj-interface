@@ -14,4 +14,6 @@ public interface VendingContainerService extends BaseService<VendingContainer, L
   VendingContainer getByImei(String imei);
 
   void initMachineStatus(MachineInfoRequest request);
+
+		void updateConnectStatus(MachineInfoRequest request);
 }

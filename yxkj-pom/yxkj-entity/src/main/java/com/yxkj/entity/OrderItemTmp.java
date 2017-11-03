@@ -39,6 +39,10 @@ public class OrderItemTmp extends BaseEntity {
    */
   private Order userOrder;
 
+  /**
+   * 对应订单项id
+   */
+  private Long orderItemId;
   @Column(length = 50)
   public Long getCntrId() {
     return cntrId;
@@ -74,5 +78,13 @@ public class OrderItemTmp extends BaseEntity {
 
   public void setUserOrder(Order userOrder) {
     this.userOrder = userOrder;
+  }
+
+  public Long getOrderItemId() {
+    return orderItemId;
+  }
+
+  public void setOrderItemId(Long orderItemId) {
+    this.orderItemId = orderItemId;
   }
 }

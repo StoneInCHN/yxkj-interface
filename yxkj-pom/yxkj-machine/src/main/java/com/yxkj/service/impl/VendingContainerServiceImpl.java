@@ -2,6 +2,7 @@ package com.yxkj.service.impl;
 
 import javax.annotation.Resource;
 
+import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.json.request.MachineInfoRequest;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,15 @@ public class VendingContainerServiceImpl extends BaseServiceImpl<VendingContaine
   public void initMachineStatus(MachineInfoRequest request) {
     VendingContainer vendingContainer = vendingContainerDao.getByImei(request.getDeviceNo());
     vendingContainer.setVolume(request.getVolume());
+
+    vendingContainerDao.merge(vendingContainer);
+  }
+
+  @Override
+  public void updateConnectStatus(MachineInfoRequest request) {
+    VendingContainer vendingContainer = vendingContainerDao.getByImei(request.getDeviceNo());
+    vendingContainer.setStatus(request.getConnectStatus() ? CommonEnum.CommonStatus.ACITVE
+        : CommonEnum.CommonStatus.INACTIVE);
 
     vendingContainerDao.merge(vendingContainer);
   }

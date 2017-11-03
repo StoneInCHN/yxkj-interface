@@ -11,6 +11,11 @@ public class MachineInfoRequest {
    */
   private String volume;
 
+  /**
+   * 设备与上位机连接状态
+   */
+  private boolean connectStatus;
+
   public String getVolume() {
     return volume;
   }
@@ -25,5 +30,13 @@ public class MachineInfoRequest {
 
   public void setDeviceNo(String deviceNo) {
     this.deviceNo = deviceNo;
+  }
+
+  public boolean getConnectStatus() {
+    return connectStatus;
+  }
+
+  public void setConnectStatus(boolean connectStatus) {
+    this.connectStatus = connectStatus;
   }
 }

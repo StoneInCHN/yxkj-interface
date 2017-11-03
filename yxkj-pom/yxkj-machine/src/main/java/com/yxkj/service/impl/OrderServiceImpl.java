@@ -8,19 +8,19 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.yxkj.common.client.ReceiverClient;
 import com.yxkj.common.commonenum.CommonEnum;
 import com.yxkj.common.entity.CmdMsg;
 import com.yxkj.dao.*;
 import com.yxkj.entity.*;
+import com.yxkj.service.OrderItemTmpService;
 import com.yxkj.service.RefundHistoryService;
 import com.yxkj.utils.PayUtil;
+import com.yxkj.utils.SnowflakeIdWorker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yxkj.common.log.LogUtil;
-import com.yxkj.entity.Sn.Type;
 import com.yxkj.entity.commonenum.CommonEnum.OrderStatus;
 import com.yxkj.entity.commonenum.CommonEnum.PickupStatus;
 import com.yxkj.entity.commonenum.CommonEnum.PurMethod;
@@ -41,15 +41,14 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
   @Resource(name = "touristDaoImpl")
   private TouristDao touristDao;
 
-  @Resource(name = "snDaoImpl")
-  private SnDao snDao;
-
   @Resource(name = "sceneDaoImpl")
   private SceneDao sceneDao;
 
   @Resource(name = "cmdServiceImpl")
   private CmdService cmdService;
 
+  @Resource(name = "orderItemTmpServiceImpl")
+  private OrderItemTmpService orderItemTmpService;
   @Resource(name = "containerChannelDaoImpl")
   private ContainerChannelDao containerChannelDao;
 
@@ -118,7 +117,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     order.setAmount(amount);
     order.setItemCount(totalCount);
     order.setProfit(profit);
-    order.setSn(snDao.generate(Type.ORDER));
+    order.setSn(String.valueOf(SnowflakeIdWorker.nextId(0, 0)));
     orderDao.persist(order);
     return order;
   }
@@ -145,15 +144,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
       // 更新库存
       if (containerChannel.getSurplus() > 0) {
         containerChannel.setSurplus(containerChannel.getSurplus() - 1);
-        switch (order.getPurMethod()) {
-          case CONTROLL_MACHINE:
-            containerChannel.setOfflineLocalLock(containerChannel.getOfflineLocalLock() - 1);
-            break;
-          case SCAN_CODE:
-          case INPUT_CODE:
-            containerChannel.setOfflineRemoteLock(containerChannel.getOfflineRemoteLock() - 1);
-            break;
-        }
+        orderItemTmpService.updateAfterPay(orderItem, containerChannel);
+
       } else {
         orderItem.setPickupStatus(LACK);
         orderItem.setRefundStatus(NOT_REFUND);
@@ -166,7 +158,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     if (!refundOrderItemList.isEmpty()) {
       refund(order, refundOrderItemList);
     }
-    //设置物业提成
+    // 设置物业提成
     Scene scene = sceneDao.find(order.getSceneId());
     BigDecimal fenRunPoint = scene.getFenRunPoint();
     if (fenRunPoint != null) {
@@ -215,7 +207,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     history.setRefundOrder(order);
     history.setPaymentType(order.getPaymentType());
     history.setRefundAmount(String.valueOf(refundFeeDouble));
-    history.setRefundSn(snDao.generate(Type.REFUND));
+    history.setRefundSn(String.valueOf(SnowflakeIdWorker.nextId(1, 1)));
 
     if ("alipay".equals(order.getPaymentType())) {
       refundResponse = PayUtil.aliRefund(orderSn, String.valueOf(refundFeeDouble));
