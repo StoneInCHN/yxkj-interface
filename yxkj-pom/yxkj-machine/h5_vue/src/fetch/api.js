@@ -62,25 +62,28 @@ export default{
   * userName gId
   */
   getGoodsBySn (params) {
-    return postFetch('/yxkj-shelf/h5/shelf/getGoodsBySn', params)
+    return postFetch('/yxkj-machine/common/getGoodsBySn', params)
   },
   /**
   * 获取授权用户信息
   * authCode compId gId type
   */
   authUserInfo (params) {
-    return postFetch('/yxkj-shelf/h5/shelf/authUserInfo', params)
+    return postFetch('/yxkj-machine/common/authUserInfo', params)
   },
   jsApiConfig (params) {
-    return postFetch('/yxkj-shelf/h5/shelf/jsapiConfig', params)
+    return postFetch('/yxkj-machine/common/jsapiConfig', params)
   },
   pay (params) {
-    return postFetch('/yxkj-shelf/h5/shelf/pay', params)
+    return postFetch('/yxkj-machine/order/pay', params)
   },
   verifyStock (params) {
-    return postFetch('/yxkj-shelf/h5/goods/verifyStock', params)
+    return postFetch('/yxkj-machine/goods/verifyStock', params)
   },
   getOrderItemOutStatus (params) {
-    return postFetch('/yxkj-shelf/h5/goods/getOrderItemOutStatus', params)
+    return postFetch('/yxkj-machine/orderItem/getOrderItemOutStatus', params)
+  },
+  getOrderItemRefundStatus (params) {
+    return postFetch('/yxkj-machine/orderItem/getOrderItemRefundStatus', params)
   }
 }

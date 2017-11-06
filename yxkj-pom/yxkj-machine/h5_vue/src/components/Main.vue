@@ -31,26 +31,47 @@ export default {
       type: '',
       imei: '',
       config: {},
-      token: sessionStorage.token,
-      urlPre: 'http://www.ybjstore.com/h5/shelf'
+      token: sessionStorage.token
     }
   },
   mounted () {
+    document.title = '购买列表'
     let parseParams = this.$querystring.parse()
     let params = {
       authCode: parseParams.authCode,
-      gl: parseParams.gl,
+      gList: parseParams.gl,
       imei: parseParams.imei,
       type: parseParams.type
     }
-    this.type = params.type
-    this.imei = parseParams.imei
-    this.getAuthUserInfo(params)
+    if (params) {
+      this.imei = parseParams.imei
+      if (params.type === 'wx') {
+        sessionStorage.type = 'wx'
+        this.$store.dispatch('setType', {type: 'wx'})
+      } else if (params.type === 'alipay') {
+        sessionStorage.type = 'alipay'
+        this.$store.dispatch('setType', {type: 'alipay'})
+      }
+      this.type = parseParams.type
+      if (sessionStorage && sessionStorage.items) {
+        let gLists = JSON.parse(sessionStorage.items)
+        if (sessionStorage && gLists && gLists.length > 0) { // 是否第一次加载 没有值说明是第一次
+          this.datas = gLists
+          this.$store.dispatch('setGoodItems', {goodItems: this.datas})
+          let userInfo = JSON.parse(sessionStorage.userInfo)
+          this.userName = userInfo.userId
+          this.token = sessionStorage.token
+          this.$store.dispatch('setToken', {token: this.token})
+          this.getConfig()
+        } else {
+          this.getAuthUserInfo(params)
+        }
+      } else {
+        this.getAuthUserInfo(params)
+      }
+    }
   },
   computed: {
-    ip () {
-      return ''
-    },
     totalPrice () {
       let total = 0
       if (this.datas) {
@@ -110,13 +131,17 @@ export default {
         console.log(res)
         if (res && res.code === '0000') {
           this.token = res.token
+          sessionStorage.setItem('token', this.token)
           this.$store.dispatch('setToken', {token: this.token})
           if (res.msg.userInfo) {
             this.userName = res.msg.userInfo.userId
+            this.setStorage('userInfo', res.msg.userInfo)
             this.getConfig()
           }
           if (res.msg.gInfo) {
             this.datas = res.msg.gInfo
+            this.setGoodsStorage(this.datas)
+            this.$store.dispatch('setGoodItems', {goodItems: this.datas})
           }
         } else {
           let desc = res.desc
@@ -142,14 +167,18 @@ export default {
       let gInfos = []
       let items = this.datas
       for (let i = 0; i < items.length; i++) {
-        let str = items[i].cId + '_' + items[i].count
+        let str = items[i].cId + '-' + items[i].count
         gInfos.push(str)
       }
       return gInfos
     },
+    testPay () {
+      const orderId = '6'
+      this.$router.push({path: 'result', query: { orderId: orderId }})
+    },
     verifyStock () {
       let params = {
-        gInfo: this.getGInfo()
+        gList: this.getGInfo()
       }
       this.$api.verifyStock(params).then(res => {
         console.log(res)
@@ -175,12 +204,12 @@ export default {
         gInfo: this.getGInfo(),
         type: this.type,
         userName: this.userName,
-        imei: this.imei,
-        ip: this.ip
+        imei: this.imei
       }
       this.$api.pay(params).then(res => {
         if (res && res.code === '0000' && res.msg) {
           this.resInfo = res
+          this.orderId = res.msg.out_trade_no
           this.goPay(res)
         } else {
           this.$vux.alert.show({
@@ -203,7 +232,7 @@ export default {
           'signType': res.msg.signType,
           'paySign': res.msg.paySign,
           success: (res) => {
-            this.$router.push('result')
+            this.$router.push({path: 'result', query: { orderSn: this.orderId }})
           },
           cancel: (res) => {
             this.$vux.toast.text('取消了支付')
@@ -215,6 +244,14 @@ export default {
         document.body.appendChild(div)
         document.forms[0].submit()
       }
+    },
+    setGoodsStorage (value) {
+      let items = JSON.stringify(value)
+      sessionStorage.items = items
+    },
+    setStorage (key, value) {
+      let items = JSON.stringify(value)
+      sessionStorage.setItem(key, items)
     }
   }
 }

@@ -18,7 +18,6 @@ export default new Vuex.Store({
       state.totalPrice = totalPrice
     },
     setGoodItems (state, {goodItems}) {
-      console.log('--------------')
       if (goodItems && goodItems.length > 1) {
         let items = JSON.stringify(goodItems)
         sessionStorage.items = items
