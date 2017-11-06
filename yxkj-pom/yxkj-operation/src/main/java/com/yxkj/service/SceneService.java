@@ -6,6 +6,7 @@ import java.util.Map;
 import com.yxkj.entity.Scene;
 import com.yxkj.framework.service.BaseService;
 import com.yxkj.json.admin.request.SceneRequest;
+import com.yxkj.json.admin.response.SceneProfile;
 
 public interface SceneService extends BaseService<Scene, Long> {
   /**
@@ -44,4 +45,8 @@ public interface SceneService extends BaseService<Scene, Long> {
    * @return
    */
   String genSceneSn();
+
+  List<SceneProfile> getSceneListByKeeper(Long id);
+
+  List<SceneProfile> getSceneListByProperty(Long id);
 }

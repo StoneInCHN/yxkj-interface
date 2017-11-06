@@ -273,6 +273,7 @@ public class Scene extends BaseEntity {
   }
 
   @Column(scale = 4, precision = 10)
+  @JsonProperty
   public BigDecimal getFenRunPoint() {
 	return fenRunPoint;
   }

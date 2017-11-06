@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.BaseController;
 import com.yxkj.entity.ContainerKeeper;
-import com.yxkj.entity.commonenum.CommonEnum.AccountStatus;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.PropertyKeeperRequest;
+import com.yxkj.json.admin.response.SceneProfile;
 import com.yxkj.json.base.BaseListRequest;
 import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
@@ -33,6 +33,7 @@ import com.yxkj.json.base.PageResponse;
 import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.ContainerKeeperService;
+import com.yxkj.service.SceneService;
 import com.yxkj.utils.ExportHelper;
 import com.yxkj.utils.FieldFilterUtils;
 import com.yxkj.utils.GenerateRandom;
@@ -51,6 +52,9 @@ public class ContainerKeeperController extends BaseController {
 	@Resource(name = "containerKeeperServiceImpl")
 	private ContainerKeeperService containerKeeperService;
 	
+	@Resource(name = "sceneServiceImpl")
+	private SceneService sceneService;
+	
 	@Autowired
 	private ExportHelper exportHelper;	
 	
@@ -65,7 +69,7 @@ public class ContainerKeeperController extends BaseController {
       Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());      
 
       Page<ContainerKeeper> keeperPage = containerKeeperService.findPage(pageable);      
-      String[] propertys = {"id", "userName", "cellPhoneNum", "scenes"};
+      String[] propertys = {"id", "userName", "realName", "cellPhoneNum", "scenes"};
       List<Map<String, Object>> result = FieldFilterUtils.filterCollection(propertys, keeperPage.getContent());
       PageResponse pageInfo = new PageResponse(pageable.getPageNumber(), 
     		  pageable.getPageSize(), (int)keeperPage.getTotal());
@@ -79,7 +83,7 @@ public class ContainerKeeperController extends BaseController {
     @RequestMapping(value = "/addKeeper", method = RequestMethod.POST)
     @ApiOperation(value = "添加管家", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加管家")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-    public @ResponseBody BaseResponse addGoods(
+    public @ResponseBody BaseResponse addKeeper(
     		@ApiParam (name = "请求参数(json)", value = "userName:用户名; realName:管家姓名; cellPhoneNum:手机号; sceneIds:负责优享空间IDs", required = true)
     		@RequestBody PropertyKeeperRequest request) {
         BaseResponse response = new BaseResponse(); 
@@ -98,6 +102,24 @@ public class ContainerKeeperController extends BaseController {
 		}
         return response;
     }
+    
+    @RequestMapping(value = "/getKeeperData", method = RequestMethod.POST)
+    @ApiOperation(value = "管家数据", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取管家数据")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseOne<Map<String, Object>> getKeeperData(
+    		@ApiParam(name = "请求参数(json)", value = "userName:用户名; id:管家ID;", required = false) 
+    		@RequestBody BaseListRequest request) {
+    	
+      ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>(); 
+      ContainerKeeper keeper = containerKeeperService.find(request.getId());      
+      String[] propertys = {"id", "userName", "realName", "cellPhoneNum", "scenes"};
+      Map<String, Object> result = FieldFilterUtils.filterEntity(propertys, keeper);
+      response.setMsg(result);
+
+      response.setCode(CommonAttributes.SUCCESS);
+      return response;
+    }
+    
     @RequestMapping(value = "/updateKeeper", method = RequestMethod.POST)
     @ApiOperation(value = "更新管家", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新管家")
     @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -156,5 +178,15 @@ public class ContainerKeeperController extends BaseController {
       
       return response;
     } 
- 
+    @RequestMapping(value = "/getSceneList", method = RequestMethod.POST)
+    @ApiOperation(value = "获取优享空间列表", httpMethod = "POST", response = ResponseOne.class, notes = "用于获取优享空间列表")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseMultiple<SceneProfile> getSceneList(@ApiParam @RequestBody BaseRequest request) {
+      ResponseMultiple<SceneProfile> response = new ResponseMultiple<SceneProfile>(); 
+      List<SceneProfile> list = sceneService.getSceneListByKeeper(request.getId());
+      response.setMsg(list);
+      response.setCode(CommonAttributes.SUCCESS);
+      response.setDesc(message("yxkj.request.success"));
+      return response;
+    }
 }
