@@ -89,7 +89,7 @@ export default {
     totalPrice () {
       let total = sessionStorage.total
       if (total) {
-        return total
+        return '￥' + total
       } else {
         return '￥' + this.$store.getters.getTotalPrice
       }

@@ -1,18 +1,13 @@
 <template>
 <flexbox-item :span="1/2">
 	<div class="goods-item">
-    <div class="goods-header">
-      <h5>{{fullName}}</h5>
-      <icon type="cancel" class="goods-header-icon" :key="dataItem.gId" @click.native="removeGoods"></icon>
-    </div>
     <div class="goods-content">
-      <img :src=dataItem.gImg :alt=dataItem.gName />
-      <group>
-        <p><strong>{{price}}</strong></p>
-        <p>
-          <span>数量:</span><inline-x-number v-model="dataItem.gCount" :min="1" button-style="round"></inline-x-number>
-        </p>
-      </group>
+      <icon type="clear" class="goods-header-icon" :key="dataItem.gId" @click.native="removeGoods"></icon>
+      <img :src="dataItem.gImg" :alt="dataItem.gName" />
+      <p class="goods-title">{{fullName}}</p>
+      <p class="goods-price">
+      <span>{{price}}</span><inline-x-number v-model="dataItem.gCount" :min="1" button-style="round"></inline-x-number>
+      </p>
     </div>
   </div>
 </flexbox-item>
@@ -58,7 +53,7 @@ export default {
 </script>
 <style>
   .goods-item{
-  margin:10px;
+  margin:5px;
   border: 1px solid #EAEAEA;
   border-radius: 10px;
   box-shadow: 0 0 5px #EAEAEA;
@@ -67,7 +62,6 @@ export default {
   text-align: center;
   position: relative;
   height: 50px;
-  border-bottom:1px solid #EAEAEA;
 }
 .goods-header h5{
   height: 20px;
@@ -76,25 +70,24 @@ export default {
 }
 .goods-header-icon{
   position:absolute;
-  top: -7px;
-  right: -12px;
+  top: 0;
+  right: -5px;
   color: #b1b2b3 !important;
   font-size: 30px !important;
 }
 .goods-content{
-   padding: 10px;
-   text-align: center;
+  position: relative;
+  padding: 10px;
+  text-align: center;
 }
 .goods-content img{
-  width: 60%;
+  width: 100%;
 }
-.only-one-goods .goods-content p{
-  margin:10px;
-}
-.only-one-goods .goods-content span{
-  vertical-align: top;
-  display: inline-block;
-  width: 60px;
+.goods-title{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin:5px;
 }
 .goods-item{
   background-color: #ffffff;
@@ -121,8 +114,17 @@ export default {
     line-height: 15px!important;
     color: #EAEAEA!important;
     padding: 0 1px!important;
-    border: 1px solid #EAEAEA!important;
+    border: 1px solid #ffb609!important;
     height: 16px !important;
     width: 15px !important;
+}
+.goods-item .goods-price {
+  position: relative;
+  text-align: left;
+}
+.goods-item .goods-price .vux-inline-x-number{
+  position: absolute;
+  top: 2px;
+  right: 0;
 }
 </style>

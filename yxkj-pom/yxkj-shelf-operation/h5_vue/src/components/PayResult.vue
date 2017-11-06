@@ -43,6 +43,7 @@ export default {
 }
 .tips{
   margin-top: 50px;
+  color: green;
 }
 .pay-footer {
   padding: 200px 0 0 0;

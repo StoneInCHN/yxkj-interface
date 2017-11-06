@@ -3,14 +3,13 @@
     <div class="only-one-goods" v-if="isOnly">
         <div class="goods-header">
          <h5>{{onlyItem.fullName}}</h5>
-         <icon type="cancel" class="goods-header-icon"  @click.native="canaelOnlyItem"></icon>
+         <icon type="clear" class="goods-header-icon"  @click.native="canaelOnlyItem"></icon>
         </div>
         <div class="goods-content">
           <img :src="onlyItem.gImg" :alt="onlyItem.gName" />
           <group>
-            <p><strong> ￥ {{onlyItem.gPrice}}</strong></p>
             <p>
-              <span>数量:</span><inline-x-number v-model="onlyItem.gCount" :min="1" button-style="round"></inline-x-number>
+              <strong> ￥ {{onlyItem.gPrice}}</strong><inline-x-number v-model="onlyItem.gCount" :min="1" button-style="round"></inline-x-number>
             </p>   
           </group>
         </div>
@@ -21,13 +20,13 @@
       </flexbox>
     </div>
     <div class="goods-btns">
-      <p class="total-price">总共需要支付：￥ {{totalPrice}}</p>
+      <p class="total-price">总共需要支付：￥ <span>{{totalPrice}}</span></p>
       <flexbox>
         <flexbox-item>
-          <x-button type="default" @click.native="scanQR">继续扫</x-button>
+          <x-button type="default" @click.native="scanQR"><span class="btn-text">继续扫</span><img src="../assets/qrcode.svg" alt="继续扫" class="btn-img"></x-button>
         </flexbox-item>
         <flexbox-item>
-          <x-button type="default" @click.native="goPay">结算</x-button>
+          <x-button type="default" @click.native="goPay"><span class="btn-text">结</span><span class="btn-text">算</span></x-button>
         </flexbox-item>
       </flexbox>
     </div>
@@ -393,31 +392,36 @@ export default {
 }
 .only-one-goods{
   margin:20px;
-  border: 1px solid #EAEAEA;
   border-radius: 10px;
   background-color: #ffffff;
-}
-.goods-item{
-  margin:10px;
   border: 1px solid #EAEAEA;
   border-radius: 10px;
   box-shadow: 0 0 5px #EAEAEA;
 }
+.goods-item{
+  margin:10px;
+  border: 1px solid #E2E1DF;
+  border-radius: 10px;
+  box-shadow: 0 0 5px #E2E1DF;
+}
 .goods-header{
   text-align: center;
   position: relative;
-  height: 50px;
-  border-bottom:1px solid #EAEAEA;
+  height: 40px;
+  border-bottom: 1px solid #E2E1DF;
 }
 .goods-header h5{
   height: 20px;
   line-height: 20px;
   padding: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .goods-header-icon{
   position:absolute;
-  top: -7px;
-  right: -12px;
+  top: 0;
+  right: -5px;
   color: #b1b2b3 !important;
   font-size: 30px !important;
 }
@@ -426,10 +430,20 @@ export default {
    text-align: center;
 }
 .goods-content img{
-  width: 60%;
+  width: 100%;
 }
 .only-one-goods .goods-content p{
   margin:10px;
+}
+.goods-content p{
+  text-align: left;
+  position: relative;
+}
+.goods-content p div{
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .only-one-goods .goods-content span{
   vertical-align: top;
@@ -459,9 +473,9 @@ export default {
 .goods-item  .vux-number-selector{
     font-size: 15px!important;
     line-height: 15px!important;
-    color: #EAEAEA!important;
+    color: #E2E1DF!important;
     padding: 0 1px!important;
-    border: 1px solid #EAEAEA!important;
+    border: 1px solid #E2E1DF!important;
     height: 16px !important;
     width: 15px !important;
 }
@@ -469,13 +483,32 @@ export default {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #ffffff;
+  background-color: #FBFAF9;
 }
 .total-price{
   margin: 0 20px;
+  color:#384053;
+}
+.total-price span {
+  color: #CD3132;
 }
 .goods-btns .vux-flexbox{
   padding: 9px 20px;
   width: initial !important;
+}
+.weui-btn_default {
+  background-color: #ffb609;
+  color:#ffffff;
+}
+.btn-img{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 10px;
+  position: absolute;
+}
+.btn-text {
+  margin-right: 5px;
+  margin-left: 5px;
 }
 </style>
