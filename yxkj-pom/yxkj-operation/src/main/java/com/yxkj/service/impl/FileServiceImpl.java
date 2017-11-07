@@ -53,7 +53,7 @@ public class FileServiceImpl implements FileService {
    */
   @Override
   public List<String> saveImage(MultipartFile[] multipartFile) {
-    List<String> webPaths = new ArrayList<String>();
+    List<String> webPaths = new ArrayList<>();
     String projectPath = projectUploadPath;
     if (multipartFile == null || multipartFile.length == 0) {
       return null;
@@ -74,12 +74,7 @@ public class FileServiceImpl implements FileService {
 
         multiFile.transferTo(tempFile);
         // 异步执行
-        threadPoolExecutor.execute(new Runnable() {
-          @Override
-          public void run() {
-            proccessImage(tempFile, sourcePath);
-          }
-        });
+        threadPoolExecutor.execute(() -> proccessImage(tempFile, sourcePath));
 
       }
     } catch (IllegalStateException e) {
@@ -112,6 +107,12 @@ public class FileServiceImpl implements FileService {
         case AD_RESOURCE:
           imgUploadPath = uploadPath + File.separator + "ad_resources";
           projectPath = projectUploadPath + File.separator + "ad_resources";
+          break;
+        case MACHINE_APK:
+          imgUploadPath = uploadPath + File.separator + "apk_resources";
+          projectPath = projectUploadPath + File.separator + "apk_resources";
+          break;
+        default:
           break;
       }
       String sourcePath = imgUploadPath + File.separator + "src_" + uuid + "."
@@ -147,7 +148,7 @@ public class FileServiceImpl implements FileService {
    * 
    * @param tempFile
    * @param sourcePath
-   * @param resizedPath
+   * @param
    */
   private void proccessImage(File tempFile, String sourcePath) {
     try {

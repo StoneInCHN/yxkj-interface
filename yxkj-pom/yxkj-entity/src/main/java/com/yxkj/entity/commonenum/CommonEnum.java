@@ -221,7 +221,11 @@ public class CommonEnum {
     /**
      * 管家补货照片
      */
-    KEEPER_SUPP_IMG
+    KEEPER_SUPP_IMG,
+    /**
+     * machine apk文件
+     */
+    MACHINE_APK
   }
 
   /**
