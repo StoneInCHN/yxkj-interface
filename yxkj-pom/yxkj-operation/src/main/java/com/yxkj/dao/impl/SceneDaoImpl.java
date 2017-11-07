@@ -17,6 +17,7 @@ import com.yxkj.entity.Scene;
 import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 import com.yxkj.framework.dao.impl.BaseDaoImpl;
 import com.yxkj.json.admin.response.SceneProfile;
+import com.yxkj.json.admin.response.SelectProps;
 
 @Repository("sceneDaoImpl")
 public class SceneDaoImpl extends BaseDaoImpl<Scene, Long> implements SceneDao {
@@ -72,20 +73,20 @@ public class SceneDaoImpl extends BaseDaoImpl<Scene, Long> implements SceneDao {
 	return sceneProfiles;
  }
  @Override
- public List<SceneProfile> getSceneListByProperty(Long id) {
-	 List<SceneProfile> sceneProfiles = new ArrayList<SceneProfile>();
+ public List<SelectProps> getSceneListByProperty(Long id) {
+	 List<SelectProps> sceneProfiles = new ArrayList<SelectProps>();
 	 String sql = null;
 	 if (id == null) {
-		 sql = "select id,name,sn,remove_status from t_scene where property_keeper is null order by id";
+		 sql = "select id,name,remove_status from t_scene where property_keeper is null order by id";
 	 }else {
-		 sql = "select id,name,sn,remove_status from t_scene where property_keeper is null or property_keeper = " + id + " order by id";
+		 sql = "select id,name,remove_status from t_scene where property_keeper is null or property_keeper = " + id + " order by id";
 	 }
 		@SuppressWarnings("rawtypes")
 		List list = entityManager.createNativeQuery(sql).setFlushMode(FlushModeType.COMMIT).getResultList();
 	    for (Object object : list) {
 	    	Object[] entity = (Object[]) object;
-	    	SceneProfile sceneProfile = new SceneProfile(entity[0].toString(),entity[1].toString(), entity[2].toString(), 
-	    			Integer.parseInt(entity[3].toString()) == 0? false:true);
+	    	SelectProps sceneProfile = new SelectProps(entity[0].toString(),entity[1].toString(), 
+	    			Integer.parseInt(entity[2].toString()) == 0? false:true);
 	    	sceneProfiles.add(sceneProfile);
 	    }
 	return sceneProfiles;

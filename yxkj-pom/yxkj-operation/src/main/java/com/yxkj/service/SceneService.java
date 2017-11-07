@@ -7,6 +7,7 @@ import com.yxkj.entity.Scene;
 import com.yxkj.framework.service.BaseService;
 import com.yxkj.json.admin.request.SceneRequest;
 import com.yxkj.json.admin.response.SceneProfile;
+import com.yxkj.json.admin.response.SelectProps;
 
 public interface SceneService extends BaseService<Scene, Long> {
   /**
@@ -48,5 +49,5 @@ public interface SceneService extends BaseService<Scene, Long> {
 
   List<SceneProfile> getSceneListByKeeper(Long id);
 
-  List<SceneProfile> getSceneListByProperty(Long id);
+  List<SelectProps> getSceneListByProperty(Long id);
 }

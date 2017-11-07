@@ -24,6 +24,7 @@ import com.yxkj.framework.service.impl.BaseServiceImpl;
 import com.yxkj.json.admin.bean.SceneData;
 import com.yxkj.json.admin.request.SceneRequest;
 import com.yxkj.json.admin.response.SceneProfile;
+import com.yxkj.json.admin.response.SelectProps;
 import com.yxkj.service.AdMachineService;
 import com.yxkj.service.AreaService;
 import com.yxkj.service.ContainerCategoryService;
@@ -211,7 +212,7 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
   }
   
   @Override
-  public List<SceneProfile> getSceneListByProperty(Long id) {
+  public List<SelectProps> getSceneListByProperty(Long id) {
 	return sceneDao.getSceneListByProperty(id);
   }
 }

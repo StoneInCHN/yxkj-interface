@@ -42,6 +42,7 @@ import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.OrderRequest;
 import com.yxkj.json.admin.request.PropertyKeeperRequest;
 import com.yxkj.json.admin.response.SceneProfile;
+import com.yxkj.json.admin.response.SelectProps;
 import com.yxkj.json.base.BaseListRequest;
 import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
@@ -122,7 +123,7 @@ public class PropertyKeeperController extends BaseController {
           value = "userName:用户名; realName:物业姓名; cellPhoneNum:手机号; fenRunPoint:物业分润点; sceneIds:负责优享空间IDs",
           required = true) @RequestBody PropertyKeeperRequest request) {
     BaseResponse response = new BaseResponse();
-    if (request.getSceneIds() != null && request.getSceneIds().length > 0) {
+    if (request.getIdPoints() != null && request.getIdPoints().size() > 0) {
       PropertyKeeper keeper = propertyKeeperService.getPropertyKeeperEntity(request, null);
       String loginPwd = keeper.getLoginPwd();
       keeper.setLoginPwd(DigestUtils.md5Hex(loginPwd));
@@ -166,8 +167,7 @@ public class PropertyKeeperController extends BaseController {
           value = "serName:用户名; realName:物业姓名; cellPhoneNum:手机号; fenRunPoint:物业分润点; sceneIds:负责优享空间IDs",
           required = true) @RequestBody PropertyKeeperRequest request) {
     BaseResponse response = new BaseResponse();
-    if (request.getId() != null && request.getSceneIds() != null
-        && request.getSceneIds().length > 0) {
+    if (request.getId() != null && request.getIdPoints() != null && request.getIdPoints().size() > 0) {
       propertyKeeperService.updateKeeper(request);
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.request.success"));
@@ -222,9 +222,9 @@ public class PropertyKeeperController extends BaseController {
   @RequestMapping(value = "/getSceneList", method = RequestMethod.POST)
   @ApiOperation(value = "获取优享空间列表", httpMethod = "POST", response = ResponseOne.class, notes = "用于获取优享空间列表")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-  public @ResponseBody ResponseMultiple<SceneProfile> getSceneList(@ApiParam @RequestBody BaseRequest request) {
-    ResponseMultiple<SceneProfile> response = new ResponseMultiple<SceneProfile>(); 
-    List<SceneProfile> list = sceneService.getSceneListByProperty(request.getId());
+  public @ResponseBody ResponseMultiple<SelectProps> getSceneList(@ApiParam @RequestBody BaseRequest request) {
+    ResponseMultiple<SelectProps> response = new ResponseMultiple<SelectProps>(); 
+    List<SelectProps> list = sceneService.getSceneListByProperty(request.getId());
     response.setMsg(list);
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.request.success"));

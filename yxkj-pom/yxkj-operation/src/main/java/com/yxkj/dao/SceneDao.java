@@ -5,6 +5,7 @@ import java.util.List;
 import com.yxkj.entity.Scene;
 import com.yxkj.framework.dao.BaseDao;
 import com.yxkj.json.admin.response.SceneProfile;
+import com.yxkj.json.admin.response.SelectProps;
 
 public interface SceneDao extends BaseDao<Scene, Long> {
   /**
@@ -17,5 +18,5 @@ public interface SceneDao extends BaseDao<Scene, Long> {
 
   List<SceneProfile> getSceneListByKeeper(Long id);
 
-  List<SceneProfile> getSceneListByProperty(Long id);
+  List<SelectProps> getSceneListByProperty(Long id);
 }
