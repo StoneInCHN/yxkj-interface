@@ -60,16 +60,30 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods,Long> implements Goo
 			  goods.getGoodsPics().add(goodsPicLarge);
     	  }else {
     		  List<GoodsPic> goodsPics = goods.getGoodsPics();
-    		  for (GoodsPic goodsPic : goodsPics) {
-				if (goodsPic.getOrder()!= null && goodsPic.getOrder() == 0) {
-					goodsPic.setSource(goodsData.getSmallUrl());
-					goodsPic.setTitle(goodsData.getName()+"(小图)");
-				}
-				if (goodsPic.getOrder()!= null && goodsPic.getOrder() == 1) {
-					goodsPic.setSource(goodsData.getLargeUrl());
-					goodsPic.setTitle(goodsData.getName()+"(大图)");
-				}				
-			 }
+    		  if (goodsPics != null && goodsPics.size() > 0) {
+    			  for (GoodsPic goodsPic : goodsPics) {
+    					if (goodsPic.getOrder()!= null && goodsPic.getOrder() == 0) {
+    						goodsPic.setSource(goodsData.getSmallUrl());
+    						goodsPic.setTitle(goodsData.getName()+"(小图)");
+    					}
+    					if (goodsPic.getOrder()!= null && goodsPic.getOrder() == 1) {
+    						goodsPic.setSource(goodsData.getLargeUrl());
+    						goodsPic.setTitle(goodsData.getName()+"(大图)");
+    					}				
+    				 }
+			  }else {
+				  GoodsPic goodsPic0 = new GoodsPic();
+				  goodsPic0.setOrder(0);
+				  goodsPic0.setSource(goodsData.getSmallUrl());
+				  goodsPic0.setTitle(goodsData.getName()+"(小图)");
+				  goodsPics.add(goodsPic0);
+				  GoodsPic goodsPic1 = new GoodsPic();
+				  goodsPic1.setOrder(1);
+				  goodsPic1.setSource(goodsData.getLargeUrl());
+				  goodsPic1.setTitle(goodsData.getName()+"(大图)");
+				  goodsPics.add(goodsPic1);
+			  }
+    		  
     	  }  
     	  return goods;
       }
@@ -80,6 +94,9 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods,Long> implements Goo
     		  return null;
     	  }
     	  GoodsData goodsData = new GoodsData();
+    	  if (goods.getCategory() != null) {			
+    		  goodsData.setCategoryId(goods.getCategory().getId());
+		  }
     	  goodsData.setCostPrice(goods.getCostPrice());
     	  goodsData.setName(goods.getName());
     	  goodsData.setSalePrice(goods.getSalePrice());

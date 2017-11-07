@@ -35,6 +35,7 @@ import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.bean.GoodsData;
 import com.yxkj.json.admin.request.GoodsCateRequest;
 import com.yxkj.json.admin.request.GoodsListRequest;
+import com.yxkj.json.admin.request.GoodsRequest;
 import com.yxkj.json.base.BaseListRequest;
 import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
@@ -44,7 +45,6 @@ import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.GoodsCategoryService;
 import com.yxkj.service.GoodsService;
 import com.yxkj.utils.ExportHelper;
-import com.yxkj.json.admin.request.GoodsRequest;
 import com.yxkj.utils.FieldFilterUtils;
 
 /**
@@ -121,6 +121,25 @@ public class GoodsController extends BaseController {
             response.setDesc(message("yxkj.request.success"));
   	  	}
         return response;
+    }
+    @RequestMapping(value = "/getGoodsData", method = RequestMethod.POST)
+    @ApiOperation(value = "商品详情", httpMethod = "POST", response = ResponseOne.class, notes = "用于获取商品详情")
+    @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+    public @ResponseBody ResponseOne<GoodsData> getGoodsData(
+    		@ApiParam @RequestBody BaseRequest request) {
+    	
+      ResponseOne<GoodsData> response = new ResponseOne<GoodsData>(); 
+      Long goodsId = request.getId();  	
+      if (goodsId == null || goodsId <= 0) {
+          response.setCode(CommonAttributes.FAIL_LOGIN);
+          response.setDesc(message("yxkj.request.param.missing"));
+          return response;
+      }      
+      Goods goods = goodsService.find(goodsId);
+      GoodsData goodsData = goodsService.getGoodsData(goods);
+      response.setMsg(goodsData);
+      response.setCode(CommonAttributes.SUCCESS);
+      return response;
     }
     @RequestMapping(value = "/updateGoods", method = RequestMethod.POST)
     @ApiOperation(value = "更新商品", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新商品")
