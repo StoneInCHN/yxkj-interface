@@ -75,6 +75,7 @@ public class FileController extends BaseController {
    */
   @RequestMapping(value = "/uploadFile", method = {RequestMethod.GET, RequestMethod.POST})
   public @ResponseBody BaseResponse uploadFile(HttpServletRequest request, ImageType imageType) {
+	  LogUtil.debug(this.getClass(), "uploadFile", "imageType= %s", imageType);
     BaseResponse response = new BaseResponse();
     MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
     Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();

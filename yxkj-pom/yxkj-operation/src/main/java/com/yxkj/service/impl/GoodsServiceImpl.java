@@ -8,9 +8,12 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service; 
 
 import com.yxkj.entity.Goods;
+import com.yxkj.entity.GoodsCategory;
 import com.yxkj.entity.GoodsPic;
 import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 import com.yxkj.dao.GoodsDao;
+import com.yxkj.service.AdResourceService;
+import com.yxkj.service.GoodsCategoryService;
 import com.yxkj.service.GoodsService;
 import com.yxkj.framework.filter.Filter;
 import com.yxkj.json.admin.bean.GoodsData;
@@ -19,10 +22,13 @@ import com.yxkj.framework.service.impl.BaseServiceImpl;
 @Service("goodsServiceImpl")
 public class GoodsServiceImpl extends BaseServiceImpl<Goods,Long> implements GoodsService {
 
+	  @Resource(name = "goodsCategoryServiceImpl")
+	  private GoodsCategoryService goodsCategoryService;
+	  
       @Resource(name="goodsDaoImpl")
       public void setBaseDao(GoodsDao goodsDao) {
          super.setBaseDao(goodsDao);
-     }
+      }
       
       @Override
       public Goods getGoodsEntity(GoodsData goodsData, Long goodsId) {
@@ -38,6 +44,8 @@ public class GoodsServiceImpl extends BaseServiceImpl<Goods,Long> implements Goo
     	  goods.setName(goodsData.getName());
     	  goods.setSpec(goodsData.getSpec());
     	  goods.setStatus(CommonStatus.ACITVE);
+    	  GoodsCategory category = goodsCategoryService.find(goodsData.getCategoryId());
+    	  goods.setCategory(category);
     	  if (goodsId == null) {
 			  GoodsPic goodsPicSmall = new GoodsPic();
 			  goodsPicSmall.setSource(goodsData.getSmallUrl());
