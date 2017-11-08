@@ -88,6 +88,7 @@ public class ContainerCategoryController extends BaseController {
       category.setcTemp(request.getcTemp());
       category.setCntrType(request.getCntrType());
       category.setRemark(request.getRemark());      
+      category.setIsActive(true);
       containerCategoryService.save(category);
       
       response.setCode(CommonAttributes.SUCCESS);
@@ -124,7 +125,8 @@ public class ContainerCategoryController extends BaseController {
       category.setCapacity(request.getCapacity());
       category.setcTemp(request.getcTemp());
       category.setCntrType(request.getCntrType());
-      category.setRemark(request.getRemark());      
+      category.setRemark(request.getRemark());    
+      category.setIsActive(true);
       containerCategoryService.update(category);
       
       response.setCode(CommonAttributes.SUCCESS);

@@ -1,5 +1,8 @@
 package com.yxkj.controller.file;
 
+import io.swagger.annotations.Api;
+
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,26 +24,26 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.BaseController;
-import com.yxkj.entity.Company;
 import com.yxkj.entity.ContainerChannel;
 import com.yxkj.entity.Goods;
 import com.yxkj.entity.VendingContainer;
 import com.yxkj.entity.commonenum.CommonEnum;
 import com.yxkj.entity.commonenum.CommonEnum.ImageType;
+import com.yxkj.framework.filter.Filter;
 import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.ResponseOne;
 import com.yxkj.service.AdResourceService;
 import com.yxkj.service.ContainerChannelService;
 import com.yxkj.service.FileService;
+import com.yxkj.service.GoodsService;
 import com.yxkj.service.VendingContainerService;
-import com.yxkj.common.log.LogUtil;
 import com.yxkj.utils.FieldFilterUtils;
 import com.yxkj.utils.GeneratePdf;
+import com.yxkj.utils.ImportExcel;
 import com.yxkj.utils.TimeUtils;
-
-import io.swagger.annotations.Api;
 
 
 /**
@@ -54,6 +58,10 @@ public class FileController extends BaseController {
 
   @Resource(name = "fileServiceImpl")
   private FileService fileService;
+  
+  @Resource(name = "goodsServiceImpl")
+  private GoodsService goodsService;
+  
   
   @Resource(name = "adResourceServiceImpl")
   private AdResourceService adResourceService;
@@ -169,5 +177,81 @@ public class FileController extends BaseController {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+  /**
+   * Excel数据导入
+   * 
+   * @param request
+   * @return
+   */
+  @RequestMapping(value = "/dataImport", method = {RequestMethod.GET, RequestMethod.POST})
+  public @ResponseBody BaseResponse dataImport(HttpServletRequest request) {
+    BaseResponse response = new BaseResponse();
+    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+    Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+    String desc = "商品导入结束。导入情况：";
+    String errorSn = "失败商品条码：";
+    int errCount = 0;
+    for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+      MultipartFile excelFile = entity.getValue();
+      ImportExcel importData = new ImportExcel();
+      try {
+        List<Map<String, Object>> rowMaps = importData.readExcelToMapList(excelFile);
+        desc += "共计" + rowMaps.size() + "个";
+        for (Map<String, Object> rowMap : rowMaps) {
+          if (isValidGoodsRow(rowMap)) {
+            Goods goods = importData.constructGoods(rowMap);
+            goodsService.save(goods);
+          } else {
+            errCount++;
+            errorSn += rowMap.get("sn") + " ";
+          }
+        }
+        if (errCount > 0) {
+          desc += "，成功" + (rowMaps.size() - errCount) + "个，失败" + errCount + "个。" + errorSn;
+        } else {
+          desc += "，成功" + rowMaps.size() + "个，失败0个。";
+        }
+      } catch (IOException e) {
+        response.setCode(CommonAttributes.FAIL_COMMON);
+        return response;
+      }
+      break;
+    }
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(desc);
+    return response;
+  }
+
+  private boolean isValidGoodsRow(Map<String, Object> rowMap) {
+	if (rowMap.get("sn") != null && StringUtils.isNotBlank(rowMap.get("sn").toString())) {
+		if (goodsService.exists(Filter.eq("sn", rowMap.get("sn").toString()))) {
+			rowMap.put("sn", rowMap.get("sn")+"(商品条码已存在)");
+			return false;
+		}
+		if (rowMap.get("name") == null || StringUtils.isBlank(rowMap.get("name").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(商品名称缺失)");
+			return false;
+		}
+		if (rowMap.get("spec") == null || StringUtils.isBlank(rowMap.get("spec").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(净含量缺失)");
+			return false;
+		}
+		if (rowMap.get("costPrice") == null || StringUtils.isBlank(rowMap.get("costPrice").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(成本价缺失)");
+			return false;
+		}
+		if (rowMap.get("salePrice") == null || StringUtils.isBlank(rowMap.get("salePrice").toString())) {
+			rowMap.put("sn", rowMap.get("sn")+"(售价价缺失)");
+			return false;
+		}
+		if (rowMap.get("name") != null && rowMap.get("spec") != null
+		        && rowMap.get("costPrice") != null && rowMap.get("salePrice") != null 
+		        && StringUtils.isNotBlank(rowMap.get("name").toString()) && StringUtils.isNotBlank(rowMap.get("spec").toString())
+		        && StringUtils.isNotBlank(rowMap.get("costPrice").toString()) && StringUtils.isNotBlank(rowMap.get("salePrice").toString())) {
+			return true;
+		}
+	}
+    return false;
   }
 }
