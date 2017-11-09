@@ -14,11 +14,17 @@ export default {
 @import '~vux/src/styles/reset.less';
 
 body {
-  background-color: #F1F1F1;
+  background-color: #FFFFFF;
   font-size:14px;
 }
 .weui-cells{
   margin-top: 0 !important;
   margin-bottom: 2px;
+}
+.weui-dialog{
+  border-radius: 20px !important;
+}
+.weui-dialog__btn_primary {
+    color: #aac97b !important;
 }
 </style>

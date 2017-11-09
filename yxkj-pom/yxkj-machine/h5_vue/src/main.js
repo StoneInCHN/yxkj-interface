@@ -8,7 +8,7 @@ import router from './router'
 import store from './store/index'
 import { WechatPlugin, AlertPlugin, querystring } from 'vux'
 
-require('./mock/index.js')
+// require('./mock/index.js')
 
 FastClick.attach(document.body)
 Vue.prototype.$api = api

@@ -23,6 +23,8 @@ import com.yxkj.framework.filter.Filter;
 import com.yxkj.framework.service.impl.BaseServiceImpl;
 import com.yxkj.json.admin.bean.SceneData;
 import com.yxkj.json.admin.request.SceneRequest;
+import com.yxkj.json.admin.response.SceneProfile;
+import com.yxkj.json.admin.response.SelectProps;
 import com.yxkj.service.AdMachineService;
 import com.yxkj.service.AreaService;
 import com.yxkj.service.ContainerCategoryService;
@@ -201,5 +203,16 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
     }
     snStr = "1" + snStr;
     return snStr;
+  }
+
+
+  @Override
+  public List<SceneProfile> getSceneListByKeeper(Long id) {
+	return sceneDao.getSceneListByKeeper(id);
+  }
+  
+  @Override
+  public List<SelectProps> getSceneListByProperty(Long id) {
+	return sceneDao.getSceneListByProperty(id);
   }
 }

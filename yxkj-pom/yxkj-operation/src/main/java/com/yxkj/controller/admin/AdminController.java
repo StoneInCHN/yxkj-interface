@@ -49,7 +49,7 @@ public class AdminController extends BaseController {
     	String serverPrivateKey = setting.getServerPrivateKey();
         String userName = request.getUserName();
         String oldEnPwd = request.getOldPwd();
-        String newEnPwd = DigestUtils.md5Hex(request.getNewPwd());
+        String newEnPwd = request.getNewPwd();
         Admin admin = adminService.findByUserName(userName);
         if (admin == null) {
           response.setCode(CommonAttributes.FAIL_COMMON);
@@ -58,6 +58,7 @@ public class AdminController extends BaseController {
         }
         try {
         	oldEnPwd = KeyGenerator.decrypt(oldEnPwd, RSAHelper.getPrivateKey(serverPrivateKey));
+        	newEnPwd = KeyGenerator.decrypt(newEnPwd, RSAHelper.getPrivateKey(serverPrivateKey));
         } catch (Exception e) {
         	LogUtil.debug(this.getClass(), "login", "登录密码，RSA解密错误：%s", e.getMessage());
             response.setCode(CommonAttributes.FAIL_LOGIN);
@@ -69,7 +70,7 @@ public class AdminController extends BaseController {
             response.setDesc(message("yxkj.oldPwd.error"));
             return response;
         }    	
-    	admin.setPassword(newEnPwd);
+    	admin.setPassword(DigestUtils.md5Hex(newEnPwd));
     	adminService.update(admin);
     	
     	response.setCode(CommonAttributes.SUCCESS);

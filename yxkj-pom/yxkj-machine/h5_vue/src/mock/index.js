@@ -8,5 +8,6 @@ Mock.mock(/jsapiConfig/, 'post', api.jsApiConfig)
 Mock.mock(/pay/, 'post', api.pay)
 Mock.mock(/verifyStock/, 'post', api.verifyStock)
 Mock.mock(/getOrderItemOutStatus/, 'post', api.getOrderItemOutStatus)
+Mock.mock(/getOrderItemRefundStatus/, 'post', api.getOrderItemRefundStatus)
 
 export default Mock

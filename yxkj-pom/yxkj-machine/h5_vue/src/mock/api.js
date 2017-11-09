@@ -88,29 +88,90 @@ const getOrderItemOutStatus = {
   'desc': '由于商品库存变化，您选购的商品数量发生变化，请确认！',
   'token': null,
   'msg': [{
-    goodName: '矿泉水',
-    gImg: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png',
-    count: 2,
-    cId: 1,
-    status: 'NOT_SHIPMENT'
-  }, {
-    goodName: '矿泉水',
-    count: 5,
-    gImg: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png',
-    cId: 1,
-    status: 'SHIPMENT_INPROCESS'
-  }, {
-    goodName: '矿泉水',
+    Id: 1,
+    cntrSn: 'B',
     count: 1,
-    gImg: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png',
-    cId: 1,
+    goodName: '统一冰火茶',
+    pic: 'http://shelf.ybjstore.com/upload/goods/src_4ff9da04-b9e4-40c0-b5a2-147c4b6f62ef.jpg',
+    pickUpStatus: '',
+    price: 0.01,
+    refundStatus: 'REFUNDED',
     status: 'SHIPMENT_SUCCESS'
   }, {
+    Id: 2,
+    cntrSn: 'A',
+    count: 1,
+    goodName: '统一冰火茶',
+    pic: 'http://shelf.ybjstore.com/upload/goods/src_4ff9da04-b9e4-40c0-b5a2-147c4b6f62ef.jpg',
+    pickUpStatus: '',
+    price: 0.01,
+    refundStatus: 'REFUNDED',
+    status: 'SHIPMENT_SUCCESS'
+  }, {
+    Id: 3,
+    cntrSn: 'B',
+    count: 2,
+    goodName: '统一冰火茶',
+    pic: 'http://shelf.ybjstore.com/upload/goods/src_4ff9da04-b9e4-40c0-b5a2-147c4b6f62ef.jpg',
+    pickUpStatus: '',
+    price: 0.01,
+    refundStatus: 'REFUNDED',
+    status: 'SHIPMENT_SUCCESS'
+  }, {
+    Id: 4,
+    cntrSn: 'A',
+    count: 1,
+    goodName: '统一冰火茶',
+    pic: 'http://shelf.ybjstore.com/upload/goods/src_4ff9da04-b9e4-40c0-b5a2-147c4b6f62ef.jpg',
+    pickUpStatus: '',
+    price: 0.01,
+    refundStatus: 'REFUNDED',
+    status: 'SHIPMENT_SUCCESS'
+  }, {
+    Id: 5,
+    cntrSn: 'C',
+    count: 2,
+    goodName: '统一冰火茶',
+    pic: 'http://shelf.ybjstore.com/upload/goods/src_4ff9da04-b9e4-40c0-b5a2-147c4b6f62ef.jpg',
+    pickUpStatus: 'LACK',
+    price: 0.01,
+    refundStatus: 'REFUNDED',
+    status: 'SHIPMENT_SUCCESS'
+  }]
+}
+
+const getOrderItemRefundStatus = {
+  'code': '0000',
+  'desc': '',
+  'token': null,
+  'msg': [{
+    cntrSn: 'B',
     goodName: '矿泉水',
-    count: 3,
-    gImg: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png',
+    price: '12',
+    count: 1,
     cId: 1,
-    status: 'SHIPMENT_FAIL'
+    pic: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png'
+  }, {
+    cntrSn: 'A',
+    goodName: '矿泉水',
+    price: '12',
+    count: 2,
+    cId: 1,
+    pic: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png'
+  }, {
+    cntrSn: 'B',
+    goodName: '矿泉水',
+    price: '12',
+    count: 1,
+    cId: 1,
+    pic: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png'
+  }, {
+    cntrSn: 'C',
+    goodName: '矿泉水',
+    price: '12',
+    count: 2,
+    cId: 1,
+    pic: 'http://osv8eirwz.bkt.clouddn.com/3bc1c63e-ebd1-400b-83fe-8550b7a613da.png'
   }]
 }
 
@@ -135,5 +196,8 @@ export default {
   },
   getOrderItemOutStatus: config => {
     return getOrderItemOutStatus
+  },
+  getOrderItemRefundStatus: config => {
+    return getOrderItemRefundStatus
   }
 }

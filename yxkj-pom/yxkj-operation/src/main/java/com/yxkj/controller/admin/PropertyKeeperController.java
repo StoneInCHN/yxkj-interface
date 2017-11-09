@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.common.log.LogUtil;
 import com.yxkj.controller.base.BaseController;
+import com.yxkj.entity.ContainerKeeper;
 import com.yxkj.entity.Order;
 import com.yxkj.entity.PropertyKeeper;
 import com.yxkj.entity.PropertyKeeperSalesReport;
@@ -40,6 +41,8 @@ import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.OrderRequest;
 import com.yxkj.json.admin.request.PropertyKeeperRequest;
+import com.yxkj.json.admin.response.SceneProfile;
+import com.yxkj.json.admin.response.SelectProps;
 import com.yxkj.json.base.BaseListRequest;
 import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
@@ -98,7 +101,7 @@ public class PropertyKeeperController extends BaseController {
     Pageable pageable = new Pageable(request.getPageNumber(), request.getPageSize());
 
     Page<PropertyKeeper> keeperPage = propertyKeeperService.findPage(pageable);
-    String[] propertys = {"id", "userName", "fenRunPoint", "cellPhoneNum", "scenes"};
+    String[] propertys = {"id", "userName", "realName", "cellPhoneNum", "scenes"};
     List<Map<String, Object>> result =
         FieldFilterUtils.filterCollection(propertys, keeperPage.getContent());
     PageResponse pageInfo =
@@ -114,13 +117,13 @@ public class PropertyKeeperController extends BaseController {
   @RequestMapping(value = "/addKeeper", method = RequestMethod.POST)
   @ApiOperation(value = "添加物业", httpMethod = "POST", response = ResponseOne.class, notes = "用于添加物业")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
-  public @ResponseBody BaseResponse addGoods(
+  public @ResponseBody BaseResponse addKeeper(
       @ApiParam(
           name = "请求参数(json)",
           value = "userName:用户名; realName:物业姓名; cellPhoneNum:手机号; fenRunPoint:物业分润点; sceneIds:负责优享空间IDs",
           required = true) @RequestBody PropertyKeeperRequest request) {
     BaseResponse response = new BaseResponse();
-    if (request.getSceneIds() != null && request.getSceneIds().length > 0) {
+    if (request.getIdPoints() != null && request.getIdPoints().size() > 0) {
       PropertyKeeper keeper = propertyKeeperService.getPropertyKeeperEntity(request, null);
       String loginPwd = keeper.getLoginPwd();
       keeper.setLoginPwd(DigestUtils.md5Hex(loginPwd));
@@ -137,7 +140,24 @@ public class PropertyKeeperController extends BaseController {
     }
     return response;
   }
+  
+  @RequestMapping(value = "/getKeeperData", method = RequestMethod.POST)
+  @ApiOperation(value = "物业数据", httpMethod = "POST", response = ResponseMultiple.class, notes = "用于获取物业数据")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody ResponseOne<Map<String, Object>> getKeeperData(
+  		@ApiParam(name = "请求参数(json)", value = "userName:用户名; id:管家ID;", required = false) 
+  		@RequestBody BaseListRequest request) {
+  	
+    ResponseOne<Map<String, Object>> response = new ResponseOne<Map<String, Object>>(); 
+    PropertyKeeper keeper = propertyKeeperService.find(request.getId());      
+    String[] propertys = {"id", "userName", "realName", "cellPhoneNum", "scenes"};
+    Map<String, Object> result = FieldFilterUtils.filterEntity(propertys, keeper);
+    response.setMsg(result);
 
+    response.setCode(CommonAttributes.SUCCESS);
+    return response;
+  }
+  
   @RequestMapping(value = "/updateKeeper", method = RequestMethod.POST)
   @ApiOperation(value = "更新物业", httpMethod = "POST", response = ResponseOne.class, notes = "用于更新物业")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
@@ -147,8 +167,7 @@ public class PropertyKeeperController extends BaseController {
           value = "serName:用户名; realName:物业姓名; cellPhoneNum:手机号; fenRunPoint:物业分润点; sceneIds:负责优享空间IDs",
           required = true) @RequestBody PropertyKeeperRequest request) {
     BaseResponse response = new BaseResponse();
-    if (request.getId() != null && request.getSceneIds() != null
-        && request.getSceneIds().length > 0) {
+    if (request.getId() != null && request.getIdPoints() != null && request.getIdPoints().size() > 0) {
       propertyKeeperService.updateKeeper(request);
       response.setCode(CommonAttributes.SUCCESS);
       response.setDesc(message("yxkj.request.success"));
@@ -200,7 +219,17 @@ public class PropertyKeeperController extends BaseController {
 
     return response;
   }
-
+  @RequestMapping(value = "/getSceneList", method = RequestMethod.POST)
+  @ApiOperation(value = "获取优享空间列表", httpMethod = "POST", response = ResponseOne.class, notes = "用于获取优享空间列表")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody ResponseMultiple<SelectProps> getSceneList(@ApiParam @RequestBody BaseRequest request) {
+    ResponseMultiple<SelectProps> response = new ResponseMultiple<SelectProps>(); 
+    List<SelectProps> list = sceneService.getSceneListByProperty(request.getId());
+    response.setMsg(list);
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(message("yxkj.request.success"));
+    return response;
+  }
 
   /**
    * 物业平台-总销售统计数据
