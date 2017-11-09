@@ -21,6 +21,8 @@ public class SceneData {
 	   * 开通时间
 	   */
 	  private Date openTime;
+	  
+	  private String areaFullName;
 
 	  /**
 	   * 地址
@@ -50,7 +52,7 @@ public class SceneData {
 	  /**
 	   * 中控货柜 音量
 	   */
-	  private String volume;
+	  private Integer volume;
 	  
 	  /**
 	   * 中控货柜 IMEI
@@ -138,11 +140,11 @@ public class SceneData {
 		this.status = status;
 	}
 
-	public String getVolume() {
+	public Integer getVolume() {
 		return volume;
 	}
 
-	public void setVolume(String volume) {
+	public void setVolume(Integer volume) {
 		this.volume = volume;
 	}
 
@@ -184,6 +186,14 @@ public class SceneData {
 
 	public void setShowMap(Boolean showMap) {
 		this.showMap = showMap;
+	}
+
+	public String getAreaFullName() {
+		return areaFullName;
+	}
+
+	public void setAreaFullName(String areaFullName) {
+		this.areaFullName = areaFullName;
 	}
 
 

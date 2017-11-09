@@ -67,7 +67,7 @@ public class VendingContainer extends BaseEntity {
   /**
    * 音量
    */
-  private String volume;
+  private Integer volume;
   
   /**
    * 货柜预警比例
@@ -201,13 +201,12 @@ public class VendingContainer extends BaseEntity {
     this.rebootDay = rebootDay;
   }
 
-  @Column(length = 5)
-  public String getVolume() {
-    return volume;
+  public Integer getVolume() {
+	return volume;
   }
 
-  public void setVolume(String volume) {
-    this.volume = volume;
+  public void setVolume(Integer volume) {
+	this.volume = volume;
   }
 
   @Column(length = 50)

@@ -121,7 +121,7 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
     Scene scene = sceneDao.find(request.getId());
     if (scene != null) {
       SceneData data = request.getSceneData();
-      scene.setSn(genSceneSn());
+      scene.setSn(data.getSn());
       scene.setName(data.getName());
       scene.setAddress(data.getAddress());
       List<Long> areas = data.getArea();
@@ -168,21 +168,24 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
     Map<String, Object> resultMap = new HashMap<String, Object>();
     Scene scene = find(id);
     if (scene != null) {
+      resultMap.put("showMap", false);
       resultMap.put("sn", scene.getSn());
       resultMap.put("name", scene.getName());
       resultMap.put("openTime", scene.getOpenTime());
+      resultMap.put("longitude", scene.getLongitude());
+      resultMap.put("latitude", scene.getLatitude());
       if (scene.getArea() != null) {
         resultMap.put("areaFullName", scene.getArea().getFullName());
       }
       resultMap.put("address", scene.getAddress());
-      resultMap.put("hasStore", scene.getHasStore());
+      resultMap.put("hasStore", scene.getHasStore()+"");
       VendingContainer centralContainer = vendingContainerService.getScencCentral(scene);
       if (centralContainer != null) {
-        resultMap.put("centralStatus", centralContainer.getStatus());
-        resultMap.put("centralVolume", centralContainer.getVolume());
-        resultMap.put("centralImei", centralContainer.getSn());
-        resultMap.put("centralRebootDay", centralContainer.getRebootDay());
-        resultMap.put("centralRebootTime", centralContainer.getRebootTime());
+        resultMap.put("status", centralContainer.getStatus());
+        resultMap.put("volume", centralContainer.getVolume());
+        resultMap.put("imei", centralContainer.getSn());
+        resultMap.put("rebootDay", centralContainer.getRebootDay()+"");
+        resultMap.put("rebootTime", centralContainer.getRebootTime());
       }
     }
     return resultMap;

@@ -90,7 +90,7 @@ public class SceneController extends BaseController {
     orderings.add(Ordering.desc("sn"));
 
     Page<Scene> scenePage = sceneService.findPage(pageable);
-    String[] propertys = {"id", "sn", "name", "openTime", "cntrTotalCount", "hasStore"};
+    String[] propertys = {"id", "sn", "name", "area", "address", "openTime", "cntrTotalCount", "hasStore"};
     
     List<Map<String, Object>> result =
         FieldFilterUtils.filterCollection(propertys, scenePage.getContent());
