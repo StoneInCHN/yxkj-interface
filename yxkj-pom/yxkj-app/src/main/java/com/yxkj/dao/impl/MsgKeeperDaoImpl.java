@@ -17,17 +17,30 @@ public class MsgKeeperDaoImpl extends  BaseDaoImpl<MsgKeeper,Long> implements Ms
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<Object[]> countKeeperMsgType(Long userId) {
-    String jpql = "SELECT k.type, count(k.title) FROM MsgKeeper m, KeeperRemindMsg k"
-        + " WHERE m.message = k AND m.keeper.id = :userId AND m.isPush = :isPush GROUP BY k.type HAVING m.isRead = :isRead";
-    Query query = entityManager.createQuery(jpql).setParameter("userId", userId)
-        .setParameter("isPush", true).setParameter("isRead", false);
+  public List<Object> findKeeperMsgType(Long userId) {
+    String jpql = "SELECT DISTINCT k.type FROM MsgKeeper m, KeeperRemindMsg k"
+        + " WHERE m.message = k AND m.keeper.id = :userId AND m.isPush = :isPush";
+    Query query = entityManager.createQuery(jpql).setParameter("userId", userId).setParameter("isPush", true);
     try {
       return query.getResultList();
     } catch (NoResultException e) {
       return null;
     }
   }
+  
+  @Override
+  public Integer countUnReadKeeperMsg(Long userId, String msgtype) {
+    String jpql = "SELECT count(k.title) FROM MsgKeeper m, KeeperRemindMsg k WHERE m.message = k"
+        + " AND m.keeper.id = :userId AND k.type = :type AND m.isRead = :isRead";
+    Query query = entityManager.createQuery(jpql).setParameter("userId", userId)
+        .setParameter("type", CommonEnum.RemindType.valueOf(msgtype)).setParameter("isRead", false);
+    try {
+      return ((Long)query.getSingleResult()).intValue();
+    } catch (NoResultException e) {
+      return (Integer) 0;
+    }
+  }
+
 
   @SuppressWarnings("unchecked")
   @Override

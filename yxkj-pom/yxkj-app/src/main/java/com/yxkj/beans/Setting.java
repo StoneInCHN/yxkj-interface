@@ -45,6 +45,9 @@ public class Setting implements Serializable {
 
   /** 短信验证码过期时间 */
   private Integer smsCodeTimeOut;
+  
+  /** 短信验证码发送次数过期时间*/
+  private Integer smsCodeTimesTimeOut;
 
   /** 短信服务平台地址 */
   private String smsUrl;
@@ -1176,6 +1179,14 @@ public class Setting implements Serializable {
 
   public void setTokenSecret(String tokenSecret) {
     this.tokenSecret = tokenSecret;
+  }
+
+  public Integer getSmsCodeTimesTimeOut() {
+    return smsCodeTimesTimeOut;
+  }
+
+  public void setSmsCodeTimesTimeOut(Integer smsCodeTimesTimeOut) {
+    this.smsCodeTimesTimeOut = smsCodeTimesTimeOut;
   }
 
 

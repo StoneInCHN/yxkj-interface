@@ -62,6 +62,8 @@ public final class CommonAttributes {
   public static final String ERROR_VFT = "1003";// 验证码错误
   
   public static final String ERROR_FORMAL = "1004";//格式错误
+  
+  public static final String FrequentOpration = "1005";//操作过于频繁
   //
   // /** OBD设备未绑定车辆 */
   // public static final String FAIL_DEVICE_NOBIND = "0010";// OBD设备不存在

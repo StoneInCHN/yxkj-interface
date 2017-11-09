@@ -20,6 +20,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.yxkj.beans.CommonAttributes;
+import com.yxkj.common.log.LogUtil;
 import com.yxkj.utils.TokenUtil;
 
 
@@ -57,6 +58,7 @@ public class UserValidCheckAspect {
       BeanMap beanMap = BeanMap.create(response);
       beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
       beanMap.put("desc", "aop token为null验证失败");
+      LogUtil.debug(this.getClass(), "checkUserValid", "aop token为null验证失败");
       return response;// 抛出未认证的错误
     } else {
       Claims claims = TokenUtil.parseJWT(authorizationHeader);
@@ -66,6 +68,7 @@ public class UserValidCheckAspect {
         BeanMap beanMap = BeanMap.create(response);
         beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
         beanMap.put("desc", "token非法或失效");
+        LogUtil.debug(this.getClass(), "checkUserValid", "token非法或失效");
         return response;
       } else {
         if (!userParam.getUserId().toString().equals(claims.getId())) {
@@ -74,6 +77,9 @@ public class UserValidCheckAspect {
           BeanMap beanMap = BeanMap.create(response);
           beanMap.put("code", CommonAttributes.FAIL_TOKEN_AUTH);
           beanMap.put("desc", "token,id不匹配");
+          LogUtil
+            .debug(this.getClass(), "checkUserValid", "token,id不匹配  tokenId:%s ,id:%s",
+              claims.getId(), userParam.getUserId().toString());
           return response;
         }
       }

@@ -1,7 +1,9 @@
 package com.yxkj.service.impl; 
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -38,12 +40,16 @@ public class SupplementSumRecServiceImpl extends BaseServiceImpl<SupplementSumRe
           List<SceneSumSupplementRecord> sceneSumSupplementRecords = new LinkedList<>();
           
           List<Object[]> supplementSumRecords = supplementSumRecDao.findSupplementSumRecord(suppId, (String)date);
+          Map<String, Integer> sceneMap = new HashMap<>();
           for (Object[] supplyRecordObj : supplementSumRecords) {
             SceneSumSupplementRecord sceneSumSupplementRecord = record.new SceneSumSupplementRecord((String)supplyRecordObj[0],
                 (String)supplyRecordObj[1], (Integer)supplyRecordObj[2], (Integer)supplyRecordObj[3], (String)supplyRecordObj[4]);
             sceneSumSupplementRecords.add(sceneSumSupplementRecord);
-            record.setSumWaitSupplyCount(record.getSumWaitSupplyCount().intValue() + (Integer)supplyRecordObj[2]);
+            sceneMap.put((String)supplyRecordObj[0], (Integer)supplyRecordObj[2]);
             record.setSumSupplyCount(record.getSumSupplyCount().intValue() + (Integer)supplyRecordObj[3]);
+          }
+          for (Integer waitSupplyCount : sceneMap.values()) {
+            record.setSumWaitSupplyCount(record.getSumWaitSupplyCount().intValue() + waitSupplyCount);
           }
           record.setSupplementList(sceneSumSupplementRecords);
           records.add(record);

@@ -320,16 +320,22 @@ public class ReplenishmentController extends MobileBaseController {
   @ApiOperation(value = "完成补货", httpMethod = "POST", response = ResponseOne.class, notes = "完成补货")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
   public @ResponseBody ResponseOne<Map<String, Object>> finishSupplyGoods(
-      @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneSn:优享空间编号}", required = true) @RequestBody WaitSupplyListRequest waitSupplyListRequest) {
+      @ApiParam(name = "请求参数(json)", value = "{userId:管家ID,sceneSn:优享空间编号}", required = true) @RequestBody WaitSupplyListRequest request) {
     ResponseOne<Map<String, Object>> response = new ResponseOne<>();
     Map<String, Object> map = new HashMap<>();
-    Object[] sceneObjs = supplementListService.finishSupplyGoods(waitSupplyListRequest.getUserId(),
-            waitSupplyListRequest.getSceneSn());
+    Object[] sceneObjs = supplementListService.finishSupplyGoods(request.getUserId(),
+            request.getSceneSn());
     if (sceneObjs != null) {
       map.put("sceneSn", (String) sceneObjs[0]);
-      map.put("sceneName", (String) sceneObjs[1]);
-      response.setMsg(map);
+      map.put("sceneName", (String) sceneObjs[1]);LogUtil
+      .debug(this.getClass(), "startSupplyGoods", "开始补货失败,userId: %s, sceneSn: %s",
+          request.getUserId().toString(), request.getSceneSn());
     }
+    LogUtil
+        .debug(this.getClass(), "startSupplyGoods", "开始补货成功,userId: %s, sceneSn: %s",
+            request.getUserId().toString(), request.getSceneSn());
+    
+    response.setMsg(map);
     response.setCode(CommonAttributes.SUCCESS);
     response.setDesc(message("yxkj.request.success"));
     return response;
@@ -349,7 +355,7 @@ public class ReplenishmentController extends MobileBaseController {
         request.getPageNo(), Integer.valueOf(request.getPageSize()).intValue());
     supplyRecordMap.put("groups", records);
     LogUtil
-        .debug(this.getClass(), "getSupplementSumRecord", "查看总补货记录失败, userId: %s",
+        .debug(this.getClass(), "getSupplementSumRecord", "查看总补货记录成功, userId: %s",
             request.getUserId().toString());
 
     response.setCode(CommonAttributes.SUCCESS);

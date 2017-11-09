@@ -216,24 +216,23 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
         SupplementSumRec supplementSumRec = supplementSumRecDao.findSupplementSumRecordBySceneSn(suppId, sceneSn);
         if (supplementSumRec == null) {
           supplementSumRec = new SupplementSumRec();
+          supplementSumRec.setSceneSn(sceneSn);
+          supplementSumRec.setSceneName((String)sceneDao.findSceneNameBySn(sceneSn));
+          ContainerKeeper keeper = containerKeeperDao.find(suppId);
+          supplementSumRec.setSuppId(suppId);
+          supplementSumRec.setSuppMobile(keeper.getCellPhoneNum());
+          supplementSumRec.setSuppName(keeper.getUserName());
           supplementSumRec.setSuppStartTime(new Date());
+          supplementSumRec.setSuppTotalCount(0);
+          Integer waitSuppTotalCount = 0;
+          List<Object> countList = supplementListDao.findWaitSupplyCountSceneSn(sceneSn);
+          for (Object count : countList) {
+            waitSuppTotalCount += (Integer)count;
+          }
+          supplementSumRec.setWaitSuppTotalCount(waitSuppTotalCount);
+          supplementSumRec.setLackCount(waitSuppTotalCount);
+          supplementSumRecDao.persist(supplementSumRec);
         }
-        
-        supplementSumRec.setSceneSn(sceneSn);
-        supplementSumRec.setSceneName((String)sceneDao.findSceneNameBySn(sceneSn));
-        ContainerKeeper keeper = containerKeeperDao.find(suppId);
-        supplementSumRec.setSuppId(suppId);
-        supplementSumRec.setSuppMobile(keeper.getCellPhoneNum());
-        supplementSumRec.setSuppName(keeper.getUserName());
-        List<Object> countList = supplementListDao.findWaitSupplyCountSceneSn(sceneSn);
-        Integer waitSuppTotalCount = 0;
-        for (Object count : countList) {
-          waitSuppTotalCount += (Integer)count;
-        }
-        supplementSumRec.setWaitSuppTotalCount(waitSuppTotalCount);
-        supplementSumRec.setLackCount(waitSuppTotalCount);
-        supplementSumRec.setSuppTotalCount(0);
-        supplementSumRecDao.persist(supplementSumRec);
         return null;
       }
 
@@ -278,8 +277,9 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
       public void commitSupplyRecords(Long suppId, String sceneSn, List<SupplyRecord> records) throws Exception {
         Integer suppCount = 0;
         SupplementSumRec supplementSumRec = supplementSumRecDao.findSupplementSumRecordBySceneSn(suppId, sceneSn);
+        
         if (supplementSumRec == null)
-          throw new Exception();
+          throw new Exception("未开始补货");
         for (SupplyRecord record : records) {
           SupplementList supplementList = supplementListDao.find(record.getSupplementId());
           SupplementRecord supplementRecord = new SupplementRecord();
@@ -302,16 +302,18 @@ public class SupplementListServiceImpl extends BaseServiceImpl<SupplementList,Lo
             //删除该待补清单
             supplementListDao.remove(supplementList);
           } else {
-            throw new Exception();
+            throw new Exception("补过数超过待补数");
           }
           supplementRecord.setSuppSum(supplementSumRec);
           //添加补货记录
           supplementRecordDao.persist(supplementRecord);
           suppCount += record.getSupplyCount();
         }
+
         //更新汇总记录
         supplementSumRec.setSuppTotalCount(supplementSumRec.getSuppTotalCount() + suppCount);
         supplementSumRec.setLackCount(supplementSumRec.getLackCount() - suppCount);
+        
         supplementSumRecDao.merge(supplementSumRec);
       }
       

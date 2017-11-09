@@ -7,7 +7,9 @@ import com.yxkj.framework.dao.BaseDao;
 
 public interface MsgKeeperDao extends  BaseDao<MsgKeeper,Long>{
 
-  List<Object[]> countKeeperMsgType(Long userId);
+  List<Object> findKeeperMsgType(Long userId);
+  
+  Integer countUnReadKeeperMsg(Long userId, String type);
   
   List<Object[]> getKeeperMsgByType(Long userId, String msgType);
   

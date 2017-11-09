@@ -192,11 +192,25 @@ public class AcconutController extends MobileBaseController {
     }
     String code = SmsUtil.getRandNum(6);
     String stateInfo = "";
+    String sendTimes = redisTemplate.opsForValue().get("time_"+cellPhoneNum);
     try {
-      stateInfo = SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
-      redisTemplate.opsForValue().set(type+"_"+cellPhoneNum, code, setting.getSmsCodeTimeOut(), TimeUnit.SECONDS);
-      map.put("code", code);
+      if (sendTimes == null) {
+        sendTimes = "0";
+        redisTemplate.opsForValue().set("time_"+cellPhoneNum, sendTimes, setting.getSmsCodeTimesTimeOut(), TimeUnit.SECONDS);
+      }
+      if(Integer.valueOf(sendTimes) < 5) {
+        stateInfo = SmsUtil.sendMessage(cellPhoneNum, message("yxkj.keeper.sms", code));
+        redisTemplate.opsForValue().set(type+"_"+cellPhoneNum, code, setting.getSmsCodeTimeOut(), TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("time_"+cellPhoneNum, Integer.valueOf(sendTimes)+1+"");
+        map.put("code", code);
+      } else {
+        LogUtil.debug(this.getClass(), "getVerificationCode", "获取验证码失败, 请求过于频繁");
+        response.setCode(CommonAttributes.FrequentOpration);
+        response.setDesc(message("yxkj.keeper.varificationCode.operation.frequently"));
+        return response;
+      }
     } catch (Exception e) {
+      e.printStackTrace();
       LogUtil
           .debug(this.getClass(), "getVerificationCode", "获取验证码失败, Number:%s, code:%s, stateInfo:%s",
               cellPhoneNum, code, stateInfo);
@@ -451,7 +465,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
-//  @UserValidCheck
+  @UserValidCheck
   @RequestMapping(value = "/getMsg", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})
@@ -478,7 +492,7 @@ public class AcconutController extends MobileBaseController {
    * @param request
    * @return
    */
-//  @UserValidCheck
+  @UserValidCheck
   @RequestMapping(value = "/getMsgDetails", method = RequestMethod.POST)
   @ApiOperation(value = "查看消息详情", httpMethod = "POST", response = BaseResponse.class, notes = "查看消息详情")
   @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 0005:操作失败]")})

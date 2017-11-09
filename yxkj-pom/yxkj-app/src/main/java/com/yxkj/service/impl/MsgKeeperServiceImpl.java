@@ -32,13 +32,14 @@ public class MsgKeeperServiceImpl extends BaseServiceImpl<MsgKeeper,Long> implem
       @Override
       public List<KeeperNotice> getKeeperNotices(Long userId) {
         List<KeeperNotice> notices = new LinkedList<>();
-        List<Object[]> typeCountlist = msgKeeperDao.countKeeperMsgType(userId);
-        if (typeCountlist == null) return notices;
-        for (Object[] typeCount : typeCountlist) {
+        List<Object> typelist = msgKeeperDao.findKeeperMsgType(userId);
+        if (typelist == null) return notices;
+        for (Object type : typelist) {
           KeeperNotice notice = new KeeperNotice();
-          notice.setType(((CommonEnum.RemindType)typeCount[0]).toString());
-          notice.setNoticeCount(((Long)typeCount[1]).intValue());
-          List<Object[]> msgs = msgKeeperDao.getKeeperMsgByType(userId, ((CommonEnum.RemindType)typeCount[0]).toString());
+          String msgType = ((CommonEnum.RemindType)type).toString();
+          notice.setType(msgType);
+          notice.setNoticeCount(msgKeeperDao.countUnReadKeeperMsg(userId, msgType));
+          List<Object[]> msgs = msgKeeperDao.getKeeperMsgByType(userId, msgType);
           Object[] firstMsg = msgs.get(0);
           notice.setContent((String)firstMsg[0]+(String)firstMsg[1]);
           notice.setNoticeTime(new SimpleDateFormat("yy/MM/dd hh:mm:ss").format((Date)firstMsg[3]));
