@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yxkj.beans.CommonAttributes;
 import com.yxkj.controller.base.BaseController;
+import com.yxkj.entity.Area;
 import com.yxkj.entity.Scene;
+import com.yxkj.entity.VendingContainer;
 import com.yxkj.entity.commonenum.CommonEnum.CommonStatus;
 import com.yxkj.framework.filter.Filter;
 import com.yxkj.framework.ordering.Ordering;
@@ -36,7 +38,9 @@ import com.yxkj.json.base.BaseResponse;
 import com.yxkj.json.base.PageResponse;
 import com.yxkj.json.base.ResponseMultiple;
 import com.yxkj.json.base.ResponseOne;
+import com.yxkj.service.AreaService;
 import com.yxkj.service.SceneService;
+import com.yxkj.service.VendingContainerService;
 import com.yxkj.utils.FieldFilterUtils;
 
 /**
@@ -49,9 +53,14 @@ import com.yxkj.utils.FieldFilterUtils;
 @Api(value = "(货柜后台)优享空间", description = "优享空间")
 public class SceneController extends BaseController {
 
-  @Resource(name = "sceneServiceImpl")
+  @Resource(name = "sceneServiceImpl") 
   private SceneService sceneService;
-
+  
+  @Resource(name = "vendingContainerServiceImpl") 
+  private VendingContainerService vendingContainerService;
+  
+  @Resource(name = "areaServiceImpl")
+  private AreaService areaService;
   /**
    * 优享空间列表
    * 
@@ -82,8 +91,15 @@ public class SceneController extends BaseController {
 
     Page<Scene> scenePage = sceneService.findPage(pageable);
     String[] propertys = {"id", "sn", "name", "openTime", "cntrTotalCount", "hasStore"};
+    
     List<Map<String, Object>> result =
         FieldFilterUtils.filterCollection(propertys, scenePage.getContent());
+    for (Map<String, Object> map : result) {
+    	VendingContainer centralContainer = vendingContainerService.getScencCentral((Long)map.get("id"));
+    	String[] props = {"id", "sn", "status", "rebootDay", "rebootTime", "volume"};
+    	Map<String, Object> centralMap = FieldFilterUtils.filterEntity(props, centralContainer);
+    	map.put("central", centralMap);
+	}
     PageResponse pageInfo =
         new PageResponse(pageable.getPageNumber(), pageable.getPageSize(),
             (int) scenePage.getTotal());
@@ -222,5 +238,23 @@ public class SceneController extends BaseController {
     }
     return response;
   }
-
+  @RequestMapping(value = "/getAreaList", method = RequestMethod.POST)
+  @ApiOperation(value = "获取地址列表", httpMethod = "POST", response = ResponseOne.class, notes = "用于获取地址列表")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody ResponseMultiple<Area> getAreaList(@ApiParam @RequestBody BaseRequest request) {
+    ResponseMultiple<Area> response = new ResponseMultiple<Area>(); 
+    List<Filter> filters = new ArrayList<Filter>();
+    if (request.getId() == null) {// 查询顶级地区
+      filters.add(Filter.isNull("parent"));
+    } else {// 查询areaId下的子级地区
+      filters.add(Filter.eq("parent", request.getId()));
+    }
+    List<Ordering> orderings = new ArrayList<Ordering>();
+    orderings.add(Ordering.asc("pyName"));
+    List<Area> list = areaService.findList(null, filters, orderings);
+    response.setMsg(list);
+    response.setCode(CommonAttributes.SUCCESS);
+    response.setDesc(message("yxkj.request.success"));
+    return response;
+  }  
 }

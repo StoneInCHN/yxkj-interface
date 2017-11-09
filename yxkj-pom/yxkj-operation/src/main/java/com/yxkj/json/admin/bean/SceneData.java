@@ -71,6 +71,8 @@ public class SceneData {
 	   * 是否含有微仓
 	   */
 	  private Boolean hasStore;
+	  
+	  private Boolean showMap;
 
 	public String getSn() {
 		return sn;
@@ -174,6 +176,14 @@ public class SceneData {
 
 	public void setHasStore(Boolean hasStore) {
 		this.hasStore = hasStore;
+	}
+
+	public Boolean getShowMap() {
+		return showMap;
+	}
+
+	public void setShowMap(Boolean showMap) {
+		this.showMap = showMap;
 	}
 
 

@@ -155,7 +155,7 @@ public class BaseController {
   @ExceptionHandler(RuntimeException.class)
   public @ResponseBody BaseResponse runtimeException(HttpServletRequest request,
 		  RuntimeException runtimeException) {
-	  
+	runtimeException.printStackTrace();
     BaseResponse response = new BaseResponse();
     if (runtimeException.getMessage().indexOf("Token") >= 0) {
     	response.setCode(CommonAttributes.FAIL_TOKEN_TIMEOUT);

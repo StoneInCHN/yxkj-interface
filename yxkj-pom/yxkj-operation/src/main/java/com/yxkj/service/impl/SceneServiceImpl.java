@@ -88,6 +88,8 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
     scene.setLatitude(data.getLatitude());
     scene.setHasStore(data.getHasStore());
     scene.setConCount(1);
+    scene.setCntrTotalCount(1);
+    scene.setRemoveStatus(CommonStatus.ACITVE);
     save(scene);
     // 中控
     VendingContainer centralContainer = new VendingContainer();
@@ -97,7 +99,7 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
     centralContainer.setRebootTime(data.getRebootTime());
     centralContainer.setScene(scene);
     centralContainer.setSn(data.getImei());
-    centralContainer.setStatus(CommonStatus.ACITVE);
+    centralContainer.setStatus(data.getStatus());
     centralContainer.setVolume(data.getVolume());
     vendingContainerService.save(centralContainer);
     // 中控广告
@@ -170,7 +172,7 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
       resultMap.put("name", scene.getName());
       resultMap.put("openTime", scene.getOpenTime());
       if (scene.getArea() != null) {
-        resultMap.put("area", scene.getArea().getFullName());
+        resultMap.put("areaFullName", scene.getArea().getFullName());
       }
       resultMap.put("address", scene.getAddress());
       resultMap.put("hasStore", scene.getHasStore());
@@ -202,6 +204,8 @@ public class SceneServiceImpl extends BaseServiceImpl<Scene, Long> implements Sc
       snStr = "0" + snStr;
     }
     snStr = "1" + snStr;
+    sn.setLastValue(sn.getLastValue()+1);
+    snService.update(sn);
     return snStr;
   }
 

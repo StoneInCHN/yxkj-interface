@@ -210,7 +210,7 @@ public class VendingContainer extends BaseEntity {
     this.volume = volume;
   }
 
-  @Column(length = 20)
+  @Column(length = 50)
   public String getRebootTime() {
     return rebootTime;
   }
