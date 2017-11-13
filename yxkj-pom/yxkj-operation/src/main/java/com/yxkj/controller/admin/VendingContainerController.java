@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,9 @@ import com.yxkj.controller.base.BaseController;
 import com.yxkj.entity.Scene;
 import com.yxkj.entity.VendingContainer;
 import com.yxkj.framework.filter.Filter;
+import com.yxkj.json.admin.bean.GoodsData;
+import com.yxkj.json.admin.bean.VendingContainerData;
+import com.yxkj.json.admin.request.GoodsRequest;
 import com.yxkj.json.admin.request.VendingContainerRequest;
 import com.yxkj.json.base.BaseRequest;
 import com.yxkj.json.base.BaseResponse;
@@ -177,5 +181,29 @@ public class VendingContainerController extends BaseController {
 	  }
     return response;
   } 
-  
+  @RequestMapping(value = "/isExistSn", method = RequestMethod.POST)
+  @ApiOperation(value = "查询货柜编码是否存在", httpMethod = "POST", response = ResponseOne.class, notes = "查询货柜编码是否存在")
+  @ApiResponses({@ApiResponse(code = 200, message = "code描述[0000:请求成功; 1000:操作失败]")})
+  public @ResponseBody BaseResponse isExistSn(
+  		@ApiParam(name = "请求参数(json)", value = "userName:用户名; sn:货柜编码; id:编辑时必填", required = true)
+  		@RequestBody VendingContainerRequest request) {
+      BaseResponse response = new BaseResponse(); 
+      VendingContainerData containerData = request.getContainerData();
+      if (containerData == null || StringUtils.isBlank(containerData.getSn())) {
+          response.setCode(CommonAttributes.FAIL_LOGIN);
+          response.setDesc(message("yxkj.request.param.missing"));
+          return response;
+		}
+      boolean exist = false;
+      if (containerData != null && StringUtils.isNotBlank(containerData.getSn())) {
+      	if (request.getId() != null) {
+				exist = vendingContainerService.exists(Filter.eq("sn", containerData.getSn()),Filter.ne("id", request.getId()));
+			}else {
+				exist = vendingContainerService.exists(Filter.eq("sn", containerData.getSn()));
+			}
+	    }
+      response.setDesc(exist +"");
+      response.setCode(CommonAttributes.SUCCESS);
+      return response;
+  }
 }
