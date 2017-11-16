@@ -99,7 +99,7 @@ public class CmdController extends MobileBaseController {
     ResponseOne<Map<String, String>> response = new ResponseOne<Map<String, String>>();
     VendingContainer vendingContainer = vendingContainerService.getByImei(request.getDeviceNo());
     Map<String, String> map = new HashMap<>();
-    map.put("volume", vendingContainer.getVolume());
+    map.put("volume", String.valueOf(vendingContainer.getVolume()));
     response.setMsg(map);
     response.setCode(CommonAttributes.SUCCESS);
     return response;

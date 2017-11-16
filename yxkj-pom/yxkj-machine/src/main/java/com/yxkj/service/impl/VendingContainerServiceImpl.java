@@ -31,7 +31,7 @@ public class VendingContainerServiceImpl extends BaseServiceImpl<VendingContaine
   @Override
   public void initMachineStatus(MachineInfoRequest request) {
     VendingContainer vendingContainer = vendingContainerDao.getByImei(request.getDeviceNo());
-    vendingContainer.setVolume(request.getVolume());
+    vendingContainer.setVolume(Integer.valueOf(request.getVolume()));
 
     vendingContainerDao.merge(vendingContainer);
   }

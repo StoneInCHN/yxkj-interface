@@ -138,9 +138,9 @@ public class UserController extends BaseController {
     List<Ordering> orderings = pageable.getOrderings();
     orderings.add(Ordering.desc("createDate"));
 
-    Page<EndUser> userPage = endUserService.findPage(pageable);
     String[] propertys =
         {"id", "wechatNickName", "alipayName", "userChannel", "cellPhoneNum", "gender", "sceneName"};
+    Page<EndUser> userPage = endUserService.findPage(pageable);
     List<Map<String, Object>> result =
         FieldFilterUtils.filterCollection(propertys, userPage.getContent());
     PageResponse pageInfo =

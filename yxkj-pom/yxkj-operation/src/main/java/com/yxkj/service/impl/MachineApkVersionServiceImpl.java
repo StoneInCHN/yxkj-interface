@@ -4,9 +4,11 @@ import javax.annotation.Resource;
 
 import com.yxkj.entity.MachineAppUpgrade;
 import com.yxkj.entity.Scene;
+import com.yxkj.entity.VendingContainer;
 import com.yxkj.framework.paging.Page;
 import com.yxkj.framework.paging.Pageable;
 import com.yxkj.json.admin.request.MachineApkVersionRequest;
+import com.yxkj.service.CmdService;
 import com.yxkj.service.MachineAppUpgradeService;
 import com.yxkj.service.SceneService;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author huyong
+ */
 @Service("machineApkVersionServiceImpl")
 public class MachineApkVersionServiceImpl extends BaseServiceImpl<MachineApkVersion, Long>
     implements MachineApkVersionService {
@@ -31,6 +36,9 @@ public class MachineApkVersionServiceImpl extends BaseServiceImpl<MachineApkVers
   @Resource(name = "machineAppUpgradeServiceImpl")
   private MachineAppUpgradeService machineAppUpgradeService;
 
+  @Resource(name = "cmdServiceImpl")
+  private CmdService cmdService;
+
   @Resource(name = "machineApkVersionDaoImpl")
   public void setBaseDao(MachineApkVersionDao machineApkVersionDao) {
     super.setBaseDao(machineApkVersionDao);
@@ -38,7 +46,7 @@ public class MachineApkVersionServiceImpl extends BaseServiceImpl<MachineApkVers
   }
 
   @Override
-  @Transactional(propagation = Propagation.REQUIRED)
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   public MachineApkVersion saveMachineApkVersion(MachineApkVersionRequest request) {
 
     MachineApkVersion machineApkVersion = new MachineApkVersion();
@@ -49,12 +57,16 @@ public class MachineApkVersionServiceImpl extends BaseServiceImpl<MachineApkVers
     machineApkVersionDao.persist(machineApkVersion);
     for (Long sceneId : request.getSceneIds()) {
       Scene scene = sceneService.find(sceneId);
-
       MachineAppUpgrade machineAppUpgrade = new MachineAppUpgrade();
       machineAppUpgrade.setScene(scene);
       machineAppUpgrade.setMachineApkVersion(machineApkVersion);
 
       machineAppUpgradeService.save(machineAppUpgrade);
+      for (VendingContainer vendingContainer : scene.getVendingContainer()) {
+        if (vendingContainer.getParent() == null) {
+          cmdService.appUpdate(vendingContainer.getSn(), machineApkVersion.getApkPath());
+        }
+      }
     }
 
     return machineApkVersion;
@@ -72,6 +84,11 @@ public class MachineApkVersionServiceImpl extends BaseServiceImpl<MachineApkVers
       machineAppUpgrade.setMachineApkVersion(apkVersion);
 
       machineAppUpgradeService.save(machineAppUpgrade);
+      for (VendingContainer vendingContainer : scene.getVendingContainer()) {
+        if (vendingContainer.getParent() == null) {
+          cmdService.appUpdate(vendingContainer.getSn(), apkVersion.getApkPath());
+        }
+      }
     }
     return apkVersion;
   }

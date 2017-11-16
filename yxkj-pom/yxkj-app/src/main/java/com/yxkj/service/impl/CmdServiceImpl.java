@@ -85,7 +85,7 @@ public class CmdServiceImpl extends BaseServiceImpl<CommandRecord, Long> impleme
       CmdMsg cmdMsg =
           receiverClient.updateAudioVolume(deviceNo, Float.parseFloat(volume), recordId);
       VendingContainer vendingContainer = vendingContainerService.getByImei(deviceNo);
-      vendingContainer.setVolume(volume);
+      vendingContainer.setVolume(Integer.valueOf(volume));
       vendingContainerService.update(vendingContainer);
       LogUtil.debug(this.getClass(), "updateAudioVolume", "CmdMsg = %s", cmdMsg.toString());
     } catch (IOException e) {
